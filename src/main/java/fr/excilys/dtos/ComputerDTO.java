@@ -1,35 +1,30 @@
 package fr.excilys.dtos;
 
 public class ComputerDTO {
-	
-	
-	private long id;
-	private String name;
+
+	private String id;
+	private String computerName;
 	private String introduced;
 	private String discontinued;
-	private long computerId;
-	
-	public ComputerDTO(long id, String name,String introduced, String discontinued, long computerId) {
+	private String companyId;
+	private String companyName;
+
+	public ComputerDTO(String id, String name, String introduced, String discontinued, String computerId,
+			String companyName) {
 		this.id = id;
-		this.name = name;
+		this.setComputerName(name);
 		this.introduced = introduced;
 		this.discontinued = discontinued;
-		this.computerId = computerId;
+		this.companyId = computerId;
+		this.setCompanyName(companyName);
 	}
-	public long getId() {
+
+	public String getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(String id) {
 		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public String getIntroduced() {
@@ -48,13 +43,28 @@ public class ComputerDTO {
 		this.discontinued = discontinued;
 	}
 
-	public long getComputerId() {
-		return computerId;
+	public String getCompanyId() {
+		return companyId;
 	}
 
-	public void setComputerId(long computerId) {
-		this.computerId = computerId;
+	public void setCompanyId(String computerId) {
+		this.companyId = computerId;
 	}
 
+	public String getCompanyName() {
+		return companyName;
+	}
+
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
+	}
+
+	public String getComputerName() {
+		return computerName;
+	}
+
+	public void setComputerName(String computerName) {
+		this.computerName = computerName;
+	}
 
 }

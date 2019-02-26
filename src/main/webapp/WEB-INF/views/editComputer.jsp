@@ -14,7 +14,7 @@
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="dashboard.html"> Application - Computer Database </a>
+            <a class="navbar-brand" href="Index"> Application - Computer Database </a>
         </div>
     </header>
     <section id="main">
@@ -26,25 +26,25 @@
                     </div>
                     <h1>Edit Computer ${computer.id}</h1>
 
-                    <form action="/EditReturnServlet" method="POST">
-                        <input type="hidden" value="${computer.id}" id="idComputer"/> <!-- TODO: Change this value with the computer id -->
+                    <form action="EditComputer" method="POST">
+                        <input type="hidden" value="${computer.id}"name="idComputer" id="idComputer"/> <!-- TODO: Change this value with the computer id -->
                         <fieldset>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
-                                <input type="text" class="form-control" id="name" value="${computer.name }" placeholder="Computer name" required>
+                                <input type="text" class="form-control" name="name" id="name" value="${computer.name }" placeholder="Computer name" required>
                             </div>
                             <div class="form-group">
                                 <label for="introduced">Introduced date</label>
-                                <input type="date" class="form-control" id="introduced" value="${computer.introduced }"  placeholder="Introduced date">
+                                <input type="date" class="form-control" name="introduced" id="introduced"   placeholder="Introduced date">
                             </div>
                             <div class="form-group">
                                 <label for="discontinued">Discontinued date</label>
-                                <input type="date" class="form-control" id="discontinued" placeholder="Discontinued date">
+                                <input type="date" class="form-control" name="discontinued" id="discontinued" placeholder="Discontinued date">
                             </div>
                             <div class="form-group">
                                 <label for="companyId">Company</label>
-                                <select class="form-control" id="companyId" >
-                                    <option value="0">--</option>
+                                <select class="form-control" name="companyId" id="companyId" >
+                                    <option value="${computer.company.id}">${computer.company.name}</option>
                                     <c:forEach items="${companies}" var="company" varStatus="status">
                                         <option value="${company.getId()}">${company.getName()}</option>
                                     </c:forEach>
@@ -55,7 +55,7 @@
                         <div class="actions pull-right">
                             <input type="submit" value="Edit" class="btn btn-primary">
                             or
-                            <a href="/Index" class="btn btn-default">Cancel</a>
+                            <a href="Index" class="btn btn-default">Cancel</a>
                         </div>
                     </form>
                 </div>

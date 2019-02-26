@@ -8,16 +8,16 @@ import fr.excilys.persistence.dao.CompanyDAO;
 import fr.excilys.persistence.dao.DAOFactory;
 
 public class CompanyServiceImpl implements CompanyService {
-	
+
 	private CompanyDAO companyDao;
 	private static CompanyService instance;
-	
+
 	private CompanyServiceImpl() {
-		this.companyDao =DAOFactory.getInstance().getCompanyDAO();
+		this.companyDao = DAOFactory.getInstance().getCompanyDAO();
 	}
-	
+
 	public static CompanyService getInstance() {
-		if(instance == null) {
+		if (instance == null) {
 			instance = new CompanyServiceImpl();
 		}
 		return instance;
@@ -30,7 +30,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 	@Override
 	public Company getById(long id) {
-		
+
 		return this.companyDao.getById(id);
 	}
 

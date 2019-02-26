@@ -15,7 +15,7 @@
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="dashboard.html"> Application - Computer Database </a>
+            <a class="navbar-brand" href="Index"> Application - Computer Database </a>
         </div>
     </header>
 
@@ -41,13 +41,13 @@
                     </form>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" id="addComputer" href="addComputer.html">Add Computer</a> 
-                    <a class="btn btn-default" id="editComputer" href="/EditServlet" onclick="$.fn.toggleEditMode();">Edit</a>
+                    <a class="btn btn-success" id="addComputer" href="AddComputer">Add Computer</a> 
+                    <a class="btn btn-default" id="editComputer" href="#" onclick="$.fn.toggleEditMode();">Edit</a>
                 </div>
             </div>
         </div>
 
-        <form id="deleteForm" action="#" method="POST">
+        <form id="deleteForm" action="DeleteComputer" method="POST">
             <input type="hidden" name="selection" value="">
         </form>
 
@@ -89,10 +89,9 @@
  					<c:forEach var="computer" items="${computers}" varStatus="loop">
 		                <tr>
 	                        <td class="editMode">
-	                            <input type="checkbox" name="cb" class="cb" value="loop">
+	                            <input type="checkbox" name="cb" class="cb" value="${computer.id}">
 	                        </td>
 	                        <td>
-<%-- 	                        <a href="editComputer?idComputer=<c:out value="${computer.id}"/>">${computer.name}</a> --%>
 	                            <a href="EditComputer?idComputer=${computer.id}">${computer.name}</a>
 	                        </td>
 	                        <td>${ computer.getIntroduced()}</td>

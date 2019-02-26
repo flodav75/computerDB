@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
-
 import fr.excilys.model.Computer;
 import fr.excilys.service.ComputerService;
 import fr.excilys.service.ComputerServiceImpl;
@@ -29,7 +27,7 @@ public class IndexServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	public void init() throws ServletException {
-		 computerSer = ComputerServiceImpl.getInstance();
+		computerSer = ComputerServiceImpl.getInstance();
 //		DAOFactory daoFactory = (DAOFactory) this.getServletContext().getAttribute(ServletUtilitaire.CONF_DAO_FACTORY);
 //		this.equipePGLDAO = daoFactory.getEquipePGLDAO();
 //		this.utilisateurDAO = daoFactory.getUtilisateurDao();
@@ -50,29 +48,29 @@ public class IndexServlet extends HttpServlet {
 		try {
 			List<Computer> computers1 = getAllComputers().get();
 			for (int i = 0; i < 4; i++) {
-					computers.add(computers1.get(i));
+				computers.add(computers1.get(i));
 			}
 			request.setAttribute("computers", computers);
 			request.setAttribute("count", computers.size());
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			request.getServletContext().getRequestDispatcher("/WEB-INF/ressources/static/views/404.html").forward(request, response);
+			request.getServletContext().getRequestDispatcher("/WEB-INF/ressources/static/views/404.html")
+					.forward(request, response);
 		}
 		request.getServletContext().getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request, response);
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		System.out.println("doPostIndex");
-		request.getRequestDispatcher("/index.jsp").forward(request, response);
+		doGet(request, response);
 	}
-	
-	private Optional<List<Computer>> getAllComputers() throws SQLException{
+
+	private Optional<List<Computer>> getAllComputers() throws SQLException {
 		List<Computer> computersReturn = null;
-			if(computerSer.getAll() != null) {
-				computersReturn = computerSer.getAll();
-			}
-		return Optional.ofNullable(computersReturn);	
+		if (computerSer.getAll() != null) {
+			computersReturn = computerSer.getAll();
+		}
+		return Optional.ofNullable(computersReturn);
 	}
 
 }

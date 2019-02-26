@@ -1,13 +1,15 @@
 package fr.excilys.controller;
 
-import java.util.Date;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.Scanner;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
@@ -35,7 +37,7 @@ public class Controller {
 		this.companySer = CompanyServiceImpl.getInstance();
 		start();
 	}
-
+ 
 	public static Controller getInstance() {
 		if (instance == null) {
 			instance = new Controller();
@@ -45,12 +47,14 @@ public class Controller {
 
 	private void start() {
 		while (this.isRunning) {
+			
 			Menu.displayMenu();
 			checkUserRequest(readValue());
 		}
 	}
 
 	private void checkUserRequest(String userRequest) {
+	
 		String userValueUpper = userRequest.toUpperCase();
 		if (GOOD_COMMAND_LINE.contains(userValueUpper)) {
 			switch (ECommandeLine.valueOf(userValueUpper)) {
@@ -151,7 +155,7 @@ public class Controller {
 			String name = getUserValueCleanName(computerValues.get(0));
 			Date introduced = getUserValueCleanDate(computerValues.get(1));
 			Date discontinued = getUserValueCleanDate(computerValues.get(2));
-			Company company= createCompany(computerValues.get(3)).get();
+			Company company= createCompany(computerValues.get(3));
 			
 			try {
 				this.computerSer.add(new Computer(DEFAULTID, name, introduced, discontinued,company ));
@@ -166,12 +170,12 @@ public class Controller {
 
 	}
 
-	private Optional<Company> createCompany(String idCompany) {
+	private Company createCompany(String idCompany) {
 		Company company = null;
 		if(getUserValueCleanId(idCompany) != null) {
-			company= new Company(getUserValueCleanId(idCompany).get());
+			company= new Company(getUserValueCleanId(idCompany));
 		}
-		return Optional.ofNullable(company);
+		return company;
 	}
 
 	private Date getUserValueCleanDate(String userValue) {
@@ -182,12 +186,12 @@ public class Controller {
 		return userValueReturn;
 	}
 
-	private Optional<Long> getUserValueCleanId(String userValue) {
+	private Long getUserValueCleanId(String userValue) {
 		Long userValueReturn =null;
 		if (!isNullValue(userValue)) {
 			userValueReturn = Long.parseLong(userValue);
 		}
-		return Optional.ofNullable(userValueReturn);
+		return userValueReturn;
 	}
 
 	private String getUserValueCleanName(String userValue) throws Exception {
@@ -223,7 +227,7 @@ public class Controller {
 				comp.setName(getUserValueCleanName(computerValues.get(0)));
 				comp.setIntroduced(getUserValueCleanDate(computerValues.get(1)));
 				comp.setDiscontinued(getUserValueCleanDate(computerValues.get(2)));
-				comp.setCompany(new Company(getUserValueCleanId(computerValues.get(3)).get()));
+				comp.setCompany(new Company(getUserValueCleanId(computerValues.get(3))));
 				try {
 					this.computerSer.update(comp);
 				} catch (SQLException e) {

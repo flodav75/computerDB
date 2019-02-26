@@ -1,8 +1,0 @@
-127.0.0.1 - - [25/Feb/2019:10:40:39 +0100] "GET /ComputerDB/Index HTTP/1.1" 200 6752 http-bio-8080-exec-1 1504
-127.0.0.1 - - [25/Feb/2019:10:40:39 +0100] "GET /ComputerDB/ressources/static/js/jquery.min.js HTTP/1.1" 200 84320 http-bio-8080-exec-2 13
-127.0.0.1 - - [25/Feb/2019:10:40:39 +0100] "GET /ComputerDB/ressources/static/js/dashboard.js HTTP/1.1" 200 2231 http-bio-8080-exec-4 12
-127.0.0.1 - - [25/Feb/2019:10:40:39 +0100] "GET /ComputerDB/ressources/static/css/font-awesome.css HTTP/1.1" 200 26651 http-bio-8080-exec-6 7
-127.0.0.1 - - [25/Feb/2019:10:40:39 +0100] "GET /ComputerDB/ressources/static/js/bootstrap.min.js HTTP/1.1" 200 35601 http-bio-8080-exec-3 11
-127.0.0.1 - - [25/Feb/2019:10:40:39 +0100] "GET /ComputerDB/ressources/static/css/main.css HTTP/1.1" 200 418 http-bio-8080-exec-7 7
-127.0.0.1 - - [25/Feb/2019:10:40:39 +0100] "GET /ComputerDB/ressources/static/css/bootstrap.min.css HTTP/1.1" 200 113498 http-bio-8080-exec-5 7
-127.0.0.1 - - [25/Feb/2019:10:40:53 +0100] "GET /ComputerDB/ HTTP/1.1" 200 286 http-bio-8080-exec-5 32

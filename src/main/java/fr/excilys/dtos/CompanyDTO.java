@@ -1,10 +1,10 @@
 package fr.excilys.dtos;
 
 public class CompanyDTO {
-	
+
 	private long id;
 	private String name;
-	
+
 	public CompanyDTO(long id, String name) {
 		this.id = id;
 		this.name = name;

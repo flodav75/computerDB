@@ -1,12 +1,12 @@
 package fr.excilys.persistence.dao;
 
 import java.sql.Connection;
-import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -25,14 +25,12 @@ public class ComputerDaoImpl implements ComputerDAO {
 	public final static String ATTRIBUTLIST[] = { "id", "name", "introduced", "discontinued", "company_id" };
 	private final static String INSERT = "Insert into computer(name, introduced, discontinued, company_id) values(?,?,?,?)";
 	private static ComputerDAO instance;
-	private  CompanyDAO companyDao;
+	private CompanyDAO companyDao;
 	private DAOFactory daoFactory;
-	private Logger log ;
-
-
+	private Logger log;
 
 	private ComputerDaoImpl(DAOFactory daoFactory) {
-		this.daoFactory = daoFactory;	
+		this.daoFactory = daoFactory;
 		this.companyDao = this.daoFactory.getCompanyDAO();
 		log = LoggerFactory.getLogger(ComputerDAO.class);
 	}
@@ -154,10 +152,10 @@ public class ComputerDaoImpl implements ComputerDAO {
 		Date introduced = convertToDate(res.getTimestamp("introduced"));
 		Date discontinued = convertToDate(res.getTimestamp("discontinued"));
 		long idCompany = res.getLong("company_id");
-		if(idCompany != 0) {
-			 company = companyDao.getById(idCompany);
-		}else {
-			company = new Company(0,"null");
+		if (idCompany != 0) {
+			company = companyDao.getById(idCompany);
+		} else {
+			company = new Company(0, "null");
 		}
 		return new Computer(id, name, introduced, discontinued, company);
 	}
@@ -182,7 +180,6 @@ public class ComputerDaoImpl implements ComputerDAO {
 		}
 		return dateReturn;
 	}
-
 
 	@Override
 	public List<Computer> getByCompanyId(long id) throws SQLException {

@@ -5,15 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.excilys.model.Company;
-import fr.excilys.model.Computer;
 
 public class CompanyDaoImpl implements CompanyDAO {
 
@@ -28,20 +25,21 @@ public class CompanyDaoImpl implements CompanyDAO {
 		this.log = LoggerFactory.getLogger(CompanyDaoImpl.class);
 
 	}
-	
+
 	public static CompanyDAO getInstance() {
-		if(instance ==null) {
+		if (instance == null) {
 			instance = new CompanyDaoImpl(DAOFactory.getInstance());
-			
+
 		}
 		return instance;
 	}
 
 	@Override
-	public List<Company> getAll()  {
+	public List<Company> getAll() {
 		List<Company> companies = new ArrayList<Company>();
 
-		try(Connection connect = this.daoFactory.getConnection();PreparedStatement preparedStatement = connect.prepareStatement(GET_ALL);) {
+		try (Connection connect = this.daoFactory.getConnection();
+				PreparedStatement preparedStatement = connect.prepareStatement(GET_ALL);) {
 			ResultSet result = preparedStatement.executeQuery();
 			while (result.next()) {
 				long id = result.getLong("id");
@@ -60,7 +58,8 @@ public class CompanyDaoImpl implements CompanyDAO {
 
 	public Company getById(long id) {
 		Company companyReturn = null;
-		try(Connection connect = this.daoFactory.getConnection();PreparedStatement preparedStatement = connect.prepareStatement(SELECT_BY_ID);) {
+		try (Connection connect = this.daoFactory.getConnection();
+				PreparedStatement preparedStatement = connect.prepareStatement(SELECT_BY_ID);) {
 			preparedStatement.setLong(1, id);
 			ResultSet result = preparedStatement.executeQuery();
 			result.next();
@@ -74,13 +73,13 @@ public class CompanyDaoImpl implements CompanyDAO {
 		}
 		return companyReturn;
 	}
-	
+
 	public static Company mapResult(ResultSet res) throws SQLException {
-		Company comp =  null;
-		//System.out.println(res.getObject("id"));
+		Company comp = null;
+		// System.out.println(res.getObject("id"));
 		long id = (long) res.getObject("id");
 		String nom = res.getString("name");
-		comp = new Company(id, nom );
+		comp = new Company(id, nom);
 		return comp;
 	}
 }

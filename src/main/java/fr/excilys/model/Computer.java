@@ -17,6 +17,7 @@ public class Computer {
 		this.discontinued = discontinued;
 		this.company = company;
 	}
+
 	public Computer() {
 	}
 
@@ -62,12 +63,12 @@ public class Computer {
 
 	@Override
 	public String toString() {
-		String company = "marche pas";
-		if(this.company != null) {
+		String company = null;
+		if (this.company != null) {
 			company = this.company.toString();
 		}
-		return "Computer id: " + this.id + " name" + this.name + " introduced: " + this.introduced + " discontinued: "
-				+ this.discontinued+" company :"+this.company.getName();
+		return "Computer id : " + this.id + " name : " + this.name + " introduced : " + this.introduced
+				+ " discontinued : " + this.discontinued + " company : " + company;
 	}
 
 }

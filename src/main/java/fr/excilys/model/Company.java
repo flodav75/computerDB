@@ -9,6 +9,7 @@ public class Company {
 		this.id = id;
 		this.name = name;
 	}
+
 	public Company(long id) {
 		this.id = id;
 	}

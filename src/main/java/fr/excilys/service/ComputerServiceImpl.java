@@ -8,18 +8,17 @@ import fr.excilys.persistence.dao.ComputerDAO;
 import fr.excilys.persistence.dao.DAOFactory;
 
 public class ComputerServiceImpl implements ComputerService {
-	
+
 	private ComputerDAO computerDao;
 	private static ComputerService instance;
-	
-	
+
 	private ComputerServiceImpl() {
-		 DAOFactory.getInstance();
-		this.computerDao =DAOFactory.getInstance().getComputerDAO();
+		DAOFactory.getInstance();
+		this.computerDao = DAOFactory.getInstance().getComputerDAO();
 	}
-	
+
 	public static ComputerService getInstance() {
-		if(instance == null) {
+		if (instance == null) {
 			instance = new ComputerServiceImpl();
 		}
 		return instance;
@@ -29,19 +28,19 @@ public class ComputerServiceImpl implements ComputerService {
 	public void add(Computer computer) throws SQLException {
 		this.computerDao.add(computer);
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void update(Computer computer) throws SQLException {
 		this.computerDao.update(computer);
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void remove(Computer computer) throws SQLException {
-		this.computerDao.remove(computer);	
+		this.computerDao.remove(computer);
 	}
 
 	@Override
@@ -51,7 +50,7 @@ public class ComputerServiceImpl implements ComputerService {
 
 	@Override
 	public Computer getById(long id) throws SQLException {
-		
+
 		return this.computerDao.getById(id);
 	}
 
@@ -60,9 +59,5 @@ public class ComputerServiceImpl implements ComputerService {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-
-	
-	
 
 }
