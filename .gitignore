@@ -1,0 +1,24 @@
+# # Project specific excludes #
+tomcat
+# # Default excludes #
+# Binaries 
+*.7z 
+*.dmg 
+*.gz 
+*.iso 
+*.jar
+*.rar 
+*.tar 
+*.zip 
+*.war 
+*.ear 
+*.sar 
+*.class
+target/
+# eclipse project file
+.settings/
+.classpath
+.project
+
+
+
