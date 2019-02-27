@@ -6,6 +6,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import fr.excilys.dtos.ComputerDTO;
+import fr.excilys.exceptions.ComputerNameException;
+import fr.excilys.exceptions.DateFormatException;
+import fr.excilys.mappers.validations.ValidationComputerDTO;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
 import fr.excilys.service.CompanyService;
@@ -25,7 +28,7 @@ public class ComputerMapper {
 		this.companyServ = CompanyServiceImpl.getInstance();
 	}
 
-	public Computer getComputer() throws ParseException, SQLException {
+	public Computer getComputer() throws ParseException,  NumberFormatException, ComputerNameException, DateFormatException {
 		this.setComputer(getComputerFromDTO());
 		return computer;
 	}
@@ -35,9 +38,10 @@ public class ComputerMapper {
 	}
 
 //private
-	public Computer getComputerFromDTO() throws ParseException, SQLException {
+	public Computer getComputerFromDTO() throws ParseException, NumberFormatException, ComputerNameException, DateFormatException {
 		Computer comp = null;
 		Long id = null;
+		ValidationComputerDTO.validate(this.compDt);
 		if (this.compDt.getId() != null && !"".equals(this.compDt.getId())) {
 			id = Long.valueOf(this.compDt.getId());
 		} else {
@@ -54,7 +58,7 @@ public class ComputerMapper {
 	// private
 	public Date formatDate(String date) throws ParseException {
 		Date dateReturn = null;
-		if (date != null && !date.isEmpty()) {
+		if (date != null && date.isEmpty()) {
 			String newDate = date + " 00:00:00";
 			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 			dateReturn = dateFormat.parse(newDate);
@@ -63,7 +67,7 @@ public class ComputerMapper {
 	}
 
 //private
-	public Company getCompanyFromDTO() throws SQLException, NumberFormatException {
+	public Company getCompanyFromDTO() throws  NumberFormatException {
 		Company company = null;
 		String name = this.compDt.getCompanyName();
 		String idcompany = this.compDt.getCompanyId();
@@ -80,7 +84,7 @@ public class ComputerMapper {
 	}
 
 //private
-	public Company getCompanyById(String id) throws SQLException, NumberFormatException {
+	public Company getCompanyById(String id) throws  NumberFormatException {
 		Company company = null;
 		if (id != null && !id.isEmpty()) {
 			long idLong = Long.parseLong(id);
@@ -89,7 +93,7 @@ public class ComputerMapper {
 		return company;
 	}
 
-	public Company getCompany() throws SQLException, NumberFormatException {
+	public Company getCompany() throws  NumberFormatException {
 		this.setCompany(getCompanyFromDTO());
 		return company;
 	}

@@ -11,8 +11,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.excilys.dtos.ComputerDTO;
 import fr.excilys.exceptions.ComputerNameException;
+import fr.excilys.exceptions.DateFormatException;
 import fr.excilys.mappers.ComputerMapper;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
@@ -26,54 +30,71 @@ public class AddComputerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private ComputerService computerSer;
 	private CompanyService compaSer;
+	private Logger log;
 
 	public void init() throws ServletException {
 		this.computerSer = ComputerServiceImpl.getInstance();
 		this.compaSer = CompanyServiceImpl.getInstance();
+		this.log = LoggerFactory.getLogger(AddComputerServlet.class);
 	}
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List<Company> companies = null;
-		try {
+		
 			companies = getCompanies();
 			request.setAttribute("companies", companies);
-			request.getServletContext().getRequestDispatcher("/WEB-INF/views/addComputer.jsp").forward(request,
-					response);
-		} catch (SQLException e) {
-			e.printStackTrace();
-			request.getServletContext().getRequestDispatcher("/ressources/static/views/500.html").forward(request,
-					response);
-		}
+			request.getServletContext().getRequestDispatcher("/WEB-INF/views/addComputer.jsp").forward(request,response);
+		
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Computer computer;
-		try {
-			computer = getComputerForm(request, response);
-			if (computer != null) {
-				// System.out.println(computer.toString());
+				try {
+					computer = getComputerForm(request, response);
+					if (computer != null) {
+						// System.out.println(computer.toString());
 
-				computerSer.add(computer);
-				request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
-			} else {
-				request.getServletContext().getRequestDispatcher("ressources/static/views/404.html").forward(request,
-						response);
-			}
-		} catch (SQLException | NumberFormatException | ParseException | ComputerNameException e) {
-			e.printStackTrace();
-			request.getServletContext().getRequestDispatcher("ressources/static/views/403.html").forward(request,
-					response);
-		}
+						computerSer.add(computer);
+						request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
+					} else {
+						this.log.error("error non gérer");
+
+						request.getServletContext().getRequestDispatcher("/Index").forward(request,response);
+					}
+				} catch (NumberFormatException e) {
+					this.log.error("error typing id");
+					e.printStackTrace();
+					request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
+
+				} catch (ParseException e) {
+					this.log.error("error date format");
+					e.printStackTrace();
+					request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
+					// TODO Auto-generated catch block
+				} catch (ComputerNameException e) {
+					this.log.error("error name");
+					e.printStackTrace();
+					request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
+					// TODO Auto-generated catch block
+				} catch (DateFormatException e) {
+					this.log.error("error date not logical");
+					e.printStackTrace();
+					request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
+
+
+				}
+			
+		
 	}
 
-	private List<Company> getCompanies() throws SQLException {
+	private List<Company> getCompanies()  {
 		List<Company> companies = null;
 		companies = this.compaSer.getAll();
 		return companies;
 	}
 
 	private Computer getComputerForm(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-			IOException, ParseException, NumberFormatException, SQLException, ComputerNameException {
+			IOException, ParseException, NumberFormatException,  ComputerNameException, DateFormatException {
 		Computer computer = null;
 		String name = request.getParameter("name");
 		if (name != null && name.isEmpty()) {
@@ -83,7 +104,7 @@ public class AddComputerServlet extends HttpServlet {
 		String discontinued = request.getParameter("discontinued");
 		String idCompany = request.getParameter("companyId");
 		ComputerMapper compMap = new ComputerMapper(
-				new ComputerDTO(null, name, introduced, discontinued, idCompany, idCompany));
+				new ComputerDTO(null, name, introduced, discontinued, idCompany, ""));
 		computer = compMap.getComputer();
 		System.out.println(computer.toString());
 		return computer;

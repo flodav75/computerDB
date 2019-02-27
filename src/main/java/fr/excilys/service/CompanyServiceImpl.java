@@ -24,7 +24,7 @@ public class CompanyServiceImpl implements CompanyService {
 	}
 
 	@Override
-	public List<Company> getAll() throws SQLException {
+	public List<Company> getAll() {
 		return this.companyDao.getAll();
 	}
 

@@ -114,12 +114,12 @@ public class ComputerDaoImpl implements ComputerDAO {
 			while (result.next()) {
 				computers.add(mapResult(result));
 			}
-			log.info("computers finded");
+			log.info("computers found");
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			log.error("computers not finded");
+			log.error("computers not found");
 
 		}
 		return computers;
@@ -134,12 +134,12 @@ public class ComputerDaoImpl implements ComputerDAO {
 			ResultSet result = pSt.executeQuery();
 			result.next();
 			computer = mapResult(result);
-			log.info("computer finded");
+			log.info("computer found");
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			log.info("computer not finded");
+			log.info("computer not found");
 
 		}
 		return computer;
@@ -182,7 +182,7 @@ public class ComputerDaoImpl implements ComputerDAO {
 	}
 
 	@Override
-	public List<Computer> getByCompanyId(long id) throws SQLException {
+	public List<Computer> getByCompanyId(long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

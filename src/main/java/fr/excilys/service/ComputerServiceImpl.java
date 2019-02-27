@@ -25,37 +25,37 @@ public class ComputerServiceImpl implements ComputerService {
 	}
 
 	@Override
-	public void add(Computer computer) throws SQLException {
+	public void add(Computer computer)  {
 		this.computerDao.add(computer);
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void update(Computer computer) throws SQLException {
+	public void update(Computer computer)  {
 		this.computerDao.update(computer);
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void remove(Computer computer) throws SQLException {
+	public void remove(Computer computer) {
 		this.computerDao.remove(computer);
 	}
 
 	@Override
-	public List<Computer> getAll() throws SQLException {
+	public List<Computer> getAll() {
 		return this.computerDao.getAll();
 	}
 
 	@Override
-	public Computer getById(long id) throws SQLException {
+	public Computer getById(long id) {
 
 		return this.computerDao.getById(id);
 	}
 
 	@Override
-	public List<Computer> getByCompanyId(long id) throws SQLException {
+	public List<Computer> getByCompanyId(long id)  {
 		// TODO Auto-generated method stub
 		return null;
 	}

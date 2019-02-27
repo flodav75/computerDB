@@ -8,9 +8,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
 import fr.excilys.model.ECommandeLine;
@@ -156,13 +153,9 @@ public class Controller {
 			Date introduced = getUserValueCleanDate(computerValues.get(1));
 			Date discontinued = getUserValueCleanDate(computerValues.get(2));
 			Company company= createCompany(computerValues.get(3));
+		
+			this.computerSer.add(new Computer(DEFAULTID, name, introduced, discontinued,company ));
 			
-			try {
-				this.computerSer.add(new Computer(DEFAULTID, name, introduced, discontinued,company ));
-			} catch (SQLException e) {
-				e.printStackTrace();
-				Menu.displayInputCreate();
-			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			Menu.displayInputCreate();
@@ -228,12 +221,8 @@ public class Controller {
 				comp.setIntroduced(getUserValueCleanDate(computerValues.get(1)));
 				comp.setDiscontinued(getUserValueCleanDate(computerValues.get(2)));
 				comp.setCompany(new Company(getUserValueCleanId(computerValues.get(3))));
-				try {
-					this.computerSer.update(comp);
-				} catch (SQLException e) {
-					e.printStackTrace();
-					Menu.displayInputCreate();
-				}
+				this.computerSer.update(comp);
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 				Menu.displayInputCreate();
