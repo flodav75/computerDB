@@ -40,18 +40,18 @@ private static final String [] BAD_NAME_VALUES = {"'",";",".","*"};
 
 	@SuppressWarnings("deprecation")
 	private static void dateFormat(String dateString) throws ParseException, DateFormatException {
-		String dateToTest = dateString + " 00:00:00";
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+		String dateToTest = dateString ;
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = dateFormat.parse(dateToTest);
 		System.out.println(date.getYear());
 		System.out.println(date.getMonth());
 		System.out.println(date.getDay());
 		
-		if(date.getYear()<=2036 && date.getYear()>=1950 && date.getDay()<=31 &&date.getDay()>=1 && date.getMonth()<=12 && date.getMonth()>=1 ) {
-			
-		}else {
-			throw new  DateFormatException();
-		}
+//		if(date.getYear()<=2036 && date.getYear()>=1950 && date.getDay()<=31 &&date.getDay()>=1 && date.getMonth()<=12 && date.getMonth()>=1 ) {
+//			
+//		}else {
+//			throw new  DateFormatException();
+//		}
 
 	}
 	

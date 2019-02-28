@@ -1,7 +1,6 @@
 package fr.excilys.servlets;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.List;
 
@@ -40,11 +39,10 @@ public class AddComputerServlet extends HttpServlet {
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List<Company> companies = null;
-		
-			companies = getCompanies();
-			request.setAttribute("companies", companies);
-			request.getServletContext().getRequestDispatcher("/WEB-INF/views/addComputer.jsp").forward(request,response);
-		
+		companies = getCompanies();
+		request.setAttribute("companies", companies);
+		request.getServletContext().getRequestDispatcher("/WEB-INF/views/addComputer.jsp").forward(request,response);
+	
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -63,25 +61,19 @@ public class AddComputerServlet extends HttpServlet {
 					}
 				} catch (NumberFormatException e) {
 					this.log.error("error typing id");
-					e.printStackTrace();
 					request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
-
+ 
 				} catch (ParseException e) {
 					this.log.error("error date format");
-					e.printStackTrace();
 					request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
 					// TODO Auto-generated catch block
 				} catch (ComputerNameException e) {
 					this.log.error("error name");
-					e.printStackTrace();
 					request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
 					// TODO Auto-generated catch block
 				} catch (DateFormatException e) {
 					this.log.error("error date not logical");
-					e.printStackTrace();
 					request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
-
-
 				}
 			
 		
@@ -97,15 +89,12 @@ public class AddComputerServlet extends HttpServlet {
 			IOException, ParseException, NumberFormatException,  ComputerNameException, DateFormatException {
 		Computer computer = null;
 		String name = request.getParameter("name");
-		if (name != null && name.isEmpty()) {
-			throw new ComputerNameException();
-		}
 		String introduced = request.getParameter("introduced");
 		String discontinued = request.getParameter("discontinued");
 		String idCompany = request.getParameter("companyId");
-		ComputerMapper compMap = new ComputerMapper(
-				new ComputerDTO(null, name, introduced, discontinued, idCompany, ""));
-		computer = compMap.getComputer();
+		ComputerDTO compDTO = new ComputerDTO(null,name,introduced,discontinued,idCompany,"");
+		ComputerMapper compMap = new ComputerMapper();
+		computer = compMap.getComputerFromDTO(compDTO);
 		System.out.println(computer.toString());
 		return computer;
 	}

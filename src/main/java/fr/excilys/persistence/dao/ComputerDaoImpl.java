@@ -114,7 +114,7 @@ public class ComputerDaoImpl implements ComputerDAO {
 			while (result.next()) {
 				computers.add(mapResult(result));
 			}
-			log.info("computers found");
+			log.info("computers found1");
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -134,7 +134,7 @@ public class ComputerDaoImpl implements ComputerDAO {
 			ResultSet result = pSt.executeQuery();
 			result.next();
 			computer = mapResult(result);
-			log.info("computer found");
+			log.info("computer found2");
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

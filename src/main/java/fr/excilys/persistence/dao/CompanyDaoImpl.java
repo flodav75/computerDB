@@ -46,11 +46,11 @@ public class CompanyDaoImpl implements CompanyDAO {
 				String nom = result.getString("name");
 				companies.add(new Company(id, nom));
 			}
-		//	log.info("companies found");
+			log.info("companies found");
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		//	log.error("companes not finded");
+			log.error("companes not finded");
 
 		}
 		return companies;
@@ -68,7 +68,7 @@ public class CompanyDaoImpl implements CompanyDAO {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			//log.error("company not finded");
+			//log.error("company not found");
 
 		}
 		return companyReturn;

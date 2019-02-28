@@ -1,6 +1,5 @@
 package fr.excilys.service;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import fr.excilys.model.Computer;

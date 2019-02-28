@@ -89,14 +89,14 @@
  					<c:forEach var="computer" items="${computers}" varStatus="loop">
 		                <tr>
 	                        <td class="editMode">
-	                            <input type="checkbox" name="cb" class="cb" value="${computer.id}">
+	                            <input type="checkbox" name="cb" class="cb" value="${computer.getId()}">
 	                        </td>
 	                        <td>
-	                            <a href="EditComputer?idComputer=${computer.id}">${computer.name}</a>
+	                            <a href="EditComputer?idComputer=${computer.getId()}">${computer.getComputerName()}</a>
 	                        </td>
 	                        <td>${ computer.getIntroduced()}</td>
 	                        <td>${ computer.getDiscontinued()}</td>
-	                        <td>${computer.company.name}</td>
+	                        <td>${computer.getCompanyName()}</td>
 		                </tr>             
 	                </c:forEach>               
                  </c:if> 

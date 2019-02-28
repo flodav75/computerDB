@@ -1,10 +1,8 @@
 package fr.excilys.servlets;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -12,6 +10,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fr.excilys.dtos.ComputerDTO;
+import fr.excilys.exceptions.ComputerNameException;
+import fr.excilys.mappers.ComputerDtoMapper;
 import fr.excilys.model.Computer;
 import fr.excilys.service.ComputerService;
 import fr.excilys.service.ComputerServiceImpl;
@@ -20,6 +24,7 @@ import fr.excilys.service.ComputerServiceImpl;
 public class IndexServlet extends HttpServlet {
 
 	private ComputerService computerSer;
+	private Logger log;
 
 	/**
 	 * 
@@ -28,49 +33,54 @@ public class IndexServlet extends HttpServlet {
 
 	public void init() throws ServletException {
 		computerSer = ComputerServiceImpl.getInstance();
-//		DAOFactory daoFactory = (DAOFactory) this.getServletContext().getAttribute(ServletUtilitaire.CONF_DAO_FACTORY);
-//		this.equipePGLDAO = daoFactory.getEquipePGLDAO();
-//		this.utilisateurDAO = daoFactory.getUtilisateurDao();
-//		this.membreEquipePGLDAO=daoFactory.getMembreEquipePGLDAO();
-//		this.typeEvaluationDAO=daoFactory.getTypeEvaluationDAO();
-//		this.notePGLDAO=daoFactory.getNotePGLDAO();
-//		this.utilisateurDAO=daoFactory.getUtilisateurDao();
-//		this.professeurDAO=daoFactory.getProfesseurDAO();
-//		this.juryPGLDAO=daoFactory.getJuryPGLDAO();
-//		this.RoleDAO=daoFactory.getRoleDAO();
-//		this.sprintDAO=daoFactory.getSprintDAO();
-//		this.juryPGLTypeDAO = daoFactory.getJuryPGLTypeDAO();
+		this.log = LoggerFactory.getLogger(AddComputerServlet.class);
+
 	}
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<Computer> computers = new ArrayList<>();
-
+		List<ComputerDTO> computers = new ArrayList<>();
 		try {
-			List<Computer> computers1 = getAllComputers().get();
-			for (int i = 0; i < 4; i++) {
-				computers.add(computers1.get(i));
+			List<ComputerDTO> computers1 = new ArrayList<>();
+			computers1 = getAllComputers();
+			if (!computers1.isEmpty()) {
+				for (int i = 0; i < 4; i++) {
+					computers.add(computers1.get(i));
+				}
+				request.setAttribute("computers", computers);
+				request.setAttribute("count", computers.size());
+				request.getServletContext().getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request,
+						response);
+			} else {
+				this.log.error("error");
+				request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,
+						response);
 			}
-			request.setAttribute("computers", computers);
-			request.setAttribute("count", computers.size());
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			request.getServletContext().getRequestDispatcher("/WEB-INF/ressources/static/views/404.html")
-					.forward(request, response);
+
+		} catch (ComputerNameException e) {
+			this.log.error("error name");
+			request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,
+					response);
 		}
-		request.getServletContext().getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request, response);
+		// TODO: handle exception
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}
 
-	private Optional<List<Computer>> getAllComputers() throws SQLException {
-		List<Computer> computersReturn = null;
-		if (computerSer.getAll() != null) {
-			computersReturn = computerSer.getAll();
+	private List<ComputerDTO> getAllComputers() throws ComputerNameException {
+		List<ComputerDTO> computersReturn = new ArrayList<>();
+		List<Computer> computerToConvert = new ArrayList<>();
+		ComputerDtoMapper mapperDTO = null;
+		computerToConvert = computerSer.getAll();
+
+		if (computerToConvert != null && !computerToConvert.isEmpty()) {
+			mapperDTO = new ComputerDtoMapper();
+			for (Computer comp : computerToConvert) {
+				computersReturn.add(mapperDTO.ComputerDtoFromComputer(comp));
+			}
 		}
-		return Optional.ofNullable(computersReturn);
+		return computersReturn;
 	}
 
 }
