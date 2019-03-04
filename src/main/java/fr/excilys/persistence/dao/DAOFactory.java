@@ -31,7 +31,6 @@ public class DAOFactory {
 	        } 
 	        catch (ClassNotFoundException e) 
 	        {
-	            System.out.println(e.toString());
 	        }
 			instance = new DAOFactory(URL,USERNAME,PASSWORD);
 		}

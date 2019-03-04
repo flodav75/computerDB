@@ -9,8 +9,9 @@ public interface ComputerDAO {
 	void add(Computer computer);
 	void update(Computer computer);
 	void remove(Computer computer);
-	List<Computer> getAll();
+	List<Computer> getAll(int limit,int pageNumber);
 	Computer getById(long id);
 	List<Computer> getByCompanyId(long id);
+	int getRowCount();
 	
 }

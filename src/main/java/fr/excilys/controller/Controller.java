@@ -111,7 +111,7 @@ public class Controller {
 
 	private List<Computer> getListComputers() throws SQLException {
 		List<Computer> computers = null;
-		computers = this.computerSer.getAll();
+		computers = this.computerSer.getAll(10,1);
 		return computers;
 	}
 

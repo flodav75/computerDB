@@ -97,7 +97,6 @@ public class EditServlet extends HttpServlet {
 	private Computer getComputerForm(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException, ParseException, NumberFormatException, SQLException, ComputerNameException {
 		Computer computer = null;
-		System.out.println(request.getParameter("idComputer"));
 		Long idComputer = Long.valueOf(request.getParameter("idComputer"));
 		String name = request.getParameter("name");
 		if (name != null && name.isEmpty()) {

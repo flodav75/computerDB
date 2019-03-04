@@ -43,8 +43,8 @@ public class ComputerServiceImpl implements ComputerService {
 	}
 
 	@Override
-	public List<Computer> getAll() {
-		return this.computerDao.getAll();
+	public List<Computer> getAll(int limit,int pos ) {
+		return this.computerDao.getAll(limit, pos);
 	}
 
 	@Override
@@ -57,6 +57,11 @@ public class ComputerServiceImpl implements ComputerService {
 	public List<Computer> getByCompanyId(long id)  {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public int getCountRow() {
+		return this.computerDao.getRowCount();
 	}
 
 }

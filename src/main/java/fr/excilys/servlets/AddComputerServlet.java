@@ -42,7 +42,6 @@ public class AddComputerServlet extends HttpServlet {
 		companies = getCompanies();
 		request.setAttribute("companies", companies);
 		request.getServletContext().getRequestDispatcher("/WEB-INF/views/addComputer.jsp").forward(request,response);
-	
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -95,7 +94,6 @@ public class AddComputerServlet extends HttpServlet {
 		ComputerDTO compDTO = new ComputerDTO(null,name,introduced,discontinued,idCompany,"");
 		ComputerMapper compMap = new ComputerMapper();
 		computer = compMap.getComputerFromDTO(compDTO);
-		System.out.println(computer.toString());
 		return computer;
 	}
 

@@ -8,7 +8,8 @@ public interface ComputerService {
 	void add(Computer computer) ;
 	void update(Computer computer) ;
 	void remove(Computer computer) ;
-	List<Computer> getAll();
+	List<Computer> getAll(int limit,int pos );
 	Computer getById(long id);
 	List<Computer> getByCompanyId(long id);
+	int getCountRow();
 }

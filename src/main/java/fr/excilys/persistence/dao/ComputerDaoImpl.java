@@ -19,11 +19,13 @@ import fr.excilys.ui.Menu;
 public class ComputerDaoImpl implements ComputerDAO {
 
 	private static final String GET_BY_ID = "Select id,name,introduced,discontinued,company_id From computer Where id=? ";
-	private static final String GET_ALL = "Select id,name,introduced,discontinued,company_id from computer ";
+	private static final String GET_ALL = "Select id,name,introduced,discontinued,company_id from computer LIMIT ? OFFSET ?";
 	private static final String DELETE = "Delete from computer where id=? ";
 	private static final String UPDATE = "Update computer set name=?, introduced = ?, discontinued = ?, company_id=?  where id=?";
-	public final static String ATTRIBUTLIST[] = { "id", "name", "introduced", "discontinued", "company_id" };
+	public final static String ATTRIBUTLIST[] = {"id", "name", "introduced", "discontinued", "company_id" };
 	private final static String INSERT = "Insert into computer(name, introduced, discontinued, company_id) values(?,?,?,?)";
+	private static final String COUNT_QUERY = "SELECT COUNT(id) AS count FROM computer";
+	private static final String FIELD_COUNT="count";
 	private static ComputerDAO instance;
 	private CompanyDAO companyDao;
 	private DAOFactory daoFactory;
@@ -59,8 +61,6 @@ public class ComputerDaoImpl implements ComputerDAO {
 			pSt.execute();
 			log.info("computer added to database");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			log.error("computer not added to database");
 
 		}
@@ -79,12 +79,8 @@ public class ComputerDaoImpl implements ComputerDAO {
 			pSt.setLong(5, computer.getId());
 			pSt.execute();
 			log.info("computer updated");
-
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			log.error("computer not updated");
-
 		}
 	}
 
@@ -95,32 +91,27 @@ public class ComputerDaoImpl implements ComputerDAO {
 			pSt.setLong(1, computer.getId());
 			pSt.execute();
 			log.info("computer removed");
-
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			log.error("computer not updated");
-
 		}
 	}
 
 	@Override
-	public List<Computer> getAll() {
+	public List<Computer> getAll(int limit, int pageNumber) {
 		List<Computer> computers = new ArrayList<Computer>();
-
 		try (Connection connect = this.daoFactory.getConnection();
 				PreparedStatement pSt = connect.prepareStatement(GET_ALL);) {
+			pSt.setInt(1,limit);
+			pSt.setInt(2, pageNumber);
+			System.out.println(pSt);
 			ResultSet result = pSt.executeQuery();
 			while (result.next()) {
 				computers.add(mapResult(result));
 			}
 			log.info("computers found1");
-
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			log.error("computers not found");
-
 		}
 		return computers;
 	}
@@ -135,14 +126,26 @@ public class ComputerDaoImpl implements ComputerDAO {
 			result.next();
 			computer = mapResult(result);
 			log.info("computer found2");
-
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			log.info("computer not found");
-
 		}
 		return computer;
+	}
+	 public int getRowCount() 
+	 {
+	    int count = -1;
+	    try (Connection connect = this.daoFactory.getConnection();) {
+	      PreparedStatement statement = connect.prepareStatement(COUNT_QUERY);
+	      ResultSet resultSet = statement.executeQuery();
+	      while (resultSet.next()) {
+	        count = resultSet.getInt(FIELD_COUNT);
+	      }
+	    log.info("computer not found");
+
+	    } catch (SQLException e) {
+	    	log.error("cant count computer rows");
+		}
+	    return count;
 	}
 
 	private Computer mapResult(ResultSet res) throws SQLException {
@@ -155,7 +158,7 @@ public class ComputerDaoImpl implements ComputerDAO {
 		if (idCompany != 0) {
 			company = companyDao.getById(idCompany);
 		} else {
-			company = new Company(0, "null");
+			company = new Company(0, null);
 		}
 		return new Computer(id, name, introduced, discontinued, company);
 	}
@@ -174,7 +177,6 @@ public class ComputerDaoImpl implements ComputerDAO {
 			try {
 				dateReturn = new Timestamp(date.getTime());
 			} catch (Exception e) {
-				e.printStackTrace();
 				Menu.displayErrorDate("");
 			}
 		}
@@ -183,7 +185,7 @@ public class ComputerDaoImpl implements ComputerDAO {
 
 	@Override
 	public List<Computer> getByCompanyId(long id) {
-		// TODO Auto-generated method stub
 		return null;
 	}
+	
 }

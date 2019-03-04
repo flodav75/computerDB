@@ -109,29 +109,50 @@
         <div class="container text-center">
             <ul class="pagination">
                 <li>
-                    <a href="#" aria-label="Previous">
+                   <a href="Index?limit=${limit}&pageNumber=1" aria-label="Previous">
                       <span aria-hidden="true">&laquo;</span>
                   </a>
               </li>
-              <li><a href="#">1</a></li>
-              <li><a href="#">2</a></li>
-              <li><a href="#">3</a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
+               <c:choose>
+		         <c:when test = "${ pageNumber<3 }">
+				      <li><a href="Index?limit=${limit}&pageNumber=1">1</a></li>
+		              <li><a href="Index?limit=${limit}&pageNumber=2">2</a></li>
+		              <li><a href="Index?limit=${limit}&pageNumber=3">3</a></li>
+		              <li><a href="Index?limit=${limit}&pageNumber=4">4</a></li>
+		              <li><a href="Index?limit=${limit}&pageNumber=5">5</a></li>
+			      </c:when>
+			      <c:when test = "${ pageNumber>max-3 }">
+					  <li><a href="Index?limit=${limit}&pageNumber=${max-4}">${max-4}</a></li>
+		              <li><a href="Index?limit=${limit}&pageNumber=${max-3}">${max-3}</a></li>
+		              <li><a href="Index?limit=${limit}&pageNumber=${max-2}">${max-2}</a></li>
+		              <li><a href="Index?limit=${limit}&pageNumber=${max-1}">${max-1}</a></li>
+		              <li><a href="Index?limit=${limit}&pageNumber=${max} ">${max}</a></li>
+ 				   </c:when> 
+			       <c:otherwise> 
+				        <li><a href="Index?limit=${limit}&pageNumber=${pageNumber-2}">${pageNumber-2}</a></li>
+		              	<li><a href="Index?limit=${limit}&pageNumber=${pageNumber-1}">${pageNumber-1}</a></li>
+		              	<li><a href="Index?limit=${limit}&pageNumber=${pageNumber}">${pageNumber}</a></li>
+		              	<li><a href="Index?limit=${limit}&pageNumber=${pageNumber+1}">${pageNumber+1}</a></li>				
+		              	<li><a href="Index?limit=${limit}&pageNumber=${pageNumber+2}">${pageNumber+2}</a></li>      
+ 			        </c:otherwise> 
+
+	      		</c:choose>
 	              <li>
-	                <a href="#" aria-label="Next">
+	                <a href="Index?limit=${limit}&pageNumber=${max}" aria-label="Next">
 	                    <span aria-hidden="true">&raquo;</span>
 	                </a>
 	            </li>
         	</ul>
-	
 	        <div class="btn-group btn-group-sm pull-right" role="group" >
-	            <button type="button" class="btn btn-default">10</button>
-	            <button type="button" class="btn btn-default">50</button>
-	            <button type="button" class="btn btn-default">100</button>
+	           <c:set var="pageSizeValues">10,20,50,100</c:set>
+        		<c:forTokens items="${pageSizeValues}" var="pageSizeValue" delims=",">
+	           		 <a role="button" type="button" class="btn btn-default" href="http://localhost:8080/ComputerDatabase/Index?limit=${pageSizeValue}&pageNumber=${pageNumber}">
+	            	${pageSizeValue}
+	            	</a>
+			</c:forTokens>
 	        </div>
+			
         </div>
-
     </footer>
 <script src="ressources/static/js/jquery.min.js"></script>
 <script src="ressources/static/js/bootstrap.min.js"></script>

@@ -43,7 +43,6 @@
                                     <c:forEach items="${companies}" var="company" varStatus="status">
                                         <option value="${company.getId()}">${company.getName()}</option>
                                     </c:forEach>
-
                                 </select>
                             </div>                  
                         </fieldset>
