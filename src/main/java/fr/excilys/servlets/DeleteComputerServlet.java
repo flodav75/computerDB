@@ -1,7 +1,6 @@
 package fr.excilys.servlets;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -9,6 +8,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fr.excilys.exceptions.CompanyDAOException;
+import fr.excilys.exceptions.ComputerDAOException;
 import fr.excilys.model.Computer;
 import fr.excilys.service.ComputerService;
 import fr.excilys.service.ComputerServiceImpl;
@@ -20,6 +24,7 @@ import fr.excilys.service.ComputerServiceImpl;
 public class DeleteComputerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private ComputerService computerSer;
+	private Logger log;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -31,6 +36,7 @@ public class DeleteComputerServlet extends HttpServlet {
 
 	public void init() throws ServletException {
 		this.computerSer = ComputerServiceImpl.getInstance();
+		this.log = LoggerFactory.getLogger(getClass());
 	}
 
 	/**
@@ -53,9 +59,15 @@ public class DeleteComputerServlet extends HttpServlet {
 				}
 				// TODO Auto-generated method stub
 			}
-		} catch (SQLException | NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (NumberFormatException e) {
+			this.log.error("error typing name");
+			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
+		} catch (CompanyDAOException e) {
+			this.log.error("error company request");
+			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
+		} catch (ComputerDAOException e) {
+			this.log.error("error computer request");
+			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
 		}
 	}
 
@@ -70,7 +82,7 @@ public class DeleteComputerServlet extends HttpServlet {
 		System.out.println(idComputers);
 	}
 
-	private void removeComputer(long id) throws SQLException {
+	private void removeComputer(long id) throws CompanyDAOException, ComputerDAOException {
 		Computer comp = null;
 		comp = getComputer(id);
 		if (comp != null) {
@@ -78,7 +90,7 @@ public class DeleteComputerServlet extends HttpServlet {
 		}
 	}
 
-	private Computer getComputer(long id) throws SQLException {
+	private Computer getComputer(long id) throws CompanyDAOException, ComputerDAOException {
 		Computer comp = null;
 		comp = this.computerSer.getById(id);
 		return comp;

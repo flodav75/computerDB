@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
+import fr.excilys.exceptions.CompanyDAOException;
+import fr.excilys.exceptions.ComputerDAOException;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
 import fr.excilys.model.ECommandeLine;
@@ -58,18 +60,24 @@ public class Controller {
 			case ALLCOMPUTERS:
 				try {
 					Menu.displayListComputers(getListComputers());
-				} catch (SQLException e) {
+				}catch (CompanyDAOException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
-					Menu.displayConnectionErrorDB();
+				} catch (ComputerDAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
+				
 				break;
 			case ALLCOMPANIES:
+				
 				try {
 					Menu.displayListCompanies(getListCompanies());
-				} catch (SQLException e) {
-					e.printStackTrace();
-					Menu.displayConnectionErrorDB();
+				} catch (CompanyDAOException e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
 				}
+				
 				break;
 			case DETAILS:
 				Menu.displayComputer(askAndGetComputer());
@@ -87,14 +95,15 @@ public class Controller {
 				break;
 			case REMOVE:
 
-				try {
 					Computer comp = askAndGetComputer();
+				try {
 					deleteComputer(comp);
-					Menu.displayDeleteComputer(comp);
-				} catch (SQLException e) {
+				} catch (ComputerDAOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+					Menu.displayDeleteComputer(comp);
+				
 
 				break;
 			case EXIT:
@@ -109,25 +118,25 @@ public class Controller {
 		}
 	}
 
-	private List<Computer> getListComputers() throws SQLException {
+	private List<Computer> getListComputers() throws CompanyDAOException, ComputerDAOException  {
 		List<Computer> computers = null;
 		computers = this.computerSer.getAll(10,1);
 		return computers;
 	}
 
-	private List<Company> getListCompanies() throws SQLException {
+	private List<Company> getListCompanies() throws CompanyDAOException {
 		List<Company> companies = null;
 		companies = this.companySer.getAll();
 		return companies;
 	}
 
-	private Computer getComputer(long id) throws SQLException {
+	private Computer getComputer(long id) throws CompanyDAOException, ComputerDAOException{
 		Computer computer = null;
 		computer = this.computerSer.getById(id);
 		return computer;
 	}
 
-	private void deleteComputer(Computer comp) throws SQLException {
+	private void deleteComputer(Computer comp) throws ComputerDAOException {
 		this.computerSer.remove(comp);
 	}
 
@@ -258,9 +267,15 @@ public class Controller {
 			long id = Long.parseLong(idString);
 			comp = getComputer(id);
 
-		} catch (NumberFormatException | SQLException e) {
+		} catch (NumberFormatException  e) {
 			// Logger fzef= LoggerFactory.getLogger(getClass());
 			Menu.displayInputErrorId(idString);
+		} catch (CompanyDAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ComputerDAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		return comp;
 	}

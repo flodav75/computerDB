@@ -14,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.excilys.dtos.ComputerDTO;
+import fr.excilys.exceptions.CompanyDAOException;
+import fr.excilys.exceptions.ComputerDAOException;
 import fr.excilys.exceptions.ComputerNameException;
 import fr.excilys.exceptions.DateFormatException;
 import fr.excilys.mappers.ComputerMapper;
@@ -39,53 +41,64 @@ public class AddComputerServlet extends HttpServlet {
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List<Company> companies = null;
-		companies = getCompanies();
+		try {
+			companies = getCompanies();
+		} catch (CompanyDAOException e) {
+			this.log.error("error adding computer");
+			request.getServletContext().getRequestDispatcher("/Index").forward(request,response);
+		}
 		request.setAttribute("companies", companies);
 		request.getServletContext().getRequestDispatcher("/WEB-INF/views/addComputer.jsp").forward(request,response);
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		Computer computer;
+		try {
+			computer = getComputerForm(request, response);
+			if (computer != null) {
+				// System.out.println(computer.toString());
+
 				try {
-					computer = getComputerForm(request, response);
-					if (computer != null) {
-						// System.out.println(computer.toString());
+					computerSer.add(computer);
+				} catch (ComputerDAOException e) {
+					this.log.error("error adding computer");
+					request.getServletContext().getRequestDispatcher("/Index").forward(request,response);
+				}
+				request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
+			} else {
+				this.log.error("error non gérer");
 
-						computerSer.add(computer);
-						request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
-					} else {
-						this.log.error("error non gérer");
-
-						request.getServletContext().getRequestDispatcher("/Index").forward(request,response);
-					}
-				} catch (NumberFormatException e) {
-					this.log.error("error typing id");
-					request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
+				request.getServletContext().getRequestDispatcher("/Index").forward(request,response);
+			}
+		} catch (NumberFormatException e) {
+			this.log.error("error typing id");
+			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
  
 				} catch (ParseException e) {
 					this.log.error("error date format");
-					request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
-					// TODO Auto-generated catch block
-				} catch (ComputerNameException e) {
-					this.log.error("error name");
-					request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
-					// TODO Auto-generated catch block
-				} catch (DateFormatException e) {
-					this.log.error("error date not logical");
-					request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
-				}
-			
-		
+			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
+			// TODO Auto-generated catch block
+		} catch (ComputerNameException e) {
+			this.log.error("error name");
+			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
+			// TODO Auto-generated catch block
+		} catch (DateFormatException e) {
+			this.log.error("error date not logical");
+			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
+		} catch (CompanyDAOException e1) {
+			this.log.error("error adding company");
+			request.getServletContext().getRequestDispatcher("/Index").forward(request,response);
+		}
 	}
 
-	private List<Company> getCompanies()  {
+	private List<Company> getCompanies() throws CompanyDAOException  {
 		List<Company> companies = null;
 		companies = this.compaSer.getAll();
 		return companies;
 	}
 
 	private Computer getComputerForm(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-			IOException, ParseException, NumberFormatException,  ComputerNameException, DateFormatException {
+			IOException, ParseException, NumberFormatException,  ComputerNameException, DateFormatException, CompanyDAOException {
 		Computer computer = null;
 		String name = request.getParameter("name");
 		String introduced = request.getParameter("introduced");

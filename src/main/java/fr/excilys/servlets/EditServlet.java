@@ -1,7 +1,6 @@
 package fr.excilys.servlets;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -13,6 +12,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import fr.excilys.exceptions.CompanyDAOException;
+import fr.excilys.exceptions.ComputerDAOException;
 import fr.excilys.exceptions.ComputerNameException;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
@@ -47,10 +48,12 @@ public class EditServlet extends HttpServlet {
 				request.setAttribute("companies", companies);
 				request.getServletContext().getRequestDispatcher("/WEB-INF/views/editComputer.jsp").forward(request,
 						response);
-			} catch (SQLException e) {
-
-				e.printStackTrace();
+			} catch (CompanyDAOException e) {
 				request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
+				e.printStackTrace();
+			} catch (ComputerDAOException e) {
+				request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
+				e.printStackTrace();
 			}
 		} else {
 			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
@@ -68,8 +71,12 @@ public class EditServlet extends HttpServlet {
 			} else {
 				request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
 			}
-		} catch (SQLException | ParseException | ComputerNameException e) {
-			e.printStackTrace();
+		} catch (NumberFormatException | ParseException | ComputerNameException e) {
+			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
+		} catch (ComputerDAOException e) {
+			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
+
+		} catch (CompanyDAOException e) {
 			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
 		}
 	}
@@ -82,20 +89,20 @@ public class EditServlet extends HttpServlet {
 		return id;
 	}
 
-	private List<Company> getCompanies() throws SQLException {
+	private List<Company> getCompanies() throws CompanyDAOException {
 		List<Company> companies = null;
 		companies = this.compaSer.getAll();
 		return companies;
 	}
 
-	private Computer getComputer(long id) throws SQLException {
+	private Computer getComputer(long id) throws CompanyDAOException, ComputerDAOException {
 		Computer computer = null;
 		computer = this.computerSer.getById(id);
 		return computer;
 	}
 
 	private Computer getComputerForm(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-			IOException, ParseException, NumberFormatException, SQLException, ComputerNameException {
+			IOException, ParseException, NumberFormatException, ComputerNameException, CompanyDAOException {
 		Computer computer = null;
 		Long idComputer = Long.valueOf(request.getParameter("idComputer"));
 		String name = request.getParameter("name");
@@ -120,7 +127,7 @@ public class EditServlet extends HttpServlet {
 		return dateReturn;
 	}
 
-	private Company getCompany(long id) throws SQLException {
+	private Company getCompany(long id) throws CompanyDAOException {
 		Company company = null;
 		company = this.compaSer.getById(id);
 		return company;

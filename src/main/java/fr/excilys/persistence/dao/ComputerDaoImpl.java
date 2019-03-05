@@ -12,6 +12,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.excilys.exceptions.CompanyDAOException;
+import fr.excilys.exceptions.ComputerDAOException;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
 import fr.excilys.ui.Menu;
@@ -45,7 +47,7 @@ public class ComputerDaoImpl implements ComputerDAO {
 	}
 
 	@Override
-	public void add(Computer computer) {
+	public void add(Computer computer) throws ComputerDAOException {
 		Long idCompany = null;
 		;
 		try (Connection connect = this.daoFactory.getConnection();
@@ -62,12 +64,13 @@ public class ComputerDaoImpl implements ComputerDAO {
 			log.info("computer added to database");
 		} catch (SQLException e) {
 			log.error("computer not added to database");
+			throw new ComputerDAOException();
 
 		}
 	}
 
 	@Override
-	public void update(Computer computer) {
+	public void update(Computer computer) throws ComputerDAOException {
 
 		try (Connection connect = this.daoFactory.getConnection();
 				PreparedStatement pSt = connect.prepareStatement(UPDATE)) {
@@ -81,11 +84,13 @@ public class ComputerDaoImpl implements ComputerDAO {
 			log.info("computer updated");
 		} catch (SQLException e) {
 			log.error("computer not updated");
+			throw new ComputerDAOException();
+
 		}
 	}
 
 	@Override
-	public void remove(Computer computer) {
+	public void remove(Computer computer) throws ComputerDAOException {
 		try (Connection connect = this.daoFactory.getConnection();
 				PreparedStatement pSt = connect.prepareStatement(DELETE);) {
 			pSt.setLong(1, computer.getId());
@@ -93,11 +98,13 @@ public class ComputerDaoImpl implements ComputerDAO {
 			log.info("computer removed");
 		} catch (SQLException e) {
 			log.error("computer not updated");
+			throw new ComputerDAOException();
+
 		}
 	}
 
 	@Override
-	public List<Computer> getAll(int limit, int pageNumber) {
+	public List<Computer> getAll(int limit, int pageNumber) throws CompanyDAOException, ComputerDAOException {
 		List<Computer> computers = new ArrayList<Computer>();
 		try (Connection connect = this.daoFactory.getConnection();
 				PreparedStatement pSt = connect.prepareStatement(GET_ALL);) {
@@ -110,14 +117,15 @@ public class ComputerDaoImpl implements ComputerDAO {
 			}
 			log.info("computers found1");
 		} catch (SQLException e) {
-			e.printStackTrace();
 			log.error("computers not found");
+			throw new ComputerDAOException();
+
 		}
 		return computers;
 	}
 
 	@Override
-	public Computer getById(long id) {
+	public Computer getById(long id) throws CompanyDAOException, ComputerDAOException  {
 		Computer computer = new Computer();
 		try (Connection connect = this.daoFactory.getConnection();
 				PreparedStatement pSt = connect.prepareStatement(GET_BY_ID);) {
@@ -128,6 +136,7 @@ public class ComputerDaoImpl implements ComputerDAO {
 			log.info("computer found2");
 		} catch (SQLException e) {
 			log.info("computer not found");
+			throw new ComputerDAOException();
 		}
 		return computer;
 	}
@@ -148,7 +157,7 @@ public class ComputerDaoImpl implements ComputerDAO {
 	    return count;
 	}
 
-	private Computer mapResult(ResultSet res) throws SQLException {
+	private Computer mapResult(ResultSet res) throws SQLException, CompanyDAOException {
 		long id = res.getLong("id");
 		Company company = null;
 		String name = res.getString("name");

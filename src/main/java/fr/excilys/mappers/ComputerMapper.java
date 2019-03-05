@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import fr.excilys.dtos.ComputerDTO;
+import fr.excilys.exceptions.CompanyDAOException;
 import fr.excilys.exceptions.ComputerNameException;
 import fr.excilys.exceptions.DateFormatException;
 import fr.excilys.mappers.validations.ValidationComputerDTO;
@@ -21,7 +22,7 @@ public class ComputerMapper {
 	public ComputerMapper() {
 		this.companyServ = CompanyServiceImpl.getInstance();
 	}
-	public Computer getComputerFromDTO(ComputerDTO compDt) throws ParseException, NumberFormatException, ComputerNameException, DateFormatException {
+	public Computer getComputerFromDTO(ComputerDTO compDt) throws ParseException, NumberFormatException, ComputerNameException, DateFormatException, CompanyDAOException {
 		Computer comp = null;
 		Long id = null;
 		ValidationComputerDTO.validate(compDt);
@@ -40,7 +41,7 @@ public class ComputerMapper {
 
 	
 
-	public Company getCompanyFromDTO(ComputerDTO compDt) throws  NumberFormatException {
+	public Company getCompanyFromDTO(ComputerDTO compDt) throws  NumberFormatException, CompanyDAOException {
 		Company company = null;
 		String name = compDt.getCompanyName();
 		String idcompany = compDt.getCompanyId();
@@ -64,7 +65,7 @@ public class ComputerMapper {
 	}
 
 //private
-	private Company getCompanyById(String id) throws  NumberFormatException {
+	private Company getCompanyById(String id) throws  NumberFormatException, CompanyDAOException {
 		Company company = null;
 		if (id != null && !id.isEmpty()) {
 			long idLong = Long.parseLong(id);

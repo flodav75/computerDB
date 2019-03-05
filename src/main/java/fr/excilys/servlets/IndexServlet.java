@@ -14,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.excilys.dtos.ComputerDTO;
+import fr.excilys.exceptions.CompanyDAOException;
+import fr.excilys.exceptions.ComputerDAOException;
 import fr.excilys.exceptions.ComputerNameException;
 import fr.excilys.mappers.ComputerDtoMapper;
 import fr.excilys.model.Computer;
@@ -23,18 +25,16 @@ import fr.excilys.service.ComputerServiceImpl;
 @WebServlet("/Index")
 public class IndexServlet extends HttpServlet {
 
+	
+	private final static Integer LIMIT_DEFAULT=10;
+	private final static Integer OFFSET_DEFAULT=1;
+	private final static Integer []LIMIT_VALID= {10,20,50,100};
+	private static final long serialVersionUID = 1L;
 	private ComputerService computerSer;
 	private Logger log;
 	private Integer limit;
 	private Integer offset;
-	private final static Integer LIMIT_DEFAULT=10;
-	private final static Integer OFFSET_DEFAULT=1;
-	private final static Integer []LIMIT_VALID= {10,20,50,100};
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-
+	
 	public void init() throws ServletException {
 		computerSer = ComputerServiceImpl.getInstance();
 		this.log = LoggerFactory.getLogger(AddComputerServlet.class);
@@ -72,14 +72,21 @@ public class IndexServlet extends HttpServlet {
 		}catch (NumberFormatException e) {
 		this.log.error("error name");
 		request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,response);
-	}
+		} catch (CompanyDAOException e) {
+			this.log.error("error company");
+			request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,response);			
+		} catch (ComputerDAOException e) {
+			this.log.error("error computer");
+			request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,response);
+		}
+			
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}
 
-	private List<ComputerDTO> getAllComputers() throws ComputerNameException {
+	private List<ComputerDTO> getAllComputers() throws ComputerNameException, CompanyDAOException, ComputerDAOException {
 		List<ComputerDTO> computersReturn = new ArrayList<>();
 		List<Computer> computerToConvert = new ArrayList<>();
 		ComputerDtoMapper mapperDTO = null;
@@ -132,7 +139,7 @@ public class IndexServlet extends HttpServlet {
 	private static int getPageNumberMax(int rows,int limit) {
 		return (int) Math.ceil((1.0*rows)/limit);
 	}
-	
+	//TODO mettre dans un validator
 	private void valideLimit(int limit) throws NumberFormatException{
 		boolean isValide = false;
 		for(int i=0;i<LIMIT_VALID.length;i++) {
@@ -144,22 +151,11 @@ public class IndexServlet extends HttpServlet {
 			throw new NumberFormatException();
 		}
 	}
+	
 	private void validePage(int page,int pageMax) throws NumberFormatException{
 		if(page>pageMax || page<1) {
 			throw new NumberFormatException();
 		}
 	}
-
-//	private void sendAttributePagination(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//		if(limit == null) {
-//			limit =10;
-//		}
-//		request.setAttribute("limit", limit);
-//
-//		if(offset == null) {
-//			offset = 1;		
-//		}
-//		request.setAttribute("offset", offset);
-//	}
 	
 }

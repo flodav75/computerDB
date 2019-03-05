@@ -10,6 +10,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.excilys.exceptions.CompanyDAOException;
 import fr.excilys.model.Company;
 
 public class CompanyDaoImpl implements CompanyDAO {
@@ -35,7 +36,7 @@ public class CompanyDaoImpl implements CompanyDAO {
 	}
 
 	@Override
-	public List<Company> getAll() {
+	public List<Company> getAll() throws CompanyDAOException {
 		List<Company> companies = new ArrayList<Company>();
 
 		try (Connection connect = this.daoFactory.getConnection();
@@ -48,15 +49,14 @@ public class CompanyDaoImpl implements CompanyDAO {
 			}
 			log.info("companies found");
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			log.error("companes not finded");
+			throw new  CompanyDAOException();
 
 		}
 		return companies;
 	}
 
-	public Company getById(long id) {
+	public Company getById(long id) throws CompanyDAOException {
 		Company companyReturn = null;
 		try (Connection connect = this.daoFactory.getConnection();
 				PreparedStatement preparedStatement = connect.prepareStatement(SELECT_BY_ID);) {
@@ -67,8 +67,8 @@ public class CompanyDaoImpl implements CompanyDAO {
 			//log.info("company found");
 
 		} catch (SQLException e) {
-			e.printStackTrace();
-			//log.error("company not found");
+			log.error("company not found");
+			throw new  CompanyDAOException();
 
 		}
 		return companyReturn;
