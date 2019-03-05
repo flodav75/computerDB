@@ -25,16 +25,15 @@ import fr.excilys.service.ComputerServiceImpl;
 @WebServlet("/Index")
 public class IndexServlet extends HttpServlet {
 
-	
-	private final static Integer LIMIT_DEFAULT=10;
-	private final static Integer OFFSET_DEFAULT=1;
-	private final static Integer []LIMIT_VALID= {10,20,50,100};
+	private final static Integer LIMIT_DEFAULT = 10;
+	private final static Integer OFFSET_DEFAULT = 1;
+	private final static Integer[] LIMIT_VALID = { 10, 20, 50, 100 };
 	private static final long serialVersionUID = 1L;
 	private ComputerService computerSer;
 	private Logger log;
 	private Integer limit;
 	private Integer offset;
-	
+
 	public void init() throws ServletException {
 		computerSer = ComputerServiceImpl.getInstance();
 		this.log = LoggerFactory.getLogger(AddComputerServlet.class);
@@ -43,14 +42,14 @@ public class IndexServlet extends HttpServlet {
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List<ComputerDTO> computers = new ArrayList<>();
-		Integer currentpage=null;
+		Integer currentpage = null;
 		try {
-			limit = getPagination(request.getParameter("limit"),LIMIT_DEFAULT);
-			currentpage = getPagination(request.getParameter("pageNumber"),OFFSET_DEFAULT);
+			limit = getPagination(request.getParameter("limit"), LIMIT_DEFAULT);
+			currentpage = getPagination(request.getParameter("pageNumber"), OFFSET_DEFAULT);
 			valideLimit(limit);
-			this.offset = (currentpage-1) *this.limit;
+			this.offset = (currentpage - 1) * this.limit;
 			int nbrRow = getMaxPage();
-			int maxPage = getPageNumberMax(nbrRow,limit);
+			int maxPage = getPageNumberMax(nbrRow, limit);
 			validePage(currentpage, maxPage);
 			computers = getAllComputers();
 			if (!computers.isEmpty()) {
@@ -60,38 +59,46 @@ public class IndexServlet extends HttpServlet {
 				request.setAttribute("count", computers.size());
 				request.setAttribute("limit", limit);
 				request.setAttribute("pageNumber", currentpage);
-				request.setAttribute("max",maxPage);
-				request.getServletContext().getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request,response);
+				request.setAttribute("max", maxPage);
+				request.setAttribute("nbComputer", nbrRow);
+				request.getServletContext().getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request,
+						response);
 			} else {
 				this.log.error("error");
-				request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,response);
+				request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,
+						response);
 			}
 		} catch (ComputerNameException e) {
 			this.log.error("error name");
-			request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,response);
-		}catch (NumberFormatException e) {
-		this.log.error("error name");
-		request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,response);
+			request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,
+					response);
+		} catch (NumberFormatException e) {
+			this.log.error("error name");
+			request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,
+					response);
 		} catch (CompanyDAOException e) {
 			this.log.error("error company");
-			request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,response);			
+			request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,
+					response);
 		} catch (ComputerDAOException e) {
 			this.log.error("error computer");
-			request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,response);
+			request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,
+					response);
 		}
-			
+
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		doGet(request, response);
 	}
 
-	private List<ComputerDTO> getAllComputers() throws ComputerNameException, CompanyDAOException, ComputerDAOException {
+	private List<ComputerDTO> getAllComputers()
+			throws ComputerNameException, CompanyDAOException, ComputerDAOException {
 		List<ComputerDTO> computersReturn = new ArrayList<>();
 		List<Computer> computerToConvert = new ArrayList<>();
 		ComputerDtoMapper mapperDTO = null;
 
-		computerToConvert = computerSer.getAll(this.limit,this.offset);
+		computerToConvert = computerSer.getAll(this.limit, this.offset);
 		if (computerToConvert != null && !computerToConvert.isEmpty()) {
 			mapperDTO = new ComputerDtoMapper();
 			for (Computer comp : computerToConvert) {
@@ -100,23 +107,23 @@ public class IndexServlet extends HttpServlet {
 		}
 		return computersReturn;
 	}
-	
+
 	public Integer getMaxPage() {
 		Integer returnPageMax = null;
 		returnPageMax = this.computerSer.getCountRow();
 		return returnPageMax;
 	}
-	
-	public Integer getPagination(String value,int defaultValue) {
+
+	public Integer getPagination(String value, int defaultValue) {
 		Integer returnValue = null;
-		if(isNotNullorEmpty(value)&& valideInt(value)){
+		if (isNotNullorEmpty(value) && valideInt(value)) {
 			returnValue = Integer.parseInt(value);
-		}else {
+		} else {
 			returnValue = defaultValue;
 		}
-		 return returnValue;
+		return returnValue;
 	}
-	
+
 	public static boolean isNotNullorEmpty(String value) {
 		boolean isNull = false;
 		if (value != null && !value.isEmpty()) {
@@ -124,38 +131,39 @@ public class IndexServlet extends HttpServlet {
 		}
 		return isNull;
 	}
-	
+
 	private boolean valideInt(String value) {
 		boolean isValide = false;
 		try {
 			Integer.parseInt(value);
 			isValide = true;
 			return isValide;
-		}catch(NumberFormatException e) {
+		} catch (NumberFormatException e) {
 			return isValide;
-		}	
+		}
 	}
-	
-	private static int getPageNumberMax(int rows,int limit) {
-		return (int) Math.ceil((1.0*rows)/limit);
+
+	private static int getPageNumberMax(int rows, int limit) {
+		return (int) Math.ceil((1.0 * rows) / limit);
 	}
-	//TODO mettre dans un validator
-	private void valideLimit(int limit) throws NumberFormatException{
+
+	// TODO mettre dans un validator
+	private void valideLimit(int limit) throws NumberFormatException {
 		boolean isValide = false;
-		for(int i=0;i<LIMIT_VALID.length;i++) {
-			if(LIMIT_VALID[i].equals(limit)) {
+		for (int i = 0; i < LIMIT_VALID.length; i++) {
+			if (LIMIT_VALID[i].equals(limit)) {
 				isValide = true;
 			}
 		}
-		if(!isValide) {
+		if (!isValide) {
 			throw new NumberFormatException();
 		}
 	}
-	
-	private void validePage(int page,int pageMax) throws NumberFormatException{
-		if(page>pageMax || page<1) {
+
+	private void validePage(int page, int pageMax) throws NumberFormatException {
+		if (page > pageMax || page < 1) {
 			throw new NumberFormatException();
 		}
 	}
-	
+
 }

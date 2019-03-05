@@ -2,8 +2,8 @@ package fr.excilys.servlets;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -17,6 +17,7 @@ import fr.excilys.exceptions.ComputerDAOException;
 import fr.excilys.exceptions.ComputerNameException;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
+import fr.excilys.model.Computer.ComputerBuilder;
 import fr.excilys.service.CompanyService;
 import fr.excilys.service.CompanyServiceImpl;
 import fr.excilys.service.ComputerService;
@@ -57,7 +58,6 @@ public class EditServlet extends HttpServlet {
 			}
 		} else {
 			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
-
 		}
 	}
 
@@ -103,29 +103,41 @@ public class EditServlet extends HttpServlet {
 
 	private Computer getComputerForm(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			IOException, ParseException, NumberFormatException, ComputerNameException, CompanyDAOException {
-		Computer computer = null;
+		ComputerBuilder computerBuilder = new ComputerBuilder();
 		Long idComputer = Long.valueOf(request.getParameter("idComputer"));
 		String name = request.getParameter("name");
 		if (name != null && name.isEmpty()) {
 			throw new ComputerNameException();
 		}
-		Date introduced = formatDate(request.getParameter("introduced"));
-		Date discontinued = formatDate(request.getParameter("discontinued"));
+		LocalDate introduced = convertToDate(request.getParameter("introduced"));
+		LocalDate discontinued = convertToDate(request.getParameter("discontinued"));
 		Company company = getCompany(Long.valueOf(request.getParameter("companyId")));
-		computer = new Computer(idComputer, name, introduced, discontinued, company);
-
-		return computer;
+		computerBuilder.setId(idComputer);
+		computerBuilder.setName(name);
+		computerBuilder.setIntroduced(introduced);
+		computerBuilder.setDiscontinued(discontinued);
+		computerBuilder.setCompany(company);
+		return computerBuilder.build();
 	}
 
-	private Date formatDate(String date) throws ParseException {
-		Date dateReturn = null;
+	public LocalDate convertToDate(String date) {
+		LocalDate formattedString = null;
 		if (date != null && !date.isEmpty()) {
-			String newDate = date + " 00:00:00";
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-			dateReturn = dateFormat.parse(newDate);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			formattedString = LocalDate.parse(date, formatter);
 		}
-		return dateReturn;
+		return formattedString;
 	}
+
+//	private Date formatDate(String date) throws ParseException {
+//		Date dateReturn = null;
+//		if (date != null && !date.isEmpty()) {
+//			String newDate = date + " 00:00:00";
+//			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+//			dateReturn = dateFormat.parse(newDate);
+//		}
+//		return dateReturn;
+//	}
 
 	private Company getCompany(long id) throws CompanyDAOException {
 		Company company = null;

@@ -37,7 +37,7 @@ public class ComputerDtoMappertest {
 	public void mapperDTO1() throws ComputerNameException {
 		long id=1;
 		String name= "blabal";
-		this.computer = new Computer(id,name,this.introduced,this.discontinued,this.company);
+		//this.computer = new Computer(id,name,this.introduced,this.discontinued,this.company);
 		ComputerDTO compDtoGood = new ComputerDTO("1",name,"1995-11-01","1995-11-02","4","pineapple");
 		this.mapper=new ComputerDtoMapper();
 		ComputerDTO compTested = this.mapper.ComputerDtoFromComputer(this.computer);
@@ -49,7 +49,7 @@ public class ComputerDtoMappertest {
 	public void mapperDTO2() throws ComputerNameException {
 		long id=1;
 		String name= "blabal";
-		this.computer = new Computer(id,name,null,null,null);
+		//this.computer = new Computer(id,name,null,null,null);
 		ComputerDTO compDtoGood = new ComputerDTO("1",name,null,null,null,null);
 		this.mapper=new ComputerDtoMapper();
 		ComputerDTO compTested = this.mapper.ComputerDtoFromComputer(this.computer);
@@ -59,7 +59,7 @@ public class ComputerDtoMappertest {
 	@Test(expected=ComputerNameException.class)
 	public void mapperDTO3() throws ComputerNameException {
 		long id=1;
-		this.computer = new Computer(id,"",null,null,null);
+		//this.computer = new Computer(id,"",null,null,null);
 		this.mapper=new ComputerDtoMapper();
 		this.mapper.ComputerDtoFromComputer(this.computer);
 	}
@@ -67,7 +67,7 @@ public class ComputerDtoMappertest {
 	@Test(expected=ComputerNameException.class)
 	public void mapperDTO4() throws ComputerNameException {
 		long id=1;
-		this.computer = new Computer(id,null,null,null,null);
+		///this.computer = new Computer(id,null,null,null,null);
 		this.mapper=new ComputerDtoMapper();
 		this.mapper.ComputerDtoFromComputer(this.computer);
 	}

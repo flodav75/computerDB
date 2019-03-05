@@ -23,11 +23,11 @@
         <div class="container">
             <h1 id="homeTitle">
 	            <c:choose>
-		         <c:when test = "${count == null || count==0 }">
+		         <c:when test = "${nbComputer == null || nbComputer==0 }">
 		                        <p> No computer found </p>
 		         </c:when>
 		         <c:otherwise>
-		             <p><c:out value="${count}"></c:out> Computers found</p> 
+		             <p><c:out value="${nbComputer}"></c:out> Computers found</p> 
 		         </c:otherwise>
 	      		</c:choose>
             </h1>
@@ -151,7 +151,6 @@
 	            	</a>
 			</c:forTokens>
 	        </div>
-			
         </div>
     </footer>
 <script src="ressources/static/js/jquery.min.js"></script>

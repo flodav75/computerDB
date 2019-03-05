@@ -5,8 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -16,7 +16,7 @@ import fr.excilys.exceptions.CompanyDAOException;
 import fr.excilys.exceptions.ComputerDAOException;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
-import fr.excilys.ui.Menu;
+import fr.excilys.model.Computer.ComputerBuilder;
 
 public class ComputerDaoImpl implements ComputerDAO {
 
@@ -24,10 +24,10 @@ public class ComputerDaoImpl implements ComputerDAO {
 	private static final String GET_ALL = "Select id,name,introduced,discontinued,company_id from computer LIMIT ? OFFSET ?";
 	private static final String DELETE = "Delete from computer where id=? ";
 	private static final String UPDATE = "Update computer set name=?, introduced = ?, discontinued = ?, company_id=?  where id=?";
-	public final static String ATTRIBUTLIST[] = {"id", "name", "introduced", "discontinued", "company_id" };
+	public final static String ATTRIBUTLIST[] = { "id", "name", "introduced", "discontinued", "company_id" };
 	private final static String INSERT = "Insert into computer(name, introduced, discontinued, company_id) values(?,?,?,?)";
 	private static final String COUNT_QUERY = "SELECT COUNT(id) AS count FROM computer";
-	private static final String FIELD_COUNT="count";
+	private static final String FIELD_COUNT = "count";
 	private static ComputerDAO instance;
 	private CompanyDAO companyDao;
 	private DAOFactory daoFactory;
@@ -53,8 +53,8 @@ public class ComputerDaoImpl implements ComputerDAO {
 		try (Connection connect = this.daoFactory.getConnection();
 				PreparedStatement pSt = connect.prepareStatement(INSERT);) {
 			pSt.setString(1, computer.getName());
-			pSt.setTimestamp(2, convertToTimesTamp(computer.getIntroduced()));
-			pSt.setTimestamp(3, convertToTimesTamp(computer.getDiscontinued()));
+			pSt.setObject(2, computer.getIntroduced());
+			pSt.setObject(3, computer.getDiscontinued());
 
 			if (computer.getCompany() != null) {
 				idCompany = computer.getCompany().getId();
@@ -75,8 +75,8 @@ public class ComputerDaoImpl implements ComputerDAO {
 		try (Connection connect = this.daoFactory.getConnection();
 				PreparedStatement pSt = connect.prepareStatement(UPDATE)) {
 			pSt.setString(1, computer.getName());
-			pSt.setTimestamp(2, convertToTimesTamp(computer.getIntroduced()));
-			pSt.setTimestamp(3, convertToTimesTamp(computer.getDiscontinued()));
+			pSt.setObject(2, computer.getIntroduced());
+			pSt.setObject(3, computer.getDiscontinued());
 
 			pSt.setLong(4, computer.getCompany().getId());
 			pSt.setLong(5, computer.getId());
@@ -108,7 +108,7 @@ public class ComputerDaoImpl implements ComputerDAO {
 		List<Computer> computers = new ArrayList<Computer>();
 		try (Connection connect = this.daoFactory.getConnection();
 				PreparedStatement pSt = connect.prepareStatement(GET_ALL);) {
-			pSt.setInt(1,limit);
+			pSt.setInt(1, limit);
 			pSt.setInt(2, pageNumber);
 			System.out.println(pSt);
 			ResultSet result = pSt.executeQuery();
@@ -125,8 +125,8 @@ public class ComputerDaoImpl implements ComputerDAO {
 	}
 
 	@Override
-	public Computer getById(long id) throws CompanyDAOException, ComputerDAOException  {
-		Computer computer = new Computer();
+	public Computer getById(long id) throws CompanyDAOException, ComputerDAOException {
+		Computer computer = null;
 		try (Connection connect = this.daoFactory.getConnection();
 				PreparedStatement pSt = connect.prepareStatement(GET_BY_ID);) {
 			pSt.setLong(1, id);
@@ -140,61 +140,65 @@ public class ComputerDaoImpl implements ComputerDAO {
 		}
 		return computer;
 	}
-	 public int getRowCount() 
-	 {
-	    int count = -1;
-	    try (Connection connect = this.daoFactory.getConnection();) {
-	      PreparedStatement statement = connect.prepareStatement(COUNT_QUERY);
-	      ResultSet resultSet = statement.executeQuery();
-	      while (resultSet.next()) {
-	        count = resultSet.getInt(FIELD_COUNT);
-	      }
-	    log.info("computer not found");
 
-	    } catch (SQLException e) {
-	    	log.error("cant count computer rows");
+	public int getRowCount() {
+		int count = -1;
+		try (Connection connect = this.daoFactory.getConnection();) {
+			PreparedStatement statement = connect.prepareStatement(COUNT_QUERY);
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				count = resultSet.getInt(FIELD_COUNT);
+			}
+			log.info("computer not found");
+
+		} catch (SQLException e) {
+			log.error("cant count computer rows");
 		}
-	    return count;
+		return count;
 	}
 
 	private Computer mapResult(ResultSet res) throws SQLException, CompanyDAOException {
-		long id = res.getLong("id");
+		ComputerBuilder compBuild = new ComputerBuilder();
 		Company company = null;
+		long id = res.getLong("id");
 		String name = res.getString("name");
-		Date introduced = convertToDate(res.getTimestamp("introduced"));
-		Date discontinued = convertToDate(res.getTimestamp("discontinued"));
+		LocalDate introduced = convertToDate(res.getTimestamp("introduced"));
+		LocalDate discontinued = convertToDate(res.getTimestamp("discontinued"));
 		long idCompany = res.getLong("company_id");
 		if (idCompany != 0) {
 			company = companyDao.getById(idCompany);
 		} else {
 			company = new Company(0, null);
+
 		}
-		return new Computer(id, name, introduced, discontinued, company);
+		compBuild.setId(id);
+		compBuild.setName(name);
+		compBuild.setIntroduced(introduced);
+		compBuild.setDiscontinued(discontinued);
+		compBuild.setCompany(company);
+		return compBuild.build();
 	}
 
-	public Date convertToDate(Timestamp timeStamp) {
-		Date returnDate = null;
+	public LocalDate convertToDate(Timestamp timeStamp) {
+		LocalDate localDate = null;
 		if (timeStamp != null) {
-			returnDate = new Date(timeStamp.getTime());
+			localDate = timeStamp.toLocalDateTime().toLocalDate();
 		}
-		return returnDate;
-	}
-
-	private Timestamp convertToTimesTamp(Date date) {
-		Timestamp dateReturn = null;
-		if (date != null) {
-			try {
-				dateReturn = new Timestamp(date.getTime());
-			} catch (Exception e) {
-				Menu.displayErrorDate("");
-			}
-		}
-		return dateReturn;
+		return localDate;
 	}
 
 	@Override
 	public List<Computer> getByCompanyId(long id) {
 		return null;
 	}
-	
+//
+//	public LocalDate convertToDate(String date) {
+//		LocalDate formattedString = null;
+//		if (date != null && !date.isEmpty()) {
+//			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//			formattedString = LocalDate.parse(date, formatter);
+//		}
+//		return formattedString;
+//	}
+
 }

@@ -45,10 +45,10 @@ public class AddComputerServlet extends HttpServlet {
 			companies = getCompanies();
 		} catch (CompanyDAOException e) {
 			this.log.error("error adding computer");
-			request.getServletContext().getRequestDispatcher("/Index").forward(request,response);
+			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
 		}
 		request.setAttribute("companies", companies);
-		request.getServletContext().getRequestDispatcher("/WEB-INF/views/addComputer.jsp").forward(request,response);
+		request.getServletContext().getRequestDispatcher("/WEB-INF/views/addComputer.jsp").forward(request, response);
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -62,20 +62,20 @@ public class AddComputerServlet extends HttpServlet {
 					computerSer.add(computer);
 				} catch (ComputerDAOException e) {
 					this.log.error("error adding computer");
-					request.getServletContext().getRequestDispatcher("/Index").forward(request,response);
+					request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
 				}
 				request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
 			} else {
 				this.log.error("error non gérer");
 
-				request.getServletContext().getRequestDispatcher("/Index").forward(request,response);
+				request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
 			}
 		} catch (NumberFormatException e) {
 			this.log.error("error typing id");
 			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
- 
-				} catch (ParseException e) {
-					this.log.error("error date format");
+
+		} catch (ParseException e) {
+			this.log.error("error date format");
 			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
 			// TODO Auto-generated catch block
 		} catch (ComputerNameException e) {
@@ -87,24 +87,25 @@ public class AddComputerServlet extends HttpServlet {
 			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
 		} catch (CompanyDAOException e1) {
 			this.log.error("error adding company");
-			request.getServletContext().getRequestDispatcher("/Index").forward(request,response);
+			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
 		}
 	}
 
-	private List<Company> getCompanies() throws CompanyDAOException  {
+	private List<Company> getCompanies() throws CompanyDAOException {
 		List<Company> companies = null;
 		companies = this.compaSer.getAll();
 		return companies;
 	}
 
-	private Computer getComputerForm(HttpServletRequest request, HttpServletResponse response) throws ServletException,
-			IOException, ParseException, NumberFormatException,  ComputerNameException, DateFormatException, CompanyDAOException {
+	private Computer getComputerForm(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException, ParseException, NumberFormatException, ComputerNameException,
+			DateFormatException, CompanyDAOException {
 		Computer computer = null;
 		String name = request.getParameter("name");
 		String introduced = request.getParameter("introduced");
 		String discontinued = request.getParameter("discontinued");
 		String idCompany = request.getParameter("companyId");
-		ComputerDTO compDTO = new ComputerDTO(null,name,introduced,discontinued,idCompany,"");
+		ComputerDTO compDTO = new ComputerDTO(null, name, introduced, discontinued, idCompany, "");
 		ComputerMapper compMap = new ComputerMapper();
 		computer = compMap.getComputerFromDTO(compDTO);
 		return computer;

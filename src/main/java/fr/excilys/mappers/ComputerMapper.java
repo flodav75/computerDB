@@ -1,8 +1,8 @@
 package fr.excilys.mappers;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import fr.excilys.dtos.ComputerDTO;
 import fr.excilys.exceptions.CompanyDAOException;
@@ -11,19 +11,20 @@ import fr.excilys.exceptions.DateFormatException;
 import fr.excilys.mappers.validations.ValidationComputerDTO;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
+import fr.excilys.model.Computer.ComputerBuilder;
 import fr.excilys.service.CompanyService;
 import fr.excilys.service.CompanyServiceImpl;
 
 public class ComputerMapper {
 
-	
 	private CompanyService companyServ;
 
 	public ComputerMapper() {
 		this.companyServ = CompanyServiceImpl.getInstance();
 	}
-	public Computer getComputerFromDTO(ComputerDTO compDt) throws ParseException, NumberFormatException, ComputerNameException, DateFormatException, CompanyDAOException {
-		Computer comp = null;
+
+	public Computer getComputerFromDTO(ComputerDTO compDt) throws ParseException, NumberFormatException,
+			ComputerNameException, DateFormatException, CompanyDAOException {
 		Long id = null;
 		ValidationComputerDTO.validate(compDt);
 		if (compDt.getId() != null && !"".equals(compDt.getId())) {
@@ -32,16 +33,19 @@ public class ComputerMapper {
 			id = 0L;
 		}
 		String name = compDt.getComputerName();
-		Date introduced = formatDate(compDt.getIntroduced());
-		Date discontinued = formatDate(compDt.getDiscontinued());
+		LocalDate introduced = convertToDate(compDt.getIntroduced());
+		LocalDate discontinued = convertToDate(compDt.getDiscontinued());
 		Company company = getCompanyFromDTO(compDt);
-		comp = new Computer(id, name, introduced, discontinued, company);
-		return comp;
+		ComputerBuilder computerBuilder = new ComputerBuilder();
+		computerBuilder.setId(id);
+		computerBuilder.setName(name);
+		computerBuilder.setIntroduced(introduced);
+		computerBuilder.setDiscontinued(discontinued);
+		computerBuilder.setCompany(company);
+		return computerBuilder.build();
 	}
 
-	
-
-	public Company getCompanyFromDTO(ComputerDTO compDt) throws  NumberFormatException, CompanyDAOException {
+	public Company getCompanyFromDTO(ComputerDTO compDt) throws NumberFormatException, CompanyDAOException {
 		Company company = null;
 		String name = compDt.getCompanyName();
 		String idcompany = compDt.getCompanyId();
@@ -55,17 +59,18 @@ public class ComputerMapper {
 		}
 		return company;
 	}
-	private Date formatDate(String date) throws ParseException {
-		Date dateReturn = null;
+
+	public LocalDate convertToDate(String date) {
+		LocalDate formattedString = null;
 		if (date != null && !date.isEmpty()) {
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-			dateReturn = dateFormat.parse(date);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			formattedString = LocalDate.parse(date, formatter);
 		}
-		return dateReturn;
+		return formattedString;
 	}
 
 //private
-	private Company getCompanyById(String id) throws  NumberFormatException, CompanyDAOException {
+	private Company getCompanyById(String id) throws NumberFormatException, CompanyDAOException {
 		Company company = null;
 		if (id != null && !id.isEmpty()) {
 			long idLong = Long.parseLong(id);
@@ -73,6 +78,5 @@ public class ComputerMapper {
 		}
 		return company;
 	}
-
 
 }

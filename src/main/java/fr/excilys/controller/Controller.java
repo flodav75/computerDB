@@ -1,6 +1,5 @@
 package fr.excilys.controller;
 
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,7 +35,7 @@ public class Controller {
 		this.companySer = CompanyServiceImpl.getInstance();
 		start();
 	}
- 
+
 	public static Controller getInstance() {
 		if (instance == null) {
 			instance = new Controller();
@@ -46,38 +45,38 @@ public class Controller {
 
 	private void start() {
 		while (this.isRunning) {
-			
+
 			Menu.displayMenu();
 			checkUserRequest(readValue());
 		}
 	}
 
 	private void checkUserRequest(String userRequest) {
-	
+
 		String userValueUpper = userRequest.toUpperCase();
 		if (GOOD_COMMAND_LINE.contains(userValueUpper)) {
 			switch (ECommandeLine.valueOf(userValueUpper)) {
 			case ALLCOMPUTERS:
 				try {
 					Menu.displayListComputers(getListComputers());
-				}catch (CompanyDAOException e) {
+				} catch (CompanyDAOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ComputerDAOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				
+
 				break;
 			case ALLCOMPANIES:
-				
+
 				try {
 					Menu.displayListCompanies(getListCompanies());
 				} catch (CompanyDAOException e2) {
 					// TODO Auto-generated catch block
 					e2.printStackTrace();
 				}
-				
+
 				break;
 			case DETAILS:
 				Menu.displayComputer(askAndGetComputer());
@@ -95,15 +94,14 @@ public class Controller {
 				break;
 			case REMOVE:
 
-					Computer comp = askAndGetComputer();
+				Computer comp = askAndGetComputer();
 				try {
 					deleteComputer(comp);
 				} catch (ComputerDAOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-					Menu.displayDeleteComputer(comp);
-				
+				Menu.displayDeleteComputer(comp);
 
 				break;
 			case EXIT:
@@ -118,9 +116,9 @@ public class Controller {
 		}
 	}
 
-	private List<Computer> getListComputers() throws CompanyDAOException, ComputerDAOException  {
+	private List<Computer> getListComputers() throws CompanyDAOException, ComputerDAOException {
 		List<Computer> computers = null;
-		computers = this.computerSer.getAll(10,1);
+		computers = this.computerSer.getAll(10, 1);
 		return computers;
 	}
 
@@ -130,7 +128,7 @@ public class Controller {
 		return companies;
 	}
 
-	private Computer getComputer(long id) throws CompanyDAOException, ComputerDAOException{
+	private Computer getComputer(long id) throws CompanyDAOException, ComputerDAOException {
 		Computer computer = null;
 		computer = this.computerSer.getById(id);
 		return computer;
@@ -151,7 +149,7 @@ public class Controller {
 		String tabAttribut[] = ComputerDaoImpl.ATTRIBUTLIST;
 		String valueUser = null;
 		List<String> computerValues = new ArrayList<String>();
-		//Stream<String> st = computerValues.stream();
+		// Stream<String> st = computerValues.stream();
 		for (int i = 1; i < tabAttribut.length; i++) {
 			Menu.displayComputerAttribut(tabAttribut[i]);
 			valueUser = readValue();
@@ -161,10 +159,10 @@ public class Controller {
 			String name = getUserValueCleanName(computerValues.get(0));
 			Date introduced = getUserValueCleanDate(computerValues.get(1));
 			Date discontinued = getUserValueCleanDate(computerValues.get(2));
-			Company company= createCompany(computerValues.get(3));
-		
-			this.computerSer.add(new Computer(DEFAULTID, name, introduced, discontinued,company ));
-			
+			Company company = createCompany(computerValues.get(3));
+
+			this.computerSer.add(new Computer(DEFAULTID, name, introduced, discontinued, company));
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			Menu.displayInputCreate();
@@ -174,8 +172,8 @@ public class Controller {
 
 	private Company createCompany(String idCompany) {
 		Company company = null;
-		if(getUserValueCleanId(idCompany) != null) {
-			company= new Company(getUserValueCleanId(idCompany));
+		if (getUserValueCleanId(idCompany) != null) {
+			company = new Company(getUserValueCleanId(idCompany));
 		}
 		return company;
 	}
@@ -184,12 +182,12 @@ public class Controller {
 		Date userValueReturn = null;
 		if (!isNullValue(userValue)) {
 			userValueReturn = formatDate(userValue);
-		} 
+		}
 		return userValueReturn;
 	}
 
 	private Long getUserValueCleanId(String userValue) {
-		Long userValueReturn =null;
+		Long userValueReturn = null;
 		if (!isNullValue(userValue)) {
 			userValueReturn = Long.parseLong(userValue);
 		}
@@ -218,7 +216,7 @@ public class Controller {
 		String tabAttribut[] = ComputerDaoImpl.ATTRIBUTLIST;
 		String valueUser = null;
 		List<String> computerValues = new ArrayList<>();
-		if(comp != null) {
+		if (comp != null) {
 			Menu.displayComputer(comp);
 			for (int i = 1; i < tabAttribut.length; i++) {
 				Menu.displayComputerAttribut(tabAttribut[i]);
@@ -231,16 +229,15 @@ public class Controller {
 				comp.setDiscontinued(getUserValueCleanDate(computerValues.get(2)));
 				comp.setCompany(new Company(getUserValueCleanId(computerValues.get(3))));
 				this.computerSer.update(comp);
-				
+
 			} catch (Exception e) {
 				e.printStackTrace();
 				Menu.displayInputCreate();
 			}
-		}else {
+		} else {
 			throw new Exception();
 
 		}
-		
 
 	}
 
@@ -267,7 +264,7 @@ public class Controller {
 			long id = Long.parseLong(idString);
 			comp = getComputer(id);
 
-		} catch (NumberFormatException  e) {
+		} catch (NumberFormatException e) {
 			// Logger fzef= LoggerFactory.getLogger(getClass());
 			Menu.displayInputErrorId(idString);
 		} catch (CompanyDAOException e) {
