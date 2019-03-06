@@ -17,12 +17,10 @@ public class CompanyDaoImpl implements CompanyDAO {
 
 	private static final String SELECT_BY_ID = "Select id,name from company where id=?";
 	private static final String GET_ALL = "Select id,name from company";
-	private DAOFactory daoFactory;
 	private static CompanyDAO instance;
 	private Logger log;
 
 	private CompanyDaoImpl(DAOFactory daoFactory) {
-		this.daoFactory = daoFactory;
 		this.log = LoggerFactory.getLogger(CompanyDaoImpl.class);
 
 	}
@@ -39,7 +37,7 @@ public class CompanyDaoImpl implements CompanyDAO {
 	public List<Company> getAll() throws CompanyDAOException {
 		List<Company> companies = new ArrayList<Company>();
 
-		try (Connection connect = this.daoFactory.getConnection();
+		try (Connection connect = DAOFactory.getConnection();
 				PreparedStatement preparedStatement = connect.prepareStatement(GET_ALL);) {
 			ResultSet result = preparedStatement.executeQuery();
 			while (result.next()) {
@@ -50,7 +48,7 @@ public class CompanyDaoImpl implements CompanyDAO {
 			log.info("companies found");
 		} catch (SQLException e) {
 			log.error("companes not finded");
-			throw new  CompanyDAOException();
+			throw new CompanyDAOException();
 
 		}
 		return companies;
@@ -58,17 +56,17 @@ public class CompanyDaoImpl implements CompanyDAO {
 
 	public Company getById(long id) throws CompanyDAOException {
 		Company companyReturn = null;
-		try (Connection connect = this.daoFactory.getConnection();
+
+		try (Connection connect = DAOFactory.getConnection();
 				PreparedStatement preparedStatement = connect.prepareStatement(SELECT_BY_ID);) {
 			preparedStatement.setLong(1, id);
 			ResultSet result = preparedStatement.executeQuery();
 			result.next();
 			companyReturn = mapResult(result);
-			//log.info("company found");
 
 		} catch (SQLException e) {
 			log.error("company not found");
-			throw new  CompanyDAOException();
+			throw new CompanyDAOException();
 
 		}
 		return companyReturn;
@@ -76,7 +74,6 @@ public class CompanyDaoImpl implements CompanyDAO {
 
 	public static Company mapResult(ResultSet res) throws SQLException {
 		Company comp = null;
-		// System.out.println(res.getObject("id"));
 		long id = (long) res.getObject("id");
 		String nom = res.getString("name");
 		comp = new Company(id, nom);

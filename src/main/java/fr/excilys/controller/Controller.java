@@ -1,9 +1,9 @@
 package fr.excilys.controller;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -11,6 +11,7 @@ import fr.excilys.exceptions.CompanyDAOException;
 import fr.excilys.exceptions.ComputerDAOException;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
+import fr.excilys.model.Computer.ComputerBuilder;
 import fr.excilys.model.ECommandeLine;
 import fr.excilys.persistence.dao.ComputerDaoImpl;
 import fr.excilys.service.CompanyService;
@@ -157,11 +158,17 @@ public class Controller {
 		}
 		try {
 			String name = getUserValueCleanName(computerValues.get(0));
-			Date introduced = getUserValueCleanDate(computerValues.get(1));
-			Date discontinued = getUserValueCleanDate(computerValues.get(2));
+			LocalDate introduced = getUserValueCleanDate(computerValues.get(1));
+			LocalDate discontinued = getUserValueCleanDate(computerValues.get(2));
 			Company company = createCompany(computerValues.get(3));
+			ComputerBuilder compBuilder = new ComputerBuilder();
+			compBuilder.setId(DEFAULTID);
+			compBuilder.setName(name);
+			compBuilder.setIntroduced(introduced);
+			compBuilder.setDiscontinued(discontinued);
+			compBuilder.setCompany(company);
 
-			this.computerSer.add(new Computer(DEFAULTID, name, introduced, discontinued, company));
+			this.computerSer.add(compBuilder.build());
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -178,8 +185,8 @@ public class Controller {
 		return company;
 	}
 
-	private Date getUserValueCleanDate(String userValue) {
-		Date userValueReturn = null;
+	private LocalDate getUserValueCleanDate(String userValue) {
+		LocalDate userValueReturn = null;
 		if (!isNullValue(userValue)) {
 			userValueReturn = formatDate(userValue);
 		}
@@ -241,18 +248,26 @@ public class Controller {
 
 	}
 
-	private Date formatDate(String date) {
-		Date dateReturn = null;
+	public LocalDate convertToDate(String date) {
+		LocalDate formattedString = null;
+		if (date != null && !date.isEmpty()) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			formattedString = LocalDate.parse(date, formatter);
+		}
+		return formattedString;
+	}
+
+	private LocalDate formatDate(String date) {
+		LocalDate formattedString = null;
 		try {
-			String newDate = date + " 00:00:00";
-			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-			dateReturn = dateFormat.parse(newDate);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			formattedString = LocalDate.parse(date, formatter);
 
 		} catch (Exception e) {
 			e.printStackTrace();
 			Menu.displayErrorDate(date);
 		}
-		return dateReturn;
+		return formattedString;
 	}
 
 	public Computer askAndGetComputer() {

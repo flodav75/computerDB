@@ -62,8 +62,14 @@ public class ComputerServiceImpl implements ComputerService {
 	}
 
 	@Override
-	public int getCountRow() {
+	public int getCountRow() throws ComputerDAOException {
 		return this.computerDao.getRowCount();
+	}
+
+	@Override
+	public List<Computer> getByName(String name)throws ComputerDAOException  {
+		
+		return this.computerDao.getByName(name);
 	}
 
 }

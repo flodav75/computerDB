@@ -34,7 +34,6 @@ public class ComputerDaoImpl implements ComputerDAO {
 	private Logger log;
 
 	private ComputerDaoImpl(DAOFactory daoFactory) {
-		this.daoFactory = daoFactory;
 		this.companyDao = this.daoFactory.getCompanyDAO();
 		log = LoggerFactory.getLogger(ComputerDAO.class);
 	}
@@ -50,7 +49,7 @@ public class ComputerDaoImpl implements ComputerDAO {
 	public void add(Computer computer) throws ComputerDAOException {
 		Long idCompany = null;
 		;
-		try (Connection connect = this.daoFactory.getConnection();
+		try (Connection connect = DAOFactory.getConnection();
 				PreparedStatement pSt = connect.prepareStatement(INSERT);) {
 			pSt.setString(1, computer.getName());
 			pSt.setObject(2, computer.getIntroduced());
@@ -72,12 +71,11 @@ public class ComputerDaoImpl implements ComputerDAO {
 	@Override
 	public void update(Computer computer) throws ComputerDAOException {
 
-		try (Connection connect = this.daoFactory.getConnection();
+		try (Connection connect = DAOFactory.getConnection();
 				PreparedStatement pSt = connect.prepareStatement(UPDATE)) {
 			pSt.setString(1, computer.getName());
 			pSt.setObject(2, computer.getIntroduced());
 			pSt.setObject(3, computer.getDiscontinued());
-
 			pSt.setLong(4, computer.getCompany().getId());
 			pSt.setLong(5, computer.getId());
 			pSt.execute();
@@ -85,13 +83,12 @@ public class ComputerDaoImpl implements ComputerDAO {
 		} catch (SQLException e) {
 			log.error("computer not updated");
 			throw new ComputerDAOException();
-
 		}
 	}
 
 	@Override
 	public void remove(Computer computer) throws ComputerDAOException {
-		try (Connection connect = this.daoFactory.getConnection();
+		try (Connection connect = DAOFactory.getConnection();
 				PreparedStatement pSt = connect.prepareStatement(DELETE);) {
 			pSt.setLong(1, computer.getId());
 			pSt.execute();
@@ -106,7 +103,7 @@ public class ComputerDaoImpl implements ComputerDAO {
 	@Override
 	public List<Computer> getAll(int limit, int pageNumber) throws CompanyDAOException, ComputerDAOException {
 		List<Computer> computers = new ArrayList<Computer>();
-		try (Connection connect = this.daoFactory.getConnection();
+		try (Connection connect = DAOFactory.getConnection();
 				PreparedStatement pSt = connect.prepareStatement(GET_ALL);) {
 			pSt.setInt(1, limit);
 			pSt.setInt(2, pageNumber);
@@ -115,7 +112,7 @@ public class ComputerDaoImpl implements ComputerDAO {
 			while (result.next()) {
 				computers.add(mapResult(result));
 			}
-			log.info("computers found1");
+			log.info("computers found");
 		} catch (SQLException e) {
 			log.error("computers not found");
 			throw new ComputerDAOException();
@@ -127,13 +124,13 @@ public class ComputerDaoImpl implements ComputerDAO {
 	@Override
 	public Computer getById(long id) throws CompanyDAOException, ComputerDAOException {
 		Computer computer = null;
-		try (Connection connect = this.daoFactory.getConnection();
+		try (Connection connect = DAOFactory.getConnection();
 				PreparedStatement pSt = connect.prepareStatement(GET_BY_ID);) {
 			pSt.setLong(1, id);
 			ResultSet result = pSt.executeQuery();
 			result.next();
 			computer = mapResult(result);
-			log.info("computer found2");
+			log.info("computer found");
 		} catch (SQLException e) {
 			log.info("computer not found");
 			throw new ComputerDAOException();
@@ -141,18 +138,18 @@ public class ComputerDaoImpl implements ComputerDAO {
 		return computer;
 	}
 
-	public int getRowCount() {
+	public int getRowCount() throws ComputerDAOException {
 		int count = -1;
-		try (Connection connect = this.daoFactory.getConnection();) {
-			PreparedStatement statement = connect.prepareStatement(COUNT_QUERY);
+		try (Connection connect = DAOFactory.getConnection(); 
+				PreparedStatement statement = connect.prepareStatement(COUNT_QUERY);){
 			ResultSet resultSet = statement.executeQuery();
 			while (resultSet.next()) {
 				count = resultSet.getInt(FIELD_COUNT);
 			}
-			log.info("computer not found");
-
+			log.info("computer count well");
 		} catch (SQLException e) {
 			log.error("cant count computer rows");
+			throw new ComputerDAOException();
 		}
 		return count;
 	}
@@ -191,14 +188,10 @@ public class ComputerDaoImpl implements ComputerDAO {
 	public List<Computer> getByCompanyId(long id) {
 		return null;
 	}
-//
-//	public LocalDate convertToDate(String date) {
-//		LocalDate formattedString = null;
-//		if (date != null && !date.isEmpty()) {
-//			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//			formattedString = LocalDate.parse(date, formatter);
-//		}
-//		return formattedString;
-//	}
+
+	@Override
+	public List<Computer> getByName(String name) {
+		return null;
+	}
 
 }

@@ -13,9 +13,17 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <slf4j.version>1.6.4</slf4j.version>
-        <logback.version>1.0.1</logback.version>
+    	<maven.compiler.target>1.8</maven.compiler.target>
+    	<tomcat.version>2.2</tomcat.version>
+    	<maven.plugin.version>3.0.0</maven.plugin.version>
+    	<slf4j.version>1.7.25</slf4j.version>
+    	<junit.version>4.12</junit.version>
+    	<mysql.version>8.0.15</mysql.version>
+    	<hikaricp.version>2.6.1</hikaricp.version>
+    	<servlet.version>4.0.1</servlet.version>
+    	<jslt.version>1.2</jslt.version>
+        <logback.version>1.2.3</logback.version>
+        <powermock.version>1.7.4</powermock.version>
         <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
   </properties>
   <build>
@@ -23,7 +31,7 @@
   <plugin>
         <groupId>org.apache.tomcat.maven</groupId>
         <artifactId>tomcat7-maven-plugin</artifactId>
-        <version>2.2</version>
+        <version>${tomcat.version}</version>
         <configuration>
         <path>/ComputerDB</path>
 		<port>8080</port>
@@ -35,7 +43,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>${maven.plugin.version}</version>
                     <executions>
                         <execution>
                             <id>validate</id>
@@ -54,56 +62,62 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <version>${junit.version}</version>
       <scope>test</scope>
    </dependency>
 <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
 <dependency>
     <groupId>org.slf4j</groupId>
     <artifactId>slf4j-api</artifactId>
-    <version>1.7.25</version>
+    <version>${slf4j.version}</version>
 </dependency>
     <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 <dependency>
     <groupId>mysql</groupId>
     <artifactId>mysql-connector-java</artifactId>
-    <version>8.0.15</version>
+    <version>${mysql.version}</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/com.zaxxer/HikariCP -->
+<dependency>
+    <groupId>com.zaxxer</groupId>
+    <artifactId>HikariCP</artifactId>
+    <version>${hikaricp.version}</version>
 </dependency>
 
 <dependency>
     <groupId>javax.servlet</groupId>
     <artifactId>javax.servlet-api</artifactId>
-    <version>4.0.1</version>
+    <version>${servlet.version}</version>
     <scope>provided</scope>
 </dependency>
 <dependency>
     <groupId>javax.servlet</groupId>
     <artifactId>jstl</artifactId>
-    <version>1.2</version>
+    <version>${jslt.version}</version>
 </dependency>
 <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
 <dependency>
     <groupId>ch.qos.logback</groupId>
     <artifactId>logback-classic</artifactId>
-    <version>1.2.3</version>
+    <version>${logback.version}</version>
 </dependency>
 <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-core -->
 <dependency>
     <groupId>ch.qos.logback</groupId>
     <artifactId>logback-core</artifactId>
-    <version>1.2.3</version>
+    <version>${logback.version}</version>
 </dependency>
 
  <dependency>
     <groupId>org.powermock</groupId>
     <artifactId>powermock-module-junit4</artifactId>
-    <version>1.7.4</version>
+    <version>${powermock.version}</version>
 </dependency>
 
 <dependency>
     <groupId>org.powermock</groupId>
     <artifactId>powermock-api-mockito</artifactId>
-    <version>1.7.4</version>
+    <version>${powermock.version}</version>
 </dependency>
   </dependencies>
 </project>

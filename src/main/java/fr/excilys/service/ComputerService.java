@@ -13,5 +13,6 @@ public interface ComputerService {
 	List<Computer> getAll(int limit,int pos ) throws CompanyDAOException, ComputerDAOException;
 	Computer getById(long id) throws CompanyDAOException, ComputerDAOException;
 	List<Computer> getByCompanyId(long id);
-	int getCountRow();
+	int getCountRow() throws ComputerDAOException;
+	List<Computer> getByName(String name) throws ComputerDAOException;
 }

@@ -25,7 +25,6 @@ public class DeleteComputerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private ComputerService computerSer;
 	private Logger log;
-
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -45,27 +44,28 @@ public class DeleteComputerServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String idComputers = request.getParameter("selection");
-		try {
-			if (!idComputers.isEmpty()) {
-				String computers[] = idComputers.split(",");
-				Long id = null;
-				for (int i = 0; i < computers.length; i++) {
-					id = Long.parseLong(computers[i]);
-					removeComputer(id);
-					id = null;
-				}
-			}
-		} catch (NumberFormatException e) {
-			this.log.error("error typing name");
-			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
-		} catch (CompanyDAOException e) {
-			this.log.error("error company request");
-			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
-		} catch (ComputerDAOException e) {
-			this.log.error("error computer request");
-			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
-		}
+//		System.out.println("doGet");
+//		String idComputers = request.getParameter("selection");
+//		try {
+//			if (!idComputers.isEmpty()) {
+//				String computers[] = idComputers.split(",");
+//				Long id = null;
+//				for (int i = 0; i < computers.length; i++) {
+//					id = Long.parseLong(computers[i]);
+//					removeComputer(id);
+//					id = null;
+//				}
+//			}
+//		} catch (NumberFormatException e) {
+//			this.log.error("error typing name");
+//			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
+//		} catch (CompanyDAOException e) {
+//			this.log.error("error company request");
+//			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
+//		} catch (ComputerDAOException e) {
+//			this.log.error("error computer request");
+//			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
+//		}
 	}
 
 	/**
@@ -74,6 +74,7 @@ public class DeleteComputerServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
 		// TODO Auto-generated method stub
 		String idComputers = request.getParameter("selection");
 		String [] computers = idComputers.split(",");
@@ -81,15 +82,17 @@ public class DeleteComputerServlet extends HttpServlet {
 			try {
 				removeComputer(Long.parseLong(computers[i]));
 			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				this.log.error("error typing name");
+				request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
 			} catch (CompanyDAOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				this.log.error("error company request");
+				request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
 			} catch (ComputerDAOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				this.log.error("error computer request");
+				request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
 			}
+			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
+
 		}
 	}
 

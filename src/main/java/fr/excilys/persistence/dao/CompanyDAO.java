@@ -7,7 +7,8 @@ import fr.excilys.model.Company;
 
 public interface CompanyDAO {
 
-	List<Company>getAll() throws CompanyDAOException ;
+	List<Company> getAll() throws CompanyDAOException;
+
 	Company getById(long id) throws CompanyDAOException;
 
 }

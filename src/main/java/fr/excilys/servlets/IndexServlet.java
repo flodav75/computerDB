@@ -108,7 +108,7 @@ public class IndexServlet extends HttpServlet {
 		return computersReturn;
 	}
 
-	public Integer getMaxPage() {
+	public Integer getMaxPage() throws ComputerDAOException {
 		Integer returnPageMax = null;
 		returnPageMax = this.computerSer.getCountRow();
 		return returnPageMax;

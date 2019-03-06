@@ -1,55 +1,57 @@
 package fr.excilys.persistence.dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class DAOFactory {
-	
-	private static final String URL="jdbc:mysql://localhost:3306/computer-database-db";
-	private static final String DRIVER="com.mysql.cj.jdbc.Driver";
-	private static final String USERNAME="admincdb";
-	private static final String PASSWORD="qwerty1234"; 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
-	private String url;
-	private String userName;
-	private String password;
-	
+public class DAOFactory {
+	private static HikariConfig config = new HikariConfig(
+			Thread.currentThread().getContextClassLoader().getResource("").getPath() + "hikari.properties");
+	private static HikariDataSource ds = new HikariDataSource(config);
+	private static Connection connect;
+
+	private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
+
+
 	private static DAOFactory instance;
 
-	private DAOFactory(String url,String userName, String password){
-        this.url = url;
-        this.userName = userName;
-        this.password = password;
+	private DAOFactory() {
+		// config.setJdbcUrl(URL);
+		// config.setUsername(USERNAME);
+//		config.setPassword(PASSWORD);
+//		config.addDataSourceProperty("cachePrepStmts", "true");
+//		config.addDataSourceProperty("prepStmtCacheSize", "250");
+//		config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+//		ds = new HikariDataSource(config);
 	}
-	
+
 	public static DAOFactory getInstance() {
-		if(instance==null) {
-			try 
-	        {
-	            Class.forName(DRIVER);
-	        } 
-	        catch (ClassNotFoundException e) 
-	        {
-	        }
-			instance = new DAOFactory(URL,USERNAME,PASSWORD);
+		if (instance == null) {
+			try {
+				Class.forName(DRIVER);
+			} catch (ClassNotFoundException e) {
+			}
+			instance = new DAOFactory();
 		}
 		return instance;
 	}
-	
-	Connection getConnection() throws SQLException {
-		return DriverManager.getConnection(url,userName,password);
+
+	public static Connection getConnection() throws SQLException {
+		if (connect == null || connect.isClosed()) {
+			connect = ds.getConnection();
+		}
+		return connect;
+
 	}
-	
+
 	public ComputerDAO getComputerDAO() {
 		return ComputerDaoImpl.getInstance();
 	}
-	
+
 	public CompanyDAO getCompanyDAO() {
-		return  CompanyDaoImpl.getInstance();
+		return CompanyDaoImpl.getInstance();
 	}
 
-}	
-	
-
-
+}
