@@ -75,7 +75,6 @@ public class EditServlet extends HttpServlet {
 			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
 		} catch (ComputerDAOException e) {
 			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
-
 		} catch (CompanyDAOException e) {
 			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
 		}

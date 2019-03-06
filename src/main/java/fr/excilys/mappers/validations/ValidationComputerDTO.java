@@ -1,17 +1,18 @@
 package fr.excilys.mappers.validations;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 import fr.excilys.dtos.ComputerDTO;
 import fr.excilys.exceptions.ComputerNameException;
-import fr.excilys.exceptions.DateFormatException;
 
 public class ValidationComputerDTO {
 	private static final String[] BAD_NAME_VALUES = { "'", ";", ".", "*" };
 
 	public static void validate(ComputerDTO comptDTO)
-			throws ComputerNameException, ParseException, NumberFormatException, DateFormatException {
+			throws ComputerNameException, ParseException, NumberFormatException, DateTimeParseException {
 		valideId(comptDTO.getId());
 		valideName(comptDTO.getComputerName());
 		valideDate(comptDTO.getIntroduced());
@@ -28,24 +29,32 @@ public class ValidationComputerDTO {
 		return isNull;
 	}
 
-	private static void valideDate(String date) throws ParseException, DateFormatException {
+	private static void valideDate(String date) throws ParseException, DateTimeParseException {
 		if (!isNullorEmpty(date)) {
 			dateFormat(date);
 		}
 
 	}
 
-	private static void dateFormat(String dateString) throws ParseException, DateFormatException {
+	private static void dateFormat(String dateString) throws ParseException, DateTimeParseException {
 		String dateToTest = dateString;
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		dateFormat.parse(dateToTest);
-
-//		if(date.getYear()<=2036 && date.getYear()>=1950 && date.getDay()<=31 &&date.getDay()>=1 && date.getMonth()<=12 && date.getMonth()>=1 ) {
+		LocalDate localdate = convertToDate(dateString);
+//
+//		if(localdate.getYear()<=2036 && localdate.getYear()>=1950 && localdate.getDayOfWeek().getValue()<=31 &&localdate.getDayOfWeek().getValue()>=1 && localdate.getMonth().getValue()<=12 && localdate.getMonth().getValue()>=1 ) {
 //			
 //		}else {
 //			throw new  DateFormatException();
 //		}
 
+	}
+
+	private static  LocalDate convertToDate(String date) throws DateTimeParseException {
+		LocalDate formattedString = null;
+		if (date != null && !date.isEmpty()) {
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			formattedString = LocalDate.parse(date, formatter);
+		}
+		return formattedString;
 	}
 
 	private static void valideName(String name) throws ComputerNameException {

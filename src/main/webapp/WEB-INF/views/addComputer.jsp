@@ -26,7 +26,7 @@
                         <fieldset>
                             <div class="form-group">
                                 <label for="computerName">Computer name</label>
-                                <input type="text" class="form-control" name="name" id="computerName" required placeholder="Computer name">
+                                <input type="text" class="form-control" name="name" id="computerName"  placeholder="Computer name">
                             </div>
                             <div class="form-group">
                                 <label for="introduced">Introduced date</label>
@@ -56,5 +56,8 @@
             </div>
         </div>
     </section>
+    <script src="ressources/static/js/jquery.min.js"></script>
+    <script src="ressources/static/js/addComputer.js"></script>
+    
 </body>
 </html>

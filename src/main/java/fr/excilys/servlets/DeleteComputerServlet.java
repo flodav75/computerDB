@@ -48,16 +48,13 @@ public class DeleteComputerServlet extends HttpServlet {
 		String idComputers = request.getParameter("selection");
 		try {
 			if (!idComputers.isEmpty()) {
-
 				String computers[] = idComputers.split(",");
 				Long id = null;
 				for (int i = 0; i < computers.length; i++) {
 					id = Long.parseLong(computers[i]);
 					removeComputer(id);
 					id = null;
-
 				}
-				// TODO Auto-generated method stub
 			}
 		} catch (NumberFormatException e) {
 			this.log.error("error typing name");
@@ -79,7 +76,21 @@ public class DeleteComputerServlet extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String idComputers = request.getParameter("selection");
-		System.out.println(idComputers);
+		String [] computers = idComputers.split(",");
+		for(int i=0; i<computers.length;i++) {
+			try {
+				removeComputer(Long.parseLong(computers[i]));
+			} catch (NumberFormatException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (CompanyDAOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ComputerDAOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private void removeComputer(long id) throws CompanyDAOException, ComputerDAOException {
