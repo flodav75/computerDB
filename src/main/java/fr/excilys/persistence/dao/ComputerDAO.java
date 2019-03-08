@@ -12,9 +12,13 @@ public interface ComputerDAO {
 	void update(Computer computer) throws ComputerDAOException;
 	void remove(Computer computer) throws ComputerDAOException;
 	List<Computer> getAll(int limit,int pageNumber) throws CompanyDAOException, ComputerDAOException;
+	List<Computer> getAllByName(int limit,int pageNumber) throws CompanyDAOException, ComputerDAOException;
+
 	Computer getById(long id) throws CompanyDAOException, ComputerDAOException ;
 	List<Computer> getByCompanyId(long id);
 	int getRowCount() throws ComputerDAOException;
 	List<Computer> getByName(String name, int limit, int pos) throws CompanyDAOException, ComputerDAOException;
+	List<Computer> getByNameOrderBy(String name, int limit, int pos) throws CompanyDAOException, ComputerDAOException;
+
 	public int getRowCountSearch(String name) throws ComputerDAOException;
 }

@@ -77,6 +77,17 @@ public class ComputerServiceImpl implements ComputerService {
 	public int getRowCountSearch(String name) throws ComputerDAOException {
 		return this.computerDao.getRowCountSearch(name);
 	}
+
+	@Override
+	public List<Computer> getAllOrderByName(int limit, int pos) throws CompanyDAOException, ComputerDAOException {
+		return this.computerDao.getAllByName(limit, pos);
+	}
+
+	@Override
+	public List<Computer> getByNameOrderByName(String name, int limit, int pos)
+			throws ComputerDAOException, CompanyDAOException {
+		return this.computerDao.getByNameOrderBy(name, limit, pos);
+	}
 	
 	
 

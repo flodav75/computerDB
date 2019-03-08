@@ -9,7 +9,7 @@ import com.zaxxer.hikari.HikariDataSource;
 public class DAOFactory {
 	private static HikariConfig config = new HikariConfig(
 			Thread.currentThread().getContextClassLoader().getResource("").getPath() + "hikari.properties");
-	private static HikariDataSource ds = new HikariDataSource(config);
+	 static HikariDataSource ds = new HikariDataSource(config);
 
 	private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
 

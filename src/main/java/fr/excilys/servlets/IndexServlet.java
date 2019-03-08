@@ -33,25 +33,37 @@ public class IndexServlet extends HttpServlet {
 	private Logger log;
 	private Integer limit;
 	private Integer offset;
+	private String groupBy;
+	private boolean isGroupeByName=false;
 
+	@Override
 	public void init() throws ServletException {
+		this.groupBy="";
 		computerSer = ComputerServiceImpl.getInstance();
 		this.log = LoggerFactory.getLogger(IndexServlet.class);
-
+		this.log.debug(this.groupBy);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List<ComputerDTO> computersDTO = new ArrayList<>();
+		limit = getPagination(request.getParameter("limit"), LIMIT_DEFAULT);
+		isGroupeByName =false;
+		this.groupBy = request.getParameter("groupBy");
+		System.out.println(this.groupBy);
+		if(this.groupBy !=null && !this.groupBy.isEmpty()) {
+			System.out.println("true");
+			isGroupeByName =true;
+		}
 		Integer currentpage = null;
 		String nameToSearch = request.getParameter("search");
 		Integer nbrRow = null;
 		Integer maxPage = null;
 		try {
-			limit = getPagination(request.getParameter("limit"), LIMIT_DEFAULT);
+			//limit = getPagination(request.getParameter("limit"), LIMIT_DEFAULT);
 			currentpage = getPagination(request.getParameter("pageNumber"), OFFSET_DEFAULT);
 			valideLimit(limit);
 			this.offset = (currentpage - 1) * this.limit;
+			
 
 			if (nameToSearch == null || nameToSearch.isEmpty()) {
 				nbrRow = getMaxPage();
@@ -60,46 +72,40 @@ public class IndexServlet extends HttpServlet {
 				this.offset = (currentpage - 1) * this.limit;
 				computersDTO = getAllComputers();
 			} else {
-				ComputerDtoMapper computerDtoMapper = new ComputerDtoMapper();
-				List<Computer> computers = this.computerSer.getByName(nameToSearch, limit, this.offset);
-				for (Computer comp : computers) {
-					computersDTO.add(computerDtoMapper.ComputerDtoFromComputer(comp));
-				}
+				computersDTO =getSearch(nameToSearch);
 				this.offset = (currentpage - 1) * this.limit;
 				nbrRow = this.computerSer.getRowCountSearch(nameToSearch);
 				maxPage = getPageNumberMax(nbrRow, limit);
 				request.setAttribute("searchName", nameToSearch);
-				System.out.println("aaaaa"+maxPage);
 			}
-			System.out.println("aaaaa"+maxPage);
-//			if (!computersDTO.isEmpty()) {
-				request.setAttribute("computers", computersDTO);
-				request.setAttribute("count", computersDTO.size());
-				request.setAttribute("limit", this.limit);
-				request.setAttribute("pageNumber", currentpage);
-				request.setAttribute("max", maxPage);
-				request.setAttribute("nbComputer", nbrRow);
-				request.getServletContext().getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request,response);
+			request.setAttribute("groupBy", this.groupBy);
+			request.setAttribute("computers", computersDTO);
+			request.setAttribute("count", computersDTO.size());
+			request.setAttribute("limit", this.limit);
+			request.setAttribute("pageNumber", currentpage);
+			request.setAttribute("max", maxPage);
+			request.setAttribute("nbComputer", nbrRow);
+			request.getServletContext().getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request, response);
 //			} else {
 //				this.log.error("error");
 //				request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,
 //						response);
 //			}
 		} catch (ComputerNameException e) {
-			
+
 			this.log.error("error name");
-			this.log.debug(e.getMessage(),e);
+			this.log.debug(e.getMessage(), e);
 			request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,
 					response);
 		} catch (NumberFormatException e) {
 			this.log.error("error name");
-			this.log.debug(e.getMessage(),e);
+			this.log.debug(e.getMessage(), e);
 
 			request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,
 					response);
 		} catch (CompanyDAOException e) {
 			this.log.error("error company");
-			this.log.debug(e.getMessage(),e);
+			this.log.debug(e.getMessage(), e);
 
 			request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,
 					response);
@@ -121,8 +127,30 @@ public class IndexServlet extends HttpServlet {
 		List<ComputerDTO> computersReturn = new ArrayList<>();
 		List<Computer> computerToConvert = new ArrayList<>();
 		ComputerDtoMapper mapperDTO = null;
-
-		computerToConvert = computerSer.getAll(this.limit, this.offset);
+		if(isGroupeByName) {
+			computerToConvert = computerSer.getAllOrderByName(limit,this.offset);
+		}else {
+			computerToConvert = computerSer.getAll(this.limit, this.offset);
+		}
+		if (computerToConvert != null && !computerToConvert.isEmpty()) {
+			mapperDTO = new ComputerDtoMapper();
+			for (Computer comp : computerToConvert) {
+				computersReturn.add(mapperDTO.ComputerDtoFromComputer(comp));
+			}
+		}
+		return computersReturn;
+	}
+	
+	private List<ComputerDTO> getSearch(String name)
+			throws ComputerNameException, CompanyDAOException, ComputerDAOException {
+		List<ComputerDTO> computersReturn = new ArrayList<>();
+		List<Computer> computerToConvert = new ArrayList<>();
+		ComputerDtoMapper mapperDTO = null;
+		if(isGroupeByName) {
+			computerToConvert = computerSer.getByNameOrderByName(name,limit,this.offset);
+		}else {
+			computerToConvert = computerSer.getByName(name, limit, this.offset);
+		}
 		if (computerToConvert != null && !computerToConvert.isEmpty()) {
 			mapperDTO = new ComputerDtoMapper();
 			for (Computer comp : computerToConvert) {
@@ -188,7 +216,10 @@ public class IndexServlet extends HttpServlet {
 		if (page > pageMax || page < 1) {
 			throw new NumberFormatException();
 		}
+	
 	}
-
+	public void get(Long f) {
+		
+	}
 
 }

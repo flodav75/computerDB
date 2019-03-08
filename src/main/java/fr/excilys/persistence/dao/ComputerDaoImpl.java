@@ -21,9 +21,11 @@ import fr.excilys.model.Computer.ComputerBuilder;
 public class ComputerDaoImpl implements ComputerDAO {
 
 	private static final String GET_BY_ID = "Select id,name,introduced,discontinued,company_id From computer Where id=? ";
-	private static final String GET_ALL = "Select id,name,introduced,discontinued,company_id from computer LIMIT ? OFFSET ?";
-	private static final String GET_BY_NAME = "Select id,name,introduced,discontinued,company_id from computer where name like ? LIMIT ? OFFSET ?";
+	private static final String GET_ALL = "Select id,name,introduced,discontinued,company_id from computer  LIMIT ? OFFSET ?";
+	private static final String GET_ALL_ORDER_BY_NAME = "Select id,name,introduced,discontinued,company_id from computer ORDER BY name  LIMIT ? OFFSET ?";
 
+	private static final String GET_BY_NAME = "Select id,name,introduced,discontinued,company_id from computer where name like ?  LIMIT ? OFFSET ?";
+	private static final String GET_BY_NAME_ORDER_By_NAME = "Select id,name,introduced,discontinued,company_id from computer where name like ? ORDER BY name LIMIT ? OFFSET ?";
 	private static final String DELETE = "Delete from computer where id=? ";
 	private static final String UPDATE = "Update computer set name=?, introduced = ?, discontinued = ?, company_id=?  where id=?";
 	public final static String ATTRIBUTLIST[] = { "id", "name", "introduced", "discontinued", "company_id" };
@@ -239,6 +241,58 @@ public class ComputerDaoImpl implements ComputerDAO {
 			throw new ComputerDAOException();
 		}
 		
+		return computers;
+	}
+
+	@Override
+	public List<Computer> getByNameOrderBy(String name, int limit, int pos)
+			throws CompanyDAOException, ComputerDAOException {
+		List<Computer> computers = new ArrayList<Computer>();
+		
+		try (Connection connect = DAOFactory.getConnection();
+				PreparedStatement pSt = connect.prepareStatement(GET_BY_NAME_ORDER_By_NAME);) {
+			String value="%"+name+"%";
+			pSt.setString(1, value);
+			pSt.setInt(2, limit);
+			pSt.setInt(3, pos);
+			System.out.println(pSt);
+			ResultSet result = pSt.executeQuery();
+			while (result.next()) {
+				System.out.println(mapResult(result));
+				computers.add(mapResult(result));
+			}
+			log.info("computers found");
+			
+		} catch (SQLException e) {
+		
+			log.error("computers not found");
+			log.debug(e.getMessage(),e);
+			throw new ComputerDAOException();
+		}
+		
+		return computers;
+	}
+
+	@Override
+	public List<Computer> getAllByName(int limit, int pageNumber) throws CompanyDAOException, ComputerDAOException {
+		List<Computer> computers = new ArrayList<Computer>();
+		try (Connection connect = DAOFactory.getConnection();
+				PreparedStatement pSt = connect.prepareStatement(GET_ALL_ORDER_BY_NAME);) {
+			pSt.setInt(1, limit);
+			pSt.setInt(2, pageNumber);
+			System.out.println(pSt);
+			ResultSet result = pSt.executeQuery();
+			
+			while (result.next()) {
+				computers.add(mapResult(result));
+			}
+			log.info("computers found");
+		} catch (SQLException e) {
+			log.debug(e.getMessage(),e);
+			log.error("computers not found");
+			throw new ComputerDAOException();
+
+		}
 		return computers;
 	}
 
