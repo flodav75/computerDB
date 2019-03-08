@@ -10,7 +10,6 @@ public class DAOFactory {
 	private static HikariConfig config = new HikariConfig(
 			Thread.currentThread().getContextClassLoader().getResource("").getPath() + "hikari.properties");
 	private static HikariDataSource ds = new HikariDataSource(config);
-	private static Connection connect;
 
 	private static final String DRIVER = "com.mysql.cj.jdbc.Driver";
 
@@ -39,10 +38,9 @@ public class DAOFactory {
 	}
 
 	public static Connection getConnection() throws SQLException {
-		if (connect == null || connect.isClosed()) {
-			connect = ds.getConnection();
-		}
-		return connect;
+		
+			return ds.getConnection();
+		
 
 	}
 

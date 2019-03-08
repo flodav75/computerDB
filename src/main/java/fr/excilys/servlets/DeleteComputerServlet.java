@@ -91,9 +91,8 @@ public class DeleteComputerServlet extends HttpServlet {
 				this.log.error("error computer request");
 				request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
 			}
-			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
-
 		}
+		request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
 	}
 
 	private void removeComputer(long id) throws CompanyDAOException, ComputerDAOException {

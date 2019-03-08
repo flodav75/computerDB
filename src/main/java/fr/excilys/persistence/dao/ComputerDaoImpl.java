@@ -22,11 +22,14 @@ public class ComputerDaoImpl implements ComputerDAO {
 
 	private static final String GET_BY_ID = "Select id,name,introduced,discontinued,company_id From computer Where id=? ";
 	private static final String GET_ALL = "Select id,name,introduced,discontinued,company_id from computer LIMIT ? OFFSET ?";
+	private static final String GET_BY_NAME = "Select id,name,introduced,discontinued,company_id from computer where name like ? LIMIT ? OFFSET ?";
+
 	private static final String DELETE = "Delete from computer where id=? ";
 	private static final String UPDATE = "Update computer set name=?, introduced = ?, discontinued = ?, company_id=?  where id=?";
 	public final static String ATTRIBUTLIST[] = { "id", "name", "introduced", "discontinued", "company_id" };
 	private final static String INSERT = "Insert into computer(name, introduced, discontinued, company_id) values(?,?,?,?)";
 	private static final String COUNT_QUERY = "SELECT COUNT(id) AS count FROM computer";
+	private static final String COUNT_QUERY_SEARCH = "SELECT COUNT(id) AS count FROM computer where name like ?";
 	private static final String FIELD_COUNT = "count";
 	private static ComputerDAO instance;
 	private CompanyDAO companyDao;
@@ -34,6 +37,7 @@ public class ComputerDaoImpl implements ComputerDAO {
 	private Logger log;
 
 	private ComputerDaoImpl(DAOFactory daoFactory) {
+		this.daoFactory = daoFactory;
 		this.companyDao = this.daoFactory.getCompanyDAO();
 		log = LoggerFactory.getLogger(ComputerDAO.class);
 	}
@@ -109,11 +113,13 @@ public class ComputerDaoImpl implements ComputerDAO {
 			pSt.setInt(2, pageNumber);
 			System.out.println(pSt);
 			ResultSet result = pSt.executeQuery();
+			
 			while (result.next()) {
 				computers.add(mapResult(result));
 			}
 			log.info("computers found");
 		} catch (SQLException e) {
+			log.debug(e.getMessage(),e);
 			log.error("computers not found");
 			throw new ComputerDAOException();
 
@@ -153,6 +159,24 @@ public class ComputerDaoImpl implements ComputerDAO {
 		}
 		return count;
 	}
+	public int getRowCountSearch(String name) throws ComputerDAOException {
+		int count = -1;
+		try (Connection connect = DAOFactory.getConnection(); 
+				PreparedStatement statement = connect.prepareStatement(COUNT_QUERY_SEARCH);){
+			String value="%"+name+"%";
+			statement.setString(1, value);
+			ResultSet resultSet = statement.executeQuery();
+			while (resultSet.next()) {
+				count = resultSet.getInt(FIELD_COUNT);
+			}
+			log.info("computer count well");
+		} catch (SQLException e) {
+			log.error("cant count computer rows");
+			log.debug(e.getMessage(), e);
+			throw new ComputerDAOException();
+		}
+		return count;
+	}
 
 	private Computer mapResult(ResultSet res) throws SQLException, CompanyDAOException {
 		ComputerBuilder compBuild = new ComputerBuilder();
@@ -166,13 +190,14 @@ public class ComputerDaoImpl implements ComputerDAO {
 			company = companyDao.getById(idCompany);
 		} else {
 			company = new Company(0, null);
-
 		}
+		
 		compBuild.setId(id);
 		compBuild.setName(name);
 		compBuild.setIntroduced(introduced);
 		compBuild.setDiscontinued(discontinued);
 		compBuild.setCompany(company);
+		System.out.println(compBuild.build().toString());
 		return compBuild.build();
 	}
 
@@ -190,8 +215,31 @@ public class ComputerDaoImpl implements ComputerDAO {
 	}
 
 	@Override
-	public List<Computer> getByName(String name) {
-		return null;
+	public List<Computer> getByName(String name,int limit,int pos) throws CompanyDAOException, ComputerDAOException {
+		List<Computer> computers = new ArrayList<Computer>();
+		
+		try (Connection connect = DAOFactory.getConnection();
+				PreparedStatement pSt = connect.prepareStatement(GET_BY_NAME);) {
+			String value="%"+name+"%";
+			pSt.setString(1, value);
+			pSt.setInt(2, limit);
+			pSt.setInt(3, pos);
+			System.out.println(pSt);
+			ResultSet result = pSt.executeQuery();
+			while (result.next()) {
+				System.out.println(mapResult(result));
+				computers.add(mapResult(result));
+			}
+			log.info("computers found");
+			
+		} catch (SQLException e) {
+		
+			log.error("computers not found");
+			log.debug(e.getMessage(),e);
+			throw new ComputerDAOException();
+		}
+		
+		return computers;
 	}
 
 }

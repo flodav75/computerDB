@@ -33,9 +33,10 @@
             </h1>
             <div id="actions" class="form-horizontal">
                 <div class="pull-left">
-                    <form id="searchForm" action="#" method="GET" class="form-inline">
-
-                        <input type="search" id="searchbox" name="search" class="form-control" placeholder="Search name" />
+                    <form id="searchForm" action="Index" method="GET" class="form-inline">
+            			<input type="hidden" name="limit" value="10">
+						<input type="hidden" name="currentPage" value="1">
+                        <input type="search" id="searchbox" name="search" class="form-control" value="${searchName }" placeholder="Search name" />
                         <input type="submit" id="searchsubmit" value="Filter by name"
                         class="btn btn-primary" />
                     </form>
@@ -115,25 +116,34 @@
               </li>
                <c:choose>
 		         <c:when test = "${ pageNumber<3 }">
-				      <li><a href="Index?limit=${limit}&pageNumber=1">1</a></li>
-		              <li><a href="Index?limit=${limit}&pageNumber=2">2</a></li>
-		              <li><a href="Index?limit=${limit}&pageNumber=3">3</a></li>
-		              <li><a href="Index?limit=${limit}&pageNumber=4">4</a></li>
-		              <li><a href="Index?limit=${limit}&pageNumber=5">5</a></li>
+		         	<c:choose>	
+			          <c:when test = "${ max<6 }">
+						   <c:forEach var="page" begin ="1" end="${max }" step="1"> 
+			         		<li><a href="Index?limit=${limit}&pageNumber=${page }&search=${searchName}">${page}</a></li>
+			         </c:forEach>
+	 				   </c:when> 
+				       <c:otherwise> 
+					        <li><a href="Index?limit=${limit}&pageNumber=1&search=${searchName}">1</a></li>
+			              	<li><a href="Index?limit=${limit}&pageNumber=2&search=${searchName}">2</a></li>
+			              	<li><a href="Index?limit=${limit}&pageNumber=3&search=${searchName}">3</a></li>
+			              	<li><a href="Index?limit=${limit}&pageNumber=4&search=${searchName}">4</a></li>				
+			              	<li><a href="Index?limit=${limit}&pageNumber=5&search=${searchName}">5</a></li>      
+	 			        </c:otherwise>
+		              </c:choose>
 			      </c:when>
 			      <c:when test = "${ pageNumber>max-3 }">
-					  <li><a href="Index?limit=${limit}&pageNumber=${max-4}">${max-4}</a></li>
-		              <li><a href="Index?limit=${limit}&pageNumber=${max-3}">${max-3}</a></li>
-		              <li><a href="Index?limit=${limit}&pageNumber=${max-2}">${max-2}</a></li>
-		              <li><a href="Index?limit=${limit}&pageNumber=${max-1}">${max-1}</a></li>
-		              <li><a href="Index?limit=${limit}&pageNumber=${max} ">${max}</a></li>
+					  <li><a href="Index?limit=${limit}&pageNumber=${max-4}&search=${searchName}">${max-4}</a></li>
+		              <li><a href="Index?limit=${limit}&pageNumber=${max-3}&search=${searchName}">${max-3}</a></li>
+		              <li><a href="Index?limit=${limit}&pageNumber=${max-2}&search=${searchName}">${max-2}</a></li>
+		              <li><a href="Index?limit=${limit}&pageNumber=${max-1}&search=${searchName}">${max-1}</a></li>
+		              <li><a href="Index?limit=${limit}&pageNumber=${max}&search=${searchName} ">${max}</a></li>
  				   </c:when> 
 			       <c:otherwise> 
-				        <li><a href="Index?limit=${limit}&pageNumber=${pageNumber-2}">${pageNumber-2}</a></li>
-		              	<li><a href="Index?limit=${limit}&pageNumber=${pageNumber-1}">${pageNumber-1}</a></li>
-		              	<li><a href="Index?limit=${limit}&pageNumber=${pageNumber}">${pageNumber}</a></li>
-		              	<li><a href="Index?limit=${limit}&pageNumber=${pageNumber+1}">${pageNumber+1}</a></li>				
-		              	<li><a href="Index?limit=${limit}&pageNumber=${pageNumber+2}">${pageNumber+2}</a></li>      
+				        <li><a href="Index?limit=${limit}&pageNumber=${pageNumber-2}&search=${searchName}">${pageNumber-2}</a></li>
+		              	<li><a href="Index?limit=${limit}&pageNumber=${pageNumber-1}&search=${searchName}">${pageNumber-1}</a></li>
+		              	<li><a href="Index?limit=${limit}&pageNumber=${pageNumber}&search=${searchName}">${pageNumber}</a></li>
+		              	<li><a href="Index?limit=${limit}&pageNumber=${pageNumber+1}&search=${searchName}">${pageNumber+1}</a></li>				
+		              	<li><a href="Index?limit=${limit}&pageNumber=${pageNumber+2}&search=${searchName}">${pageNumber+2}</a></li>      
  			        </c:otherwise> 
 
 	      		</c:choose>
@@ -146,7 +156,7 @@
 	        <div class="btn-group btn-group-sm pull-right" role="group" >
 	           <c:set var="pageSizeValues">10,20,50,100</c:set>
         		<c:forTokens items="${pageSizeValues}" var="pageSizeValue" delims=",">
-	           		 <a role="button" type="button" class="btn btn-default" href="http://localhost:8080/ComputerDatabase/Index?limit=${pageSizeValue}&pageNumber=${pageNumber}">
+	           		 <a role="button" type="button" class="btn btn-default" href="http://localhost:8080/ComputerDatabase/Index?limit=${pageSizeValue}&pageNumber=${pageNumber}&search=${searchName}">
 	            	${pageSizeValue}
 	            	</a>
 			</c:forTokens>

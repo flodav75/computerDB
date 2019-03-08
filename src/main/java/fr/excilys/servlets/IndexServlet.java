@@ -36,52 +36,76 @@ public class IndexServlet extends HttpServlet {
 
 	public void init() throws ServletException {
 		computerSer = ComputerServiceImpl.getInstance();
-		this.log = LoggerFactory.getLogger(AddComputerServlet.class);
+		this.log = LoggerFactory.getLogger(IndexServlet.class);
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		List<ComputerDTO> computers = new ArrayList<>();
+		List<ComputerDTO> computersDTO = new ArrayList<>();
 		Integer currentpage = null;
+		String nameToSearch = request.getParameter("search");
+		Integer nbrRow = null;
+		Integer maxPage = null;
 		try {
 			limit = getPagination(request.getParameter("limit"), LIMIT_DEFAULT);
 			currentpage = getPagination(request.getParameter("pageNumber"), OFFSET_DEFAULT);
 			valideLimit(limit);
 			this.offset = (currentpage - 1) * this.limit;
-			int nbrRow = getMaxPage();
-			int maxPage = getPageNumberMax(nbrRow, limit);
-			validePage(currentpage, maxPage);
-			computers = getAllComputers();
-			if (!computers.isEmpty()) {
-				request.setAttribute("computers", computers);
-				request.setAttribute("count", computers.size());
-				request.setAttribute("computers", computers);
-				request.setAttribute("count", computers.size());
-				request.setAttribute("limit", limit);
+
+			if (nameToSearch == null || nameToSearch.isEmpty()) {
+				nbrRow = getMaxPage();
+				maxPage = getPageNumberMax(nbrRow, limit);
+				validePage(currentpage, maxPage);
+				this.offset = (currentpage - 1) * this.limit;
+				computersDTO = getAllComputers();
+			} else {
+				ComputerDtoMapper computerDtoMapper = new ComputerDtoMapper();
+				List<Computer> computers = this.computerSer.getByName(nameToSearch, limit, this.offset);
+				for (Computer comp : computers) {
+					computersDTO.add(computerDtoMapper.ComputerDtoFromComputer(comp));
+				}
+				this.offset = (currentpage - 1) * this.limit;
+				nbrRow = this.computerSer.getRowCountSearch(nameToSearch);
+				maxPage = getPageNumberMax(nbrRow, limit);
+				request.setAttribute("searchName", nameToSearch);
+				System.out.println("aaaaa"+maxPage);
+			}
+			System.out.println("aaaaa"+maxPage);
+//			if (!computersDTO.isEmpty()) {
+				request.setAttribute("computers", computersDTO);
+				request.setAttribute("count", computersDTO.size());
+				request.setAttribute("limit", this.limit);
 				request.setAttribute("pageNumber", currentpage);
 				request.setAttribute("max", maxPage);
 				request.setAttribute("nbComputer", nbrRow);
-				request.getServletContext().getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request,
-						response);
-			} else {
-				this.log.error("error");
-				request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,
-						response);
-			}
+				request.getServletContext().getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request,response);
+//			} else {
+//				this.log.error("error");
+//				request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,
+//						response);
+//			}
 		} catch (ComputerNameException e) {
+			
 			this.log.error("error name");
+			this.log.debug(e.getMessage(),e);
 			request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,
 					response);
 		} catch (NumberFormatException e) {
 			this.log.error("error name");
+			this.log.debug(e.getMessage(),e);
+
 			request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,
 					response);
 		} catch (CompanyDAOException e) {
 			this.log.error("error company");
+			this.log.debug(e.getMessage(),e);
+
 			request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,
 					response);
 		} catch (ComputerDAOException e) {
 			this.log.error("error computer");
+			this.log.error(e.getMessage());
 			request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,
 					response);
 		}
@@ -165,5 +189,6 @@ public class IndexServlet extends HttpServlet {
 			throw new NumberFormatException();
 		}
 	}
+
 
 }

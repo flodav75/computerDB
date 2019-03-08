@@ -60,7 +60,7 @@ public class ComputerMapper {
 		return company;
 	}
 
-	public LocalDate convertToDate(String date) {
+	private LocalDate convertToDate(String date) {
 		LocalDate formattedString = null;
 		if (date != null && !date.isEmpty()) {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

@@ -141,7 +141,7 @@ public class Computer {
 	}
 
 	public static class ComputerBuilder {
-		private long id;
+		private long id = 0;
 		private String name;
 		private LocalDate introduced;
 		private LocalDate discontinued;

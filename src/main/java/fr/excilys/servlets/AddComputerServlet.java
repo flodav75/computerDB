@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fr.excilys.dtos.ComputerDTO;
+import fr.excilys.dtos.ComputerDTO.ComputerDTOBuilder;
 import fr.excilys.exceptions.CompanyDAOException;
 import fr.excilys.exceptions.ComputerDAOException;
 import fr.excilys.exceptions.ComputerNameException;
@@ -41,6 +41,7 @@ public class AddComputerServlet extends HttpServlet {
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List<Company> companies = null;
+
 		try {
 			companies = getCompanies();
 		} catch (CompanyDAOException e) {
@@ -105,9 +106,13 @@ public class AddComputerServlet extends HttpServlet {
 		String introduced = request.getParameter("introduced");
 		String discontinued = request.getParameter("discontinued");
 		String idCompany = request.getParameter("companyId");
-		ComputerDTO compDTO = new ComputerDTO(null, name, introduced, discontinued, idCompany, "");
+		ComputerDTOBuilder compDtoBuilder = new ComputerDTOBuilder();
+		compDtoBuilder.setName(name);
+		compDtoBuilder.setIntroduced(introduced);
+		compDtoBuilder.setDiscontinued(discontinued);
+		compDtoBuilder.setCompanyId(idCompany);
 		ComputerMapper compMap = new ComputerMapper();
-		computer = compMap.getComputerFromDTO(compDTO);
+		computer = compMap.getComputerFromDTO(compDtoBuilder.build());
 		return computer;
 	}
 

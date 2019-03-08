@@ -3,6 +3,7 @@ package fr.excilys.mappers;
 import java.time.format.DateTimeFormatter;
 
 import fr.excilys.dtos.ComputerDTO;
+import fr.excilys.dtos.ComputerDTO.ComputerDTOBuilder;
 import fr.excilys.exceptions.ComputerNameException;
 import fr.excilys.model.Computer;
 
@@ -36,7 +37,16 @@ public class ComputerDtoMapper {
 				idCompany = String.valueOf(computer.getCompany().getId());
 				companyName = computer.getCompany().getName();
 			}
-			computerDtoReturn = new ComputerDTO(computerId, name, introduced, discontinued, idCompany, companyName);
+			
+			ComputerDTOBuilder computerDTOBuilder = new ComputerDTOBuilder();
+			computerDTOBuilder.setId(computerId);
+			computerDTOBuilder.setName(name);
+			computerDTOBuilder.setIntroduced(introduced);
+			computerDTOBuilder.setDiscontinued(discontinued);
+			computerDTOBuilder.setCompanyId(idCompany);
+			computerDTOBuilder.setCompanyName(companyName);
+			
+			computerDtoReturn = computerDTOBuilder.build();
 		} else {
 			throw new ComputerNameException();
 		}

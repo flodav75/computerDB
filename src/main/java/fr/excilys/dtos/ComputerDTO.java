@@ -9,14 +9,18 @@ public class ComputerDTO {
 	private String companyId;
 	private String companyName;
 
-	public ComputerDTO(String id, String name, String introduced, String discontinued, String computerId,
+	private ComputerDTO(String id, String name, String introduced, String discontinued, String computerId,
 			String companyName) {
 		this.id = id;
-		this.computerName=name;
+		this.computerName = name;
 		this.introduced = introduced;
 		this.discontinued = discontinued;
 		this.companyId = computerId;
-		this.companyName=companyName;
+		this.companyName = companyName;
+	}
+
+	private ComputerDTO() {
+
 	}
 
 	public String getId() {
@@ -67,7 +71,9 @@ public class ComputerDTO {
 		this.computerName = computerName;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -83,7 +89,9 @@ public class ComputerDTO {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -143,13 +151,92 @@ public class ComputerDTO {
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
 		return "ComputerDTO [id=" + id + ", computerName=" + computerName + ", introduced=" + introduced
 				+ ", discontinued=" + discontinued + ", companyId=" + companyId + ", companyName=" + companyName + "]";
+	}
+
+	public static class ComputerDTOBuilder {
+		private String id = "0";
+		private String computerName ="";
+		private String introduced;
+		private String discontinued;
+		private String companyId;
+		private String companyName = "";
+
+		/**
+		 * Build a Computer from the ComputerBuilder instance and returns it.
+		 * 
+		 * @return The created Computer object
+		 */
+		public ComputerDTO build() {
+			ComputerDTO computer = new ComputerDTO();
+
+			computer.setId(this.id);
+			computer.setComputerName(this.computerName);
+			computer.setIntroduced(this.introduced);
+			computer.setDiscontinued(this.discontinued);
+			computer.setCompanyId(this.companyId);
+			computer.setCompanyName(this.companyName);
+
+			return computer;
+		}
+
+		/**
+		 * @param id The computer id
+		 * @return The ComputerBuilder instance
+		 */
+		public ComputerDTOBuilder setId(String id) {
+			this.id = id;
+			return this;
+		}
+
+		/**
+		 * @param name The computer name
+		 * @return The ComputerBuilder instance
+		 */
+		public ComputerDTOBuilder setName(String name) {
+			this.computerName = name;
+			return this;
+		}
+
+		/**
+		 * @param introduced The computer introduction date
+		 * @return The ComputerBuilder instance
+		 */
+		public ComputerDTOBuilder setIntroduced(String introduced) {
+			this.introduced = introduced;
+			return this;
+		}
+
+		/**
+		 * @param discontinued The computer discontinution date
+		 * @return The ComputerBuilder instance
+		 */
+		public ComputerDTOBuilder setDiscontinued(String discontinued) {
+			this.discontinued = discontinued;
+			return this;
+		}
+
+		/**
+		 * @param company The computer company
+		 * @return The ComputerBuilder instance
+		 */
+		public ComputerDTOBuilder setCompanyId(String companyId) {
+			this.companyId = companyId;
+			return this;
+		}
+
+		public ComputerDTOBuilder setCompanyName(String companyName) {
+			this.companyName = companyName;
+			return this;
+		}
 	}
 
 }

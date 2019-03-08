@@ -16,6 +16,7 @@ public class ComputerServiceImpl implements ComputerService {
 	private ComputerServiceImpl() {
 		DAOFactory.getInstance();
 		this.computerDao = DAOFactory.getInstance().getComputerDAO();
+		System.out.println(this.computerDao);
 	}
 
 	public static ComputerService getInstance() {
@@ -67,9 +68,16 @@ public class ComputerServiceImpl implements ComputerService {
 	}
 
 	@Override
-	public List<Computer> getByName(String name)throws ComputerDAOException  {
+	public List<Computer> getByName(String name,int limit,int pos)throws ComputerDAOException, CompanyDAOException  {
 		
-		return this.computerDao.getByName(name);
+		return this.computerDao.getByName(name, limit, pos);
 	}
+	
+	@Override
+	public int getRowCountSearch(String name) throws ComputerDAOException {
+		return this.computerDao.getRowCountSearch(name);
+	}
+	
+	
 
 }

@@ -31,24 +31,11 @@ public class ValidationComputerDTO {
 
 	private static void valideDate(String date) throws ParseException, DateTimeParseException {
 		if (!isNullorEmpty(date)) {
-			dateFormat(date);
+			convertToDate(date);
 		}
-
 	}
 
-	private static void dateFormat(String dateString) throws ParseException, DateTimeParseException {
-		String dateToTest = dateString;
-		LocalDate localdate = convertToDate(dateString);
-//
-//		if(localdate.getYear()<=2036 && localdate.getYear()>=1950 && localdate.getDayOfWeek().getValue()<=31 &&localdate.getDayOfWeek().getValue()>=1 && localdate.getMonth().getValue()<=12 && localdate.getMonth().getValue()>=1 ) {
-//			
-//		}else {
-//			throw new  DateFormatException();
-//		}
-
-	}
-
-	private static  LocalDate convertToDate(String date) throws DateTimeParseException {
+	private static  LocalDate convertToDate(String date) throws ParseException, DateTimeParseException {
 		LocalDate formattedString = null;
 		if (date != null && !date.isEmpty()) {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

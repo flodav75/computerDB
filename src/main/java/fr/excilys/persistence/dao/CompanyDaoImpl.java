@@ -47,10 +47,10 @@ public class CompanyDaoImpl implements CompanyDAO {
 			}
 			log.info("companies found");
 		} catch (SQLException e) {
-			log.error("companes not finded");
+			log.error("companies not found");
 			throw new CompanyDAOException();
-
 		}
+		
 		return companies;
 	}
 
