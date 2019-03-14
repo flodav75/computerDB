@@ -4,27 +4,32 @@ import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import fr.excilys.dtos.ComputerDTO;
 import fr.excilys.exceptions.CompanyDAOException;
+import fr.excilys.exceptions.ComputerDateException;
 import fr.excilys.exceptions.ComputerNameException;
 import fr.excilys.exceptions.DateFormatException;
+import fr.excilys.mappers.validations.ValidationComputer;
 import fr.excilys.mappers.validations.ValidationComputerDTO;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
 import fr.excilys.model.Computer.ComputerBuilder;
 import fr.excilys.service.CompanyService;
-import fr.excilys.service.CompanyServiceImpl;
 
+@Component
 public class ComputerMapper {
 
+	@Autowired
 	private CompanyService companyServ;
 
 	public ComputerMapper() {
-		this.companyServ = CompanyServiceImpl.getInstance();
 	}
 
 	public Computer getComputerFromDTO(ComputerDTO compDt) throws ParseException, NumberFormatException,
-			ComputerNameException, DateFormatException, CompanyDAOException {
+			ComputerNameException, DateFormatException, CompanyDAOException, ComputerDateException {
 		Long id = null;
 		ValidationComputerDTO.validate(compDt);
 		if (compDt.getId() != null && !"".equals(compDt.getId())) {
@@ -42,6 +47,8 @@ public class ComputerMapper {
 		computerBuilder.setIntroduced(introduced);
 		computerBuilder.setDiscontinued(discontinued);
 		computerBuilder.setCompany(company);
+		Computer computer = computerBuilder.build();
+		ValidationComputer.validate(computer);
 		return computerBuilder.build();
 	}
 
@@ -69,7 +76,6 @@ public class ComputerMapper {
 		return formattedString;
 	}
 
-//private
 	private Company getCompanyById(String id) throws NumberFormatException, CompanyDAOException {
 		Company company = null;
 		if (id != null && !id.isEmpty()) {

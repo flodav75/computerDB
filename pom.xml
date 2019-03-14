@@ -15,7 +15,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
     	<maven.compiler.target>1.8</maven.compiler.target>
     	<tomcat.version>2.2</tomcat.version>
-    	<maven.plugin.version>3.0.0</maven.plugin.version>
+    	<maven-plugin.version>3.0.0</maven-plugin.version>
     	<slf4j.version>1.7.25</slf4j.version>
     	<junit.version>4.12</junit.version>
     	<mysql.version>8.0.15</mysql.version>
@@ -24,6 +24,10 @@
     	<jslt.version>1.2</jslt.version>
         <logback.version>1.2.3</logback.version>
         <powermock.version>1.7.4</powermock.version>
+        <spring.version>5.1.4.RELEASE</spring.version>
+        <spring-jdbc.version>5.1.5.RELEASE</spring-jdbc.version>
+        <javax-annotation-api.version>1.2</javax-annotation-api.version>
+        <javax.inject.version>1</javax.inject.version>
         <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
   </properties>
   <build>
@@ -56,6 +60,11 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        <resources>
+            <resource>
+                <directory>src/main/resources/logs</directory>
+            </resource>
+        </resources>
   </build>
 
   <dependencies>
@@ -119,5 +128,31 @@
     <artifactId>powermock-api-mockito</artifactId>
     <version>${powermock.version}</version>
 </dependency>
+
+<dependency>
+   <groupId>javax.annotation</groupId>
+   <artifactId>javax.annotation-api</artifactId>
+   <version>${javax-annotation-api.version}</version>
+</dependency>
+<dependency>
+   <groupId>javax.inject</groupId>
+   <artifactId>javax.inject</artifactId>
+   <version>${javax.inject.version}</version>
+</dependency>
+     
+<dependency>
+   <groupId>org.springframework</groupId>
+   <artifactId>spring-webmvc</artifactId>
+   <version>${spring.version}</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework/spring-jdbc -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-jdbc</artifactId>
+    <version>${spring-jdbc.version}</version>
+</dependency>
+
+
   </dependencies>
+  
 </project>

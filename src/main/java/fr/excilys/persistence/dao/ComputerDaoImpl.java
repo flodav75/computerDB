@@ -1,16 +1,24 @@
 package fr.excilys.persistence.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import javax.sql.DataSource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.stereotype.Repository;
 
 import fr.excilys.exceptions.CompanyDAOException;
 import fr.excilys.exceptions.ComputerDAOException;
@@ -18,129 +26,161 @@ import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
 import fr.excilys.model.Computer.ComputerBuilder;
 
+@Repository
 public class ComputerDaoImpl implements ComputerDAO {
 
-	private static final String GET_BY_ID = "Select id,name,introduced,discontinued,company_id From computer Where id=? ";
-	private static final String GET_ALL = "Select id,name,introduced,discontinued,company_id from computer  LIMIT ? OFFSET ?";
-	private static final String GET_ALL_ORDER_BY_NAME = "Select id,name,introduced,discontinued,company_id from computer ORDER BY name  LIMIT ? OFFSET ?";
+	private static final String GET_BY_ID = "Select id,name,introduced,discontinued,company_id From computer Where id=:id ";
+	private static final String GET_ALL = "Select id,name,introduced, discontinued, company_id from computer  LIMIT :limit OFFSET :offset";
+	private static final String GET_ALL_ORDER_BY_NAME = "Select id,name,introduced,discontinued,company_id from computer ORDER BY name  LIMIT :limit OFFSET :offset";
 
-	private static final String GET_BY_NAME = "Select id,name,introduced,discontinued,company_id from computer where name like ?  LIMIT ? OFFSET ?";
-	private static final String GET_BY_NAME_ORDER_By_NAME = "Select id,name,introduced,discontinued,company_id from computer where name like ? ORDER BY name LIMIT ? OFFSET ?";
+	private static final String GET_BY_NAME = "Select id,name,introduced,discontinued,company_id from computer where name like :name  LIMIT :limit OFFSET :offset";
+	private static final String GET_BY_NAME_ORDER_By_NAME = "Select id,name,introduced,discontinued,company_id from computer where name like :name ORDER BY name LIMIT :limit OFFSET :offset";
 	private static final String DELETE = "Delete from computer where id=? ";
-	private static final String UPDATE = "Update computer set name=?, introduced = ?, discontinued = ?, company_id=?  where id=?";
+	private static final String UPDATE = "Update computer set name= :name, introduced = :introduced, discontinued = :discontinued, company_id=:company_id  where id=:id";
 	public final static String ATTRIBUTLIST[] = { "id", "name", "introduced", "discontinued", "company_id" };
-	private final static String INSERT = "Insert into computer(name, introduced, discontinued, company_id) values(?,?,?,?)";
+	private final static String INSERT = "Insert into computer(name, introduced, discontinued, company_id) values(:name,:introduced,:discontinued,:company_id)";
 	private static final String COUNT_QUERY = "SELECT COUNT(id) AS count FROM computer";
-	private static final String COUNT_QUERY_SEARCH = "SELECT COUNT(id) AS count FROM computer where name like ?";
-	private static final String FIELD_COUNT = "count";
-	private static ComputerDAO instance;
+	private static final String COUNT_QUERY_SEARCH = "SELECT COUNT(id)  FROM computer where name like :name";
+	@Autowired
 	private CompanyDAO companyDao;
-	private DAOFactory daoFactory;
-	private Logger log;
 
-	private ComputerDaoImpl(DAOFactory daoFactory) {
-		this.daoFactory = daoFactory;
-		this.companyDao = this.daoFactory.getCompanyDAO();
+	private Logger log;
+	private NamedParameterJdbcTemplate jdbcTemplateParam;
+
+	@Autowired
+	private ComputerDaoImpl(DataSource ds) {
 		log = LoggerFactory.getLogger(ComputerDAO.class);
+		setJdbcTemplate(ds);
 	}
 
-	public static ComputerDAO getInstance() {
-		if (instance == null) {
-			instance = new ComputerDaoImpl(DAOFactory.getInstance());
-		}
-		return instance;
+	public void setJdbcTemplate(DataSource dataSource) {
+		this.jdbcTemplateParam = new NamedParameterJdbcTemplate(dataSource);
 	}
 
 	@Override
 	public void add(Computer computer) throws ComputerDAOException {
 		Long idCompany = null;
-		;
-		try (Connection connect = DAOFactory.getConnection();
-				PreparedStatement pSt = connect.prepareStatement(INSERT);) {
-			pSt.setString(1, computer.getName());
-			pSt.setObject(2, computer.getIntroduced());
-			pSt.setObject(3, computer.getDiscontinued());
 
-			if (computer.getCompany() != null) {
-				idCompany = computer.getCompany().getId();
-			}
-			pSt.setObject(4, idCompany);
-			pSt.execute();
-			log.info("computer added to database");
-		} catch (SQLException e) {
-			log.error("computer not added to database");
+		if (computer.getCompany() != null) {
+			idCompany = computer.getCompany().getId();
+		}
+
+		HashMap<String, Object> params = new HashMap<String, Object>();
+		params.put("id", computer.getId());
+		params.put("name", computer.getName());
+		params.put("introduced", computer.getIntroduced());
+		params.put("discontinued", computer.getDiscontinued());
+		params.put("company_id", idCompany);
+		try {
+			this.jdbcTemplateParam.update(INSERT, params);
+			this.log.error("add computer passed");
+
+
+		}catch (DataAccessException e) {
+			this.log.error("add computer error");
+			this.log.debug(e.getMessage(), e);
 			throw new ComputerDAOException();
-
 		}
 	}
 
 	@Override
 	public void update(Computer computer) throws ComputerDAOException {
+		Long idCompany = null;
 
-		try (Connection connect = DAOFactory.getConnection();
-				PreparedStatement pSt = connect.prepareStatement(UPDATE)) {
-			pSt.setString(1, computer.getName());
-			pSt.setObject(2, computer.getIntroduced());
-			pSt.setObject(3, computer.getDiscontinued());
-			pSt.setLong(4, computer.getCompany().getId());
-			pSt.setLong(5, computer.getId());
-			pSt.execute();
-			log.info("computer updated");
-		} catch (SQLException e) {
-			log.error("computer not updated");
+		if (computer.getCompany() != null) {
+			idCompany = computer.getCompany().getId();
+		}
+
+		HashMap<String, Object> params = new HashMap<String, Object>();
+		params.put("id", computer.getId());
+		params.put("name", computer.getName());
+		params.put("introduced", computer.getIntroduced());
+		params.put("discontinued", computer.getDiscontinued());
+		params.put("company_id", idCompany);
+		
+		try {
+			this.jdbcTemplateParam.update(UPDATE, params);
+			this.log.error("update computer passed");
+
+
+		}catch (DataAccessException e) {
+			this.log.error("update computer error");
+			this.log.debug(e.getMessage(), e);
 			throw new ComputerDAOException();
 		}
 	}
 
 	@Override
 	public void remove(Computer computer) throws ComputerDAOException {
-		try (Connection connect = DAOFactory.getConnection();
-				PreparedStatement pSt = connect.prepareStatement(DELETE);) {
-			pSt.setLong(1, computer.getId());
-			pSt.execute();
-			log.info("computer removed");
-		} catch (SQLException e) {
-			log.error("computer not updated");
-			throw new ComputerDAOException();
+		try {
+			this.jdbcTemplateParam.getJdbcTemplate().update(DELETE, computer.getId());
+			this.log.error("remove computer passed");
 
+
+		}catch (DataAccessException e) {
+			this.log.error("remove computer error");
+			this.log.debug(e.getMessage(), e);
+			throw new ComputerDAOException();
 		}
+
 	}
 
 	@Override
 	public List<Computer> getAll(int limit, int pageNumber) throws CompanyDAOException, ComputerDAOException {
 		List<Computer> computers = new ArrayList<Computer>();
-		try (Connection connect = DAOFactory.getConnection();
-				PreparedStatement pSt = connect.prepareStatement(GET_ALL);) {
-			pSt.setInt(1, limit);
-			pSt.setInt(2, pageNumber);
-			System.out.println(pSt);
-			ResultSet result = pSt.executeQuery();
-			
-			while (result.next()) {
-				computers.add(mapResult(result));
-			}
-			log.info("computers found");
-		} catch (SQLException e) {
-			log.debug(e.getMessage(),e);
-			log.error("computers not found");
-			throw new ComputerDAOException();
 
+		RowMapper<Computer> rowMapper = new RowMapper<Computer>() {
+			@Override
+			public Computer mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Computer computer = null;
+				try {
+					computer = mapResult(rs);
+				} catch (CompanyDAOException e) {
+					e.printStackTrace();
+				}
+				return computer;
+			}
+		};
+		HashMap<String, Integer> params = new HashMap<String, Integer>();
+		params.put("limit", limit);
+		params.put("offset", pageNumber);
+		try {
+			computers = this.jdbcTemplateParam.query(GET_ALL, params, rowMapper);
+			this.log.error("getAll computers passed");
+		}catch (DataAccessException e) {
+			this.log.error("getAll computers error");
+			this.log.debug(e.getMessage(), e);
+			throw new ComputerDAOException();
 		}
+
 		return computers;
 	}
 
 	@Override
 	public Computer getById(long id) throws CompanyDAOException, ComputerDAOException {
 		Computer computer = null;
-		try (Connection connect = DAOFactory.getConnection();
-				PreparedStatement pSt = connect.prepareStatement(GET_BY_ID);) {
-			pSt.setLong(1, id);
-			ResultSet result = pSt.executeQuery();
-			result.next();
-			computer = mapResult(result);
-			log.info("computer found");
-		} catch (SQLException e) {
-			log.info("computer not found");
+
+		RowMapper<Computer> rowMapper = new RowMapper<Computer>() {
+			public Computer mapRow(ResultSet pRS, int pRowNum) throws SQLException {
+				Computer computer = null;
+				try {
+					computer = mapResult(pRS);
+				} catch (CompanyDAOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				return computer;
+			}
+		};
+		HashMap<String, Long> params = new HashMap<String, Long>();
+		params.put("id", id);
+		computer = (Computer) this.jdbcTemplateParam.queryForObject(GET_BY_ID, params, rowMapper);
+		try {
+			computer = (Computer) this.jdbcTemplateParam.queryForObject(GET_BY_ID, params, rowMapper);
+			this.log.error("getById computer passed");
+		}catch (DataAccessException e) {
+			this.log.error("getById computer error");
+			this.log.debug(e.getMessage(), e);
 			throw new ComputerDAOException();
 		}
 		return computer;
@@ -148,36 +188,133 @@ public class ComputerDaoImpl implements ComputerDAO {
 
 	public int getRowCount() throws ComputerDAOException {
 		int count = -1;
-		try (Connection connect = DAOFactory.getConnection(); 
-				PreparedStatement statement = connect.prepareStatement(COUNT_QUERY);){
-			ResultSet resultSet = statement.executeQuery();
-			while (resultSet.next()) {
-				count = resultSet.getInt(FIELD_COUNT);
-			}
-			log.info("computer count well");
-		} catch (SQLException e) {
-			log.error("cant count computer rows");
+		
+		try {
+			count = this.jdbcTemplateParam.getJdbcTemplate().queryForObject(COUNT_QUERY, Integer.class);
+			this.log.error("getRowCount computer passed");
+		}catch (DataAccessException e) {
+			this.log.error("getRowCount computer error");
+			this.log.debug(e.getMessage(), e);
 			throw new ComputerDAOException();
 		}
+
 		return count;
 	}
+
 	public int getRowCountSearch(String name) throws ComputerDAOException {
 		int count = -1;
-		try (Connection connect = DAOFactory.getConnection(); 
-				PreparedStatement statement = connect.prepareStatement(COUNT_QUERY_SEARCH);){
-			String value="%"+name+"%";
-			statement.setString(1, value);
-			ResultSet resultSet = statement.executeQuery();
-			while (resultSet.next()) {
-				count = resultSet.getInt(FIELD_COUNT);
+		String value = "%" + name + "%";
+
+		SqlParameterSource namedParameters = new MapSqlParameterSource("name", value);
+
+		try {
+			count = (Integer) this.jdbcTemplateParam.queryForObject(COUNT_QUERY_SEARCH, namedParameters, Integer.class);
+			this.log.error("getRowCountSearch computer passed");
+		}catch (DataAccessException e) {
+			this.log.error("getRowCountSearch computer error");
+			this.log.debug(e.getMessage(), e);
+			throw new ComputerDAOException();
+		} 
+		return count;
+	}
+
+	@Override
+	public List<Computer> getByName(String name, int limit, int pos) throws CompanyDAOException, ComputerDAOException {
+		List<Computer> computers = new ArrayList<Computer>();
+		String value = "%" + name + "%";
+		RowMapper<Computer> rowMapper = new RowMapper<Computer>() {
+			@Override
+			public Computer mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Computer computer = null;
+				try {
+					computer = mapResult(rs);
+				} catch (CompanyDAOException e) {
+					e.printStackTrace();
+				}
+				return computer;
 			}
-			log.info("computer count well");
-		} catch (SQLException e) {
-			log.error("cant count computer rows");
-			log.debug(e.getMessage(), e);
+		};
+		HashMap<String, Object> params = new HashMap<String, Object>();
+		params.put("limit", limit);
+		params.put("offset", pos);
+		params.put("name", value);
+		
+		try {
+			computers = this.jdbcTemplateParam.query(GET_BY_NAME, params, rowMapper);
+			this.log.error("getByName computer passed");
+		}catch (DataAccessException e) {
+			this.log.error("getByName computer error");
+			this.log.debug(e.getMessage(), e);
 			throw new ComputerDAOException();
 		}
-		return count;
+		
+		return computers;
+	}
+
+	@Override
+	public List<Computer> getByNameOrderBy(String name, int limit, int pos)
+			throws CompanyDAOException, ComputerDAOException {
+		List<Computer> computers = new ArrayList<Computer>();
+		String value = "%" + name + "%";
+		RowMapper<Computer> rowMapper = new RowMapper<Computer>() {
+			@Override
+			public Computer mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Computer computer = null;
+				try {
+					computer = mapResult(rs);
+				} catch (CompanyDAOException e) {
+					e.printStackTrace();
+				}
+				return computer;
+			}
+		};
+		HashMap<String, Object> params = new HashMap<String, Object>();
+		params.put("limit", limit);
+		params.put("offset", pos);
+		params.put("name", value);
+		
+		try {
+			computers = this.jdbcTemplateParam.query(GET_BY_NAME_ORDER_By_NAME, params, rowMapper);
+			this.log.error("getByName computer passed");
+		}catch (DataAccessException e) {
+			this.log.error("getByName computer error");
+			this.log.debug(e.getMessage(), e);
+			throw new ComputerDAOException();
+		}
+		
+		return computers;
+	}
+
+	@Override
+	public List<Computer> getAllByName(int limit, int pageNumber) throws CompanyDAOException, ComputerDAOException {
+		List<Computer> computers = new ArrayList<Computer>();
+		RowMapper<Computer> rowMapper = new RowMapper<Computer>() {
+			@Override
+			public Computer mapRow(ResultSet rs, int rowNum) throws SQLException {
+				Computer computer = null;
+				try {
+					computer = mapResult(rs);
+				} catch (CompanyDAOException e) {
+					e.printStackTrace();
+				}
+				return computer;
+			}
+		};
+		HashMap<String, Object> params = new HashMap<String, Object>();
+		params.put("limit", limit);
+		params.put("offset", pageNumber);
+		
+		try {
+			computers = this.jdbcTemplateParam.query(GET_ALL_ORDER_BY_NAME, params, rowMapper);
+			this.log.error("getAllByName computer passed");
+		}catch (DataAccessException e) {
+			this.log.error("getAllByName computer error");
+			this.log.debug(e.getMessage(), e);
+			throw new ComputerDAOException();
+		}
+		
+		
+		return computers;
 	}
 
 	private Computer mapResult(ResultSet res) throws SQLException, CompanyDAOException {
@@ -193,13 +330,11 @@ public class ComputerDaoImpl implements ComputerDAO {
 		} else {
 			company = new Company(0, null);
 		}
-		
 		compBuild.setId(id);
 		compBuild.setName(name);
 		compBuild.setIntroduced(introduced);
 		compBuild.setDiscontinued(discontinued);
 		compBuild.setCompany(company);
-		System.out.println(compBuild.build().toString());
 		return compBuild.build();
 	}
 
@@ -214,86 +349,6 @@ public class ComputerDaoImpl implements ComputerDAO {
 	@Override
 	public List<Computer> getByCompanyId(long id) {
 		return null;
-	}
-
-	@Override
-	public List<Computer> getByName(String name,int limit,int pos) throws CompanyDAOException, ComputerDAOException {
-		List<Computer> computers = new ArrayList<Computer>();
-		
-		try (Connection connect = DAOFactory.getConnection();
-				PreparedStatement pSt = connect.prepareStatement(GET_BY_NAME);) {
-			String value="%"+name+"%";
-			pSt.setString(1, value);
-			pSt.setInt(2, limit);
-			pSt.setInt(3, pos);
-			System.out.println(pSt);
-			ResultSet result = pSt.executeQuery();
-			while (result.next()) {
-				System.out.println(mapResult(result));
-				computers.add(mapResult(result));
-			}
-			log.info("computers found");
-			
-		} catch (SQLException e) {
-		
-			log.error("computers not found");
-			log.debug(e.getMessage(),e);
-			throw new ComputerDAOException();
-		}
-		
-		return computers;
-	}
-
-	@Override
-	public List<Computer> getByNameOrderBy(String name, int limit, int pos)
-			throws CompanyDAOException, ComputerDAOException {
-		List<Computer> computers = new ArrayList<Computer>();
-		
-		try (Connection connect = DAOFactory.getConnection();
-				PreparedStatement pSt = connect.prepareStatement(GET_BY_NAME_ORDER_By_NAME);) {
-			String value="%"+name+"%";
-			pSt.setString(1, value);
-			pSt.setInt(2, limit);
-			pSt.setInt(3, pos);
-			System.out.println(pSt);
-			ResultSet result = pSt.executeQuery();
-			while (result.next()) {
-				System.out.println(mapResult(result));
-				computers.add(mapResult(result));
-			}
-			log.info("computers found");
-			
-		} catch (SQLException e) {
-		
-			log.error("computers not found");
-			log.debug(e.getMessage(),e);
-			throw new ComputerDAOException();
-		}
-		
-		return computers;
-	}
-
-	@Override
-	public List<Computer> getAllByName(int limit, int pageNumber) throws CompanyDAOException, ComputerDAOException {
-		List<Computer> computers = new ArrayList<Computer>();
-		try (Connection connect = DAOFactory.getConnection();
-				PreparedStatement pSt = connect.prepareStatement(GET_ALL_ORDER_BY_NAME);) {
-			pSt.setInt(1, limit);
-			pSt.setInt(2, pageNumber);
-			System.out.println(pSt);
-			ResultSet result = pSt.executeQuery();
-			
-			while (result.next()) {
-				computers.add(mapResult(result));
-			}
-			log.info("computers found");
-		} catch (SQLException e) {
-			log.debug(e.getMessage(),e);
-			log.error("computers not found");
-			throw new ComputerDAOException();
-
-		}
-		return computers;
 	}
 
 }

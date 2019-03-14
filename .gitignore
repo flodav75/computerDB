@@ -20,6 +20,6 @@ target/
 .settings/
 .classpath
 .project
-
+src/main/resources/hikari.properties
 
 

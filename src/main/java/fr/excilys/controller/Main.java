@@ -1,9 +1,18 @@
 package fr.excilys.controller;
 
-public class Main {
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-public static void main(String[] args) {
-	Controller.getInstance();
-  }
+import config.SpringConfiguration;
+
+public class Main {
+	static ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguration.class);
+
+	static Controller controller = context.getBean(Controller.class);
+
+	public static void main(String[] args) {
+
+		controller.start();
+	}
 
 }

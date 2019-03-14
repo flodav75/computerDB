@@ -10,21 +10,28 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import fr.excilys.exceptions.CompanyDAOException;
 import fr.excilys.exceptions.ComputerDAOException;
 import fr.excilys.model.Computer;
 import fr.excilys.service.ComputerService;
-import fr.excilys.service.ComputerServiceImpl;
 
 /**
  * Servlet implementation class DeleteComputerServlet
  */
+@Controller
 @WebServlet("/DeleteComputer")
 public class DeleteComputerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+
+	@Autowired
 	private ComputerService computerSer;
+
 	private Logger log;
+
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
@@ -34,7 +41,8 @@ public class DeleteComputerServlet extends HttpServlet {
 	}
 
 	public void init() throws ServletException {
-		this.computerSer = ComputerServiceImpl.getInstance();
+		SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+
 		this.log = LoggerFactory.getLogger(getClass());
 	}
 
@@ -44,28 +52,7 @@ public class DeleteComputerServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-//		System.out.println("doGet");
-//		String idComputers = request.getParameter("selection");
-//		try {
-//			if (!idComputers.isEmpty()) {
-//				String computers[] = idComputers.split(",");
-//				Long id = null;
-//				for (int i = 0; i < computers.length; i++) {
-//					id = Long.parseLong(computers[i]);
-//					removeComputer(id);
-//					id = null;
-//				}
-//			}
-//		} catch (NumberFormatException e) {
-//			this.log.error("error typing name");
-//			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
-//		} catch (CompanyDAOException e) {
-//			this.log.error("error company request");
-//			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
-//		} catch (ComputerDAOException e) {
-//			this.log.error("error computer request");
-//			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
-//		}
+
 	}
 
 	/**
@@ -77,8 +64,8 @@ public class DeleteComputerServlet extends HttpServlet {
 
 		// TODO Auto-generated method stub
 		String idComputers = request.getParameter("selection");
-		String [] computers = idComputers.split(",");
-		for(int i=0; i<computers.length;i++) {
+		String[] computers = idComputers.split(",");
+		for (int i = 0; i < computers.length; i++) {
 			try {
 				removeComputer(Long.parseLong(computers[i]));
 			} catch (NumberFormatException e) {

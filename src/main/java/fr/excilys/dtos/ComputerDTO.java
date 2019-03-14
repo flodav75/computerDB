@@ -164,7 +164,7 @@ public class ComputerDTO {
 
 	public static class ComputerDTOBuilder {
 		private String id = "0";
-		private String computerName ="";
+		private String computerName = "";
 		private String introduced;
 		private String discontinued;
 		private String companyId;

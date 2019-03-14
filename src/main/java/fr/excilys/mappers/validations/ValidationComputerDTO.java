@@ -35,7 +35,7 @@ public class ValidationComputerDTO {
 		}
 	}
 
-	private static  LocalDate convertToDate(String date) throws ParseException, DateTimeParseException {
+	private static LocalDate convertToDate(String date) throws ParseException, DateTimeParseException {
 		LocalDate formattedString = null;
 		if (date != null && !date.isEmpty()) {
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

@@ -12,6 +12,10 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
+
 import fr.excilys.exceptions.CompanyDAOException;
 import fr.excilys.exceptions.ComputerDAOException;
 import fr.excilys.exceptions.ComputerNameException;
@@ -19,22 +23,25 @@ import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
 import fr.excilys.model.Computer.ComputerBuilder;
 import fr.excilys.service.CompanyService;
-import fr.excilys.service.CompanyServiceImpl;
 import fr.excilys.service.ComputerService;
-import fr.excilys.service.ComputerServiceImpl;
 
+@Controller
 @WebServlet("/EditComputer")
 public class EditServlet extends HttpServlet {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+
+	@Autowired
 	private ComputerService computerSer;
+
+	@Autowired
 	private CompanyService compaSer;
 
 	public void init() throws ServletException {
-		this.computerSer = ComputerServiceImpl.getInstance();
-		this.compaSer = CompanyServiceImpl.getInstance();
+		SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+
 	}
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -127,16 +134,6 @@ public class EditServlet extends HttpServlet {
 		}
 		return formattedString;
 	}
-
-//	private Date formatDate(String date) throws ParseException {
-//		Date dateReturn = null;
-//		if (date != null && !date.isEmpty()) {
-//			String newDate = date + " 00:00:00";
-//			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-//			dateReturn = dateFormat.parse(newDate);
-//		}
-//		return dateReturn;
-//	}
 
 	private Company getCompany(long id) throws CompanyDAOException {
 		Company company = null;

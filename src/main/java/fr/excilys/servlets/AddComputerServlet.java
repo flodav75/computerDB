@@ -12,30 +12,39 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import fr.excilys.dtos.ComputerDTO.ComputerDTOBuilder;
 import fr.excilys.exceptions.CompanyDAOException;
 import fr.excilys.exceptions.ComputerDAOException;
+import fr.excilys.exceptions.ComputerDateException;
 import fr.excilys.exceptions.ComputerNameException;
 import fr.excilys.exceptions.DateFormatException;
 import fr.excilys.mappers.ComputerMapper;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
 import fr.excilys.service.CompanyService;
-import fr.excilys.service.CompanyServiceImpl;
 import fr.excilys.service.ComputerService;
-import fr.excilys.service.ComputerServiceImpl;
 
+@Controller
 @WebServlet("/AddComputer")
 public class AddComputerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+
+	@Autowired
 	private ComputerService computerSer;
+
+	@Autowired
 	private CompanyService compaSer;
+
+	@Autowired
+	ComputerMapper compMap;
 	private Logger log;
 
 	public void init() throws ServletException {
-		this.computerSer = ComputerServiceImpl.getInstance();
-		this.compaSer = CompanyServiceImpl.getInstance();
+		SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 		this.log = LoggerFactory.getLogger(AddComputerServlet.class);
 	}
 
@@ -89,6 +98,9 @@ public class AddComputerServlet extends HttpServlet {
 		} catch (CompanyDAOException e1) {
 			this.log.error("error adding company");
 			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
+		} catch (ComputerDateException e1) {
+			this.log.error("error adding computer, error date");
+			request.getServletContext().getRequestDispatcher("/Index").forward(request, response);
 		}
 	}
 
@@ -100,7 +112,7 @@ public class AddComputerServlet extends HttpServlet {
 
 	private Computer getComputerForm(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException, ParseException, NumberFormatException, ComputerNameException,
-			DateFormatException, CompanyDAOException {
+			DateFormatException, CompanyDAOException, ComputerDateException {
 		Computer computer = null;
 		String name = request.getParameter("name");
 		String introduced = request.getParameter("introduced");
@@ -111,7 +123,6 @@ public class AddComputerServlet extends HttpServlet {
 		compDtoBuilder.setIntroduced(introduced);
 		compDtoBuilder.setDiscontinued(discontinued);
 		compDtoBuilder.setCompanyId(idCompany);
-		ComputerMapper compMap = new ComputerMapper();
 		computer = compMap.getComputerFromDTO(compDtoBuilder.build());
 		return computer;
 	}

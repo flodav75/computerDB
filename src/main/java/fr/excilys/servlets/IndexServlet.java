@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import fr.excilys.dtos.ComputerDTO;
 import fr.excilys.exceptions.CompanyDAOException;
@@ -20,7 +22,6 @@ import fr.excilys.exceptions.ComputerNameException;
 import fr.excilys.mappers.ComputerDtoMapper;
 import fr.excilys.model.Computer;
 import fr.excilys.service.ComputerService;
-import fr.excilys.service.ComputerServiceImpl;
 
 @WebServlet("/Index")
 public class IndexServlet extends HttpServlet {
@@ -29,17 +30,24 @@ public class IndexServlet extends HttpServlet {
 	private final static Integer OFFSET_DEFAULT = 1;
 	private final static Integer[] LIMIT_VALID = { 10, 20, 50, 100 };
 	private static final long serialVersionUID = 1L;
+
+	@Autowired
 	private ComputerService computerSer;
+
+	@Autowired
+	ComputerDtoMapper mapperDTO;
+
 	private Logger log;
 	private Integer limit;
 	private Integer offset;
 	private String groupBy;
-	private boolean isGroupeByName=false;
+	private boolean isGroupeByName = false;
 
 	@Override
 	public void init() throws ServletException {
-		this.groupBy="";
-		computerSer = ComputerServiceImpl.getInstance();
+		super.init();
+		SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+		this.groupBy = "";
 		this.log = LoggerFactory.getLogger(IndexServlet.class);
 		this.log.debug(this.groupBy);
 	}
@@ -47,23 +55,20 @@ public class IndexServlet extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		List<ComputerDTO> computersDTO = new ArrayList<>();
 		limit = getPagination(request.getParameter("limit"), LIMIT_DEFAULT);
-		isGroupeByName =false;
+		isGroupeByName = false;
 		this.groupBy = request.getParameter("groupBy");
-		System.out.println(this.groupBy);
-		if(this.groupBy !=null && !this.groupBy.isEmpty()) {
-			System.out.println("true");
-			isGroupeByName =true;
+		if (this.groupBy != null && !this.groupBy.isEmpty()) {
+			isGroupeByName = true;
 		}
 		Integer currentpage = null;
 		String nameToSearch = request.getParameter("search");
 		Integer nbrRow = null;
 		Integer maxPage = null;
+		
 		try {
-			//limit = getPagination(request.getParameter("limit"), LIMIT_DEFAULT);
 			currentpage = getPagination(request.getParameter("pageNumber"), OFFSET_DEFAULT);
 			valideLimit(limit);
 			this.offset = (currentpage - 1) * this.limit;
-			
 
 			if (nameToSearch == null || nameToSearch.isEmpty()) {
 				nbrRow = getMaxPage();
@@ -72,7 +77,7 @@ public class IndexServlet extends HttpServlet {
 				this.offset = (currentpage - 1) * this.limit;
 				computersDTO = getAllComputers();
 			} else {
-				computersDTO =getSearch(nameToSearch);
+				computersDTO = getSearch(nameToSearch);
 				this.offset = (currentpage - 1) * this.limit;
 				nbrRow = this.computerSer.getRowCountSearch(nameToSearch);
 				maxPage = getPageNumberMax(nbrRow, limit);
@@ -126,35 +131,33 @@ public class IndexServlet extends HttpServlet {
 			throws ComputerNameException, CompanyDAOException, ComputerDAOException {
 		List<ComputerDTO> computersReturn = new ArrayList<>();
 		List<Computer> computerToConvert = new ArrayList<>();
-		ComputerDtoMapper mapperDTO = null;
-		if(isGroupeByName) {
-			computerToConvert = computerSer.getAllOrderByName(limit,this.offset);
-		}else {
+		if (isGroupeByName) {
+			computerToConvert = computerSer.getAllOrderByName(limit, this.offset);
+		} else {
 			computerToConvert = computerSer.getAll(this.limit, this.offset);
 		}
 		if (computerToConvert != null && !computerToConvert.isEmpty()) {
 			mapperDTO = new ComputerDtoMapper();
 			for (Computer comp : computerToConvert) {
-				computersReturn.add(mapperDTO.ComputerDtoFromComputer(comp));
+				computersReturn.add(ComputerDtoMapper.ComputerDtoFromComputer(comp));
 			}
 		}
 		return computersReturn;
 	}
-	
+
 	private List<ComputerDTO> getSearch(String name)
 			throws ComputerNameException, CompanyDAOException, ComputerDAOException {
 		List<ComputerDTO> computersReturn = new ArrayList<>();
 		List<Computer> computerToConvert = new ArrayList<>();
-		ComputerDtoMapper mapperDTO = null;
-		if(isGroupeByName) {
-			computerToConvert = computerSer.getByNameOrderByName(name,limit,this.offset);
-		}else {
+
+		if (isGroupeByName) {
+			computerToConvert = computerSer.getByNameOrderByName(name, limit, this.offset);
+		} else {
 			computerToConvert = computerSer.getByName(name, limit, this.offset);
 		}
 		if (computerToConvert != null && !computerToConvert.isEmpty()) {
-			mapperDTO = new ComputerDtoMapper();
 			for (Computer comp : computerToConvert) {
-				computersReturn.add(mapperDTO.ComputerDtoFromComputer(comp));
+				computersReturn.add(ComputerDtoMapper.ComputerDtoFromComputer(comp));
 			}
 		}
 		return computersReturn;
@@ -216,10 +219,7 @@ public class IndexServlet extends HttpServlet {
 		if (page > pageMax || page < 1) {
 			throw new NumberFormatException();
 		}
-	
-	}
-	public void get(Long f) {
-		
+
 	}
 
 }

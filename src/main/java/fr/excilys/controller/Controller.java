@@ -7,44 +7,38 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import fr.excilys.exceptions.CompanyDAOException;
 import fr.excilys.exceptions.ComputerDAOException;
+import fr.excilys.exceptions.DeleteCompanyException;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
 import fr.excilys.model.Computer.ComputerBuilder;
 import fr.excilys.model.ECommandeLine;
 import fr.excilys.persistence.dao.ComputerDaoImpl;
 import fr.excilys.service.CompanyService;
-import fr.excilys.service.CompanyServiceImpl;
 import fr.excilys.service.ComputerService;
-import fr.excilys.service.ComputerServiceImpl;
 import fr.excilys.ui.Menu;
 
+@Component
 public class Controller {
-
+	@Autowired
 	private ComputerService computerSer;
+	@Autowired
 	private CompanyService companySer;
 	private Boolean isRunning;
-	public static Controller instance;
 	private static int DEFAULTID = 0;
 	public final static List<String> GOOD_COMMAND_LINE = Arrays.asList("ALLCOMPUTERS", "ALLCOMPANIES", "DETAILS", "ADD",
-			"UPDATE", "REMOVE", "EXIT");
+			"UPDATE", "REMOVE", "DELETE", "EXIT");
 
 	private Controller() {
 		this.isRunning = true;
-		this.computerSer = ComputerServiceImpl.getInstance();
-		this.companySer = CompanyServiceImpl.getInstance();
-		start();
+
 	}
 
-	public static Controller getInstance() {
-		if (instance == null) {
-			instance = new Controller();
-		}
-		return instance;
-	}
-
-	private void start() {
+	public void start() {
 		while (this.isRunning) {
 
 			Menu.displayMenu();
@@ -89,7 +83,6 @@ public class Controller {
 				try {
 					updateComputer(askAndGetComputer());
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 				break;
@@ -105,6 +98,19 @@ public class Controller {
 				Menu.displayDeleteComputer(comp);
 
 				break;
+			case DELETE:
+				Company company = askAndGetCompany();
+				try {
+					deleteCompany(company);
+				} catch (ComputerDAOException e) {
+					e.printStackTrace();
+				} catch (CompanyDAOException e) {
+					e.printStackTrace();
+				} catch (DeleteCompanyException e) {
+					e.printStackTrace();
+				}
+
+				break;
 			case EXIT:
 				this.isRunning = false;
 				// create
@@ -115,6 +121,11 @@ public class Controller {
 		} else {
 			Menu.displayErrorTypedCommand();
 		}
+	}
+
+	private void deleteCompany(Company comp) throws CompanyDAOException, ComputerDAOException, DeleteCompanyException {
+		this.companySer.deleteCompany(comp.getId());
+
 	}
 
 	private List<Computer> getListComputers() throws CompanyDAOException, ComputerDAOException {
@@ -133,6 +144,12 @@ public class Controller {
 		Computer computer = null;
 		computer = this.computerSer.getById(id);
 		return computer;
+	}
+
+	private Company getCompany(long id) throws CompanyDAOException, ComputerDAOException {
+		Company company = null;
+		company = this.companySer.getById(id);
+		return company;
 	}
 
 	private void deleteComputer(Computer comp) throws ComputerDAOException {
@@ -278,6 +295,28 @@ public class Controller {
 		try {
 			long id = Long.parseLong(idString);
 			comp = getComputer(id);
+
+		} catch (NumberFormatException e) {
+			// Logger fzef= LoggerFactory.getLogger(getClass());
+			Menu.displayInputErrorId(idString);
+		} catch (CompanyDAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ComputerDAOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return comp;
+	}
+
+	public Company askAndGetCompany() {
+
+		Menu.askingIdInformation();
+		String idString = readValue();
+		Company comp = null;
+		try {
+			long id = Long.parseLong(idString);
+			comp = getCompany(id);
 
 		} catch (NumberFormatException e) {
 			// Logger fzef= LoggerFactory.getLogger(getClass());

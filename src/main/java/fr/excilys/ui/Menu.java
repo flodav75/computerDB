@@ -15,7 +15,8 @@ public class Menu {
 				"--------------Menu-----------------\n"
 				+ "ALLCOMPUTERS	List computers\n" + "ALLCOMPANIES	List companies\n"
 				+ "DETAILS	    Show computer details\n" + "ADD	        Create a computer\n"
-				+ "UPDATE	 	Update a computer\n" + "REMOVE		Delete a computer\n" + "EXIT          Exit app"
+				+ "UPDATE	 	Update a computer\n" + "REMOVE		Delete a computer\n" + 
+				"DELETE\n"+"EXIT          Exit app"
 				+ "                                     ");
 	}
 
@@ -40,6 +41,7 @@ public class Menu {
 		System.out.println("this computer has been deleted : ");
 		displayComputer(comp);
 	}
+	
 
 	public static void displayListComputers(List<Computer> computers) {
 		displayLogSuccess("get all computers");

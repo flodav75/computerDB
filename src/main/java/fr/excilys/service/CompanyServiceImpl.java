@@ -2,25 +2,21 @@ package fr.excilys.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import fr.excilys.exceptions.CompanyDAOException;
+import fr.excilys.exceptions.ComputerDAOException;
+import fr.excilys.exceptions.DeleteCompanyException;
 import fr.excilys.model.Company;
 import fr.excilys.persistence.dao.CompanyDAO;
-import fr.excilys.persistence.dao.DAOFactory;
 
+@Service
 public class CompanyServiceImpl implements CompanyService {
-
+	@Autowired
 	private CompanyDAO companyDao;
-	private static CompanyService instance;
 
 	private CompanyServiceImpl() {
-		this.companyDao = DAOFactory.getInstance().getCompanyDAO();
-	}
-
-	public static CompanyService getInstance() {
-		if (instance == null) {
-			instance = new CompanyServiceImpl();
-		}
-		return instance;
 	}
 
 	@Override
@@ -32,6 +28,12 @@ public class CompanyServiceImpl implements CompanyService {
 	public Company getById(long id) throws CompanyDAOException {
 
 		return this.companyDao.getById(id);
+	}
+
+	@Override
+	public void deleteCompany(long id) throws CompanyDAOException, ComputerDAOException, DeleteCompanyException {
+		this.companyDao.deleteCompany(id);
+
 	}
 
 }

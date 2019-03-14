@@ -1,0 +1,35 @@
+<configuration>
+<!-- 	<property name="LOG_PATH" value="src/main/resources/logs/" /> -->
+
+<!-- 	<appender name="FILE" class="ch.qos.logback.core.FileAppender"> -->
+<!-- 		<file>${LOG_PATH}/myApp.log</file> -->
+<!-- 		<encoder -->
+<!-- 			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder"> -->
+<!-- 			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n -->
+<!-- 			</Pattern> -->
+<!-- 		</encoder> -->
+<!-- 	</appender> -->
+
+	<appender name="STDOUT"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder
+			class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<Pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
+			</Pattern>
+		</encoder>
+	</appender>
+
+	<logger name="LogController" level="TRACE" />
+	<logger name="com.zaxxer.hikari" level="WARN" />
+	<logger name="org.springframework.beans.factory" level="WARN" />
+	<logger name="org.springframework.context.annotation"
+		level="WARN" />
+	<logger name="org.springframework.jndi" level="WARN" />
+	<logger name="org.springframework.web" level="WARN" />
+	<logger name="org.springframework.test" level="WARN" />
+
+	<root level="TRACE">
+		<appender-ref ref="STDOUT" />
+<!-- 		<appender-ref ref="FILE" /> -->
+	</root>
+</configuration>

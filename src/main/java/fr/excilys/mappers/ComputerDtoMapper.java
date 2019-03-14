@@ -2,18 +2,21 @@ package fr.excilys.mappers;
 
 import java.time.format.DateTimeFormatter;
 
+import org.springframework.stereotype.Component;
+
 import fr.excilys.dtos.ComputerDTO;
 import fr.excilys.dtos.ComputerDTO.ComputerDTOBuilder;
 import fr.excilys.exceptions.ComputerNameException;
 import fr.excilys.model.Computer;
 
+@Component
 public class ComputerDtoMapper {
 
 	public ComputerDtoMapper() {
 
 	}
 
-	public ComputerDTO ComputerDtoFromComputer(Computer computer) throws ComputerNameException {
+	public static ComputerDTO ComputerDtoFromComputer(Computer computer) throws ComputerNameException {
 		ComputerDTO computerDtoReturn = null;
 		String computerId = null;
 		String name = null;
@@ -37,7 +40,7 @@ public class ComputerDtoMapper {
 				idCompany = String.valueOf(computer.getCompany().getId());
 				companyName = computer.getCompany().getName();
 			}
-			
+
 			ComputerDTOBuilder computerDTOBuilder = new ComputerDTOBuilder();
 			computerDTOBuilder.setId(computerId);
 			computerDTOBuilder.setName(name);
@@ -45,7 +48,7 @@ public class ComputerDtoMapper {
 			computerDTOBuilder.setDiscontinued(discontinued);
 			computerDTOBuilder.setCompanyId(idCompany);
 			computerDTOBuilder.setCompanyName(companyName);
-			
+
 			computerDtoReturn = computerDTOBuilder.build();
 		} else {
 			throw new ComputerNameException();
