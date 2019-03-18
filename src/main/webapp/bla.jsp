@@ -8,7 +8,7 @@
 	</head>
 <body>
 
-Ceci est une page d'index dégeu inutile. Pour accèder à Computer data base veuillez cliquer <a href="Index"><span	class="glyphicon glyphicon-file"></span> ici</a>
+Ceci est une page d'index dégeu inutile. Pour accèder à Computer data base veuillez cliquer <a href="/"><span	class="glyphicon glyphicon-file"></span> ici</a>
 								
 </body>
 </html>

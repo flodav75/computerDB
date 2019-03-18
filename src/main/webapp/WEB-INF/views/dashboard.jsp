@@ -8,14 +8,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="utf-8">
 <!-- Bootstrap -->
-<link href="ressources/static/css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="ressources/static/css/font-awesome.css" rel="stylesheet" media="screen">
-<link href="ressources/static/css/main.css" rel="stylesheet" media="screen">
+<link href="<c:url value="/ressources/static/css/bootstrap.min.css"/>" rel="stylesheet" media="screen">
+<link href="<c:url value="/ressources/static/css/font-awesome.css"/>" rel="stylesheet" media="screen">
+<link href="<c:url value="/ressources/static/css/main.css"/>" rel="stylesheet" media="screen">
+
 </head>
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="Index"> Application - Computer Database </a>
+            <a class="navbar-brand" href="index"> Application - Computer Database </a>
         </div>
     </header>
 
@@ -33,7 +34,7 @@
             </h1>
             <div id="actions" class="form-horizontal">
                 <div class="pull-left">
-                    <form id="searchForm" action="Index" method="GET" class="form-inline">
+                    <form id="searchForm" action="index" method="GET" class="form-inline">
             			<input type="hidden" name="limit" value="10">
 						<input type="hidden" name="currentPage" value="1">
                         <input type="search" id="searchbox" name="search" class="form-control" value="${searchName }" placeholder="Search name" />
@@ -42,7 +43,7 @@
                     </form>
                 </div>
                 <div class="pull-right">
-                    <a class="btn btn-success" id="addComputer" href="AddComputer">Add Computer</a> 
+                    <a class="btn btn-success" id="addComputer" href="add">Add Computer</a> 
                     <a class="btn btn-default" id="editComputer" href="#" onclick="$.fn.toggleEditMode();">Edit</a>
                 </div>
             </div>
@@ -68,10 +69,10 @@
                             </span>
                         </th>
                         <th>
-                            Computer name <a href="Index?groupBy=asc&limit=${limit}&pageNumber=${pageNumber}&search=${searchName}" id="deleteSelected" >
+                            Computer name <a href="index?groupBy=asc&limit=${limit}&pageNumber=${pageNumber}&search=${searchName}" id="deleteSelected" >
                                         <i class="fas fa-sort-up"></i>
                                     </a>
-                                    <a href="Index?groupBy=desc&limit=${limit}&pageNumber=${pageNumber}&search=${searchName}" id="deleteSelected" >
+                                    <a href="index?groupBy=desc&limit=${limit}&pageNumber=${pageNumber}&search=${searchName}" id="deleteSelected" >
                                         <i class="fas fa-sort-down"></i>
                                     </a>
                         </th>
@@ -98,7 +99,7 @@
 	                            <input type="checkbox" name="cb" class="cb" value="${computer.getId()}">
 	                        </td>
 	                        <td>
-	                            <a href="EditComputer?idComputer=${computer.getId()}">${computer.getComputerName()}</a>
+	                            <a href="edit?idComputer=${computer.getId()}">${computer.getComputerName()}</a>
 	                        </td>
 	                        <td>${ computer.getIntroduced()}</td>
 	                        <td>${ computer.getDiscontinued()}</td>
@@ -115,7 +116,7 @@
         <div class="container text-center">
             <ul class="pagination">
                 <li>
-                   <a href="Index?limit=${limit}&pageNumber=1" aria-label="Previous">
+                   <a href="index?limit=${limit}&pageNumber=1" aria-label="Previous">
                       <span aria-hidden="true">&laquo;</span>
                   </a>
               </li>
@@ -124,36 +125,36 @@
 		         	<c:choose>	
 			          <c:when test = "${ max<6 }">
 						   <c:forEach var="page" begin ="1" end="${max }" step="1"> 
-			         		<li><a href="Index?limit=${limit}&pageNumber=${page }&search=${searchName}&limit=${pageSizeValue}&pageNumber=${pageNumber}">${page}</a></li>
+			         		<li><a href="index?limit=${limit}&pageNumber=${page }&search=${searchName}&limit=${pageSizeValue}&pageNumber=${pageNumber}">${page}</a></li>
 			         </c:forEach>
 	 				   </c:when> 
 				       <c:otherwise> 
-					        <li><a href="Index?limit=${limit}&pageNumber=1&search=${searchName}&groupBy=${groupBy}">1</a></li>
-			              	<li><a href="Index?limit=${limit}&pageNumber=2&search=${searchName}&groupBy=${groupBy}">2</a></li>
-			              	<li><a href="Index?limit=${limit}&pageNumber=3&search=${searchName}&groupBy=${groupBy}">3</a></li>
-			              	<li><a href="Index?limit=${limit}&pageNumber=4&search=${searchName}&groupBy=${groupBy}">4</a></li>				
-			              	<li><a href="Index?limit=${limit}&pageNumber=5&search=${searchName}&groupBy=${groupBy}">5</a></li>      
+					        <li><a href="index?limit=${limit}&pageNumber=1&search=${searchName}&groupBy=${groupBy}">1</a></li>
+			              	<li><a href="index?limit=${limit}&pageNumber=2&search=${searchName}&groupBy=${groupBy}">2</a></li>
+			              	<li><a href="index?limit=${limit}&pageNumber=3&search=${searchName}&groupBy=${groupBy}">3</a></li>
+			              	<li><a href="index?limit=${limit}&pageNumber=4&search=${searchName}&groupBy=${groupBy}">4</a></li>				
+			              	<li><a href="index?limit=${limit}&pageNumber=5&search=${searchName}&groupBy=${groupBy}">5</a></li>      
 	 			        </c:otherwise>
 		              </c:choose>
 			      </c:when>
 			      <c:when test = "${ pageNumber>max-3 }">
-					  <li><a href="Index?limit=${limit}&pageNumber=${max-4}&search=${searchName}&groupBy=${groupBy}">${max-4}</a></li>
-		              <li><a href="Index?limit=${limit}&pageNumber=${max-3}&search=${searchName}&groupBy=${groupBy}">${max-3}</a></li>
-		              <li><a href="Index?limit=${limit}&pageNumber=${max-2}&search=${searchName}&groupBy=${groupBy}">${max-2}</a></li>
-		              <li><a href="Index?limit=${limit}&pageNumber=${max-1}&search=${searchName}&groupBy=${groupBy}">${max-1}</a></li>
-		              <li><a href="Index?limit=${limit}&pageNumber=${max}&search=${searchName}&groupBy=${groupBy} ">${max}</a></li>
+					  <li><a href="index?limit=${limit}&pageNumber=${max-4}&search=${searchName}&groupBy=${groupBy}">${max-4}</a></li>
+		              <li><a href="index?limit=${limit}&pageNumber=${max-3}&search=${searchName}&groupBy=${groupBy}">${max-3}</a></li>
+		              <li><a href="index?limit=${limit}&pageNumber=${max-2}&search=${searchName}&groupBy=${groupBy}">${max-2}</a></li>
+		              <li><a href="index?limit=${limit}&pageNumber=${max-1}&search=${searchName}&groupBy=${groupBy}">${max-1}</a></li>
+		              <li><a href="index?limit=${limit}&pageNumber=${max}&search=${searchName}&groupBy=${groupBy} ">${max}</a></li>
  				   </c:when> 
 			       <c:otherwise> 
-				        <li><a href="Index?limit=${limit}&pageNumber=${pageNumber-2}&search=${searchName}&groupBy=${groupBy}">${pageNumber-2}</a></li>
-		              	<li><a href="Index?limit=${limit}&pageNumber=${pageNumber-1}&search=${searchName}&groupBy=${groupBy}">${pageNumber-1}</a></li>
-		              	<li><a href="Index?limit=${limit}&pageNumber=${pageNumber}&search=${searchName}&groupBy=${groupBy}">${pageNumber}</a></li>
-		              	<li><a href="Index?limit=${limit}&pageNumber=${pageNumber+1}&search=${searchName}&groupBy=${groupBy}">${pageNumber+1}</a></li>				
-		              	<li><a href="Index?limit=${limit}&pageNumber=${pageNumber+2}&search=${searchName}&groupBy=${groupBy}">${pageNumber+2}</a></li>      
+				        <li><a href="index?limit=${limit}&pageNumber=${pageNumber-2}&search=${searchName}&groupBy=${groupBy}">${pageNumber-2}</a></li>
+		              	<li><a href="index?limit=${limit}&pageNumber=${pageNumber-1}&search=${searchName}&groupBy=${groupBy}">${pageNumber-1}</a></li>
+		              	<li><a href="index?limit=${limit}&pageNumber=${pageNumber}&search=${searchName}&groupBy=${groupBy}">${pageNumber}</a></li>
+		              	<li><a href="index?limit=${limit}&pageNumber=${pageNumber+1}&search=${searchName}&groupBy=${groupBy}">${pageNumber+1}</a></li>				
+		              	<li><a href="index?limit=${limit}&pageNumber=${pageNumber+2}&search=${searchName}&groupBy=${groupBy}">${pageNumber+2}</a></li>      
  			        </c:otherwise> 
 
 	      		</c:choose>
 	              <li>
-	                <a href="Index?limit=${limit}&pageNumber=${max}" aria-label="Next">
+	                <a href="index?limit=${limit}&pageNumber=${max}" aria-label="Next">
 	                    <span aria-hidden="true">&raquo;</span>
 	                </a>
 	            </li>
@@ -161,16 +162,17 @@
 	        <div class="btn-group btn-group-sm pull-right" role="group" >
 	           <c:set var="pageSizeValues">10,20,50,100</c:set>
         		<c:forTokens items="${pageSizeValues}" var="pageSizeValue" delims=",">
-	           		 <a role="button" type="button" class="btn btn-default" href="http://localhost:8080/ComputerDatabase/Index?limit=${pageSizeValue}&pageNumber=${pageNumber}&search=${searchName}&groupBy=${groupBy}">
+	           		 <a role="button" type="button" class="btn btn-default" href="http://localhost:8080/ComputerDatabase/index?limit=${pageSizeValue}&pageNumber=${pageNumber}&search=${searchName}&groupBy=${groupBy}">
 	            	${pageSizeValue}
 	            	</a>
 			</c:forTokens>
+		
 	        </div>
         </div>
     </footer>
-<script src="ressources/static/js/jquery.min.js"></script>
-<script src="ressources/static/js/bootstrap.min.js"></script>
-<script src="ressources/static/js/dashboard.js"></script>
+<script src="<c:url value="/ressources/static/js/jquery.min.js"/>"></script>
+<script src="<c:url value="/ressources/static/js/bootstrap.min.js"/>"></script>
+<script src="<c:url value="/ressources/static/js/dashboard.js"/>"></script>
 
 </body>
 </html>

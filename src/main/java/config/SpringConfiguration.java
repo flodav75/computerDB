@@ -10,6 +10,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.view.JstlView;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -17,7 +23,8 @@ import com.zaxxer.hikari.HikariDataSource;
 @Configuration
 @ComponentScan(basePackages = { "fr.excilys.controller", "fr.excilys.persistence", "fr.excilys.service",
 		"fr.excilys.mappers" })
-public class SpringConfiguration implements WebApplicationInitializer {
+@EnableWebMvc
+public class SpringConfiguration implements WebApplicationInitializer,WebMvcConfigurer {
 
 	@Bean
 	public DataSource getDataSource() {
@@ -36,5 +43,20 @@ public class SpringConfiguration implements WebApplicationInitializer {
 		// Manage the life cycle of the root application context
 		container.addListener(new ContextLoaderListener(rootContext));
 	}
-
+	
+	 @Bean
+	   public ViewResolver viewResolver() {
+	      InternalResourceViewResolver bean = new InternalResourceViewResolver();
+	      bean.setViewClass(JstlView.class);
+	      bean.setPrefix("/WEB-INF/views/");
+	      bean.setSuffix(".jsp");
+	 
+	      return bean;
+	   }
+	 
+	 
+	 @Override 
+	 public void addResourceHandlers(final ResourceHandlerRegistry registry) {
+		   registry.addResourceHandler("/ressources/static/**").addResourceLocations("/ressources/static/");	 
+	 }
 }

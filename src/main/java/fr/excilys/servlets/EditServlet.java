@@ -41,7 +41,6 @@ public class EditServlet extends HttpServlet {
 
 	public void init() throws ServletException {
 		SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
-
 	}
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -52,6 +51,7 @@ public class EditServlet extends HttpServlet {
 			try {
 				computer = getComputer(idComputer);
 				List<Company> companies = getCompanies();
+				System.out.println(computer.toString()+" "+computer.getCompany().toString());
 				request.setAttribute("computer", computer);
 				request.setAttribute("companies", companies);
 				request.getServletContext().getRequestDispatcher("/WEB-INF/views/editComputer.jsp").forward(request,
@@ -112,9 +112,9 @@ public class EditServlet extends HttpServlet {
 		ComputerBuilder computerBuilder = new ComputerBuilder();
 		Long idComputer = Long.valueOf(request.getParameter("idComputer"));
 		String name = request.getParameter("name");
-		if (name != null && name.isEmpty()) {
-			throw new ComputerNameException();
-		}
+//		if (name != null && name.isEmpty()) {
+//			throw new ComputerNameException();
+//		}
 		LocalDate introduced = convertToDate(request.getParameter("introduced"));
 		LocalDate discontinued = convertToDate(request.getParameter("discontinued"));
 		Company company = getCompany(Long.valueOf(request.getParameter("companyId")));

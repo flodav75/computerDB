@@ -219,7 +219,6 @@ public class IndexServlet extends HttpServlet {
 		if (page > pageMax || page < 1) {
 			throw new NumberFormatException();
 		}
-
 	}
 
 }

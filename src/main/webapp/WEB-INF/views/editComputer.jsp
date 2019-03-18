@@ -14,7 +14,7 @@
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="Index"> Application - Computer Database </a>
+            <a class="navbar-brand" href="index"> Application - Computer Database </a>
         </div>
     </header>
     <section id="main">
@@ -26,7 +26,7 @@
                     </div>
                     <h1>Edit Computer ${computer.id}</h1>
 
-                    <form action="EditComputer" method="POST">
+                    <form action="edit" method="POST">
                         <input type="hidden" value="${computer.id}"name="idComputer" id="idComputer"/> <!-- TODO: Change this value with the computer id -->
                         <fieldset>
                             <div class="form-group">
@@ -35,11 +35,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="introduced">Introduced date</label>
-                                <input type="date" class="form-control" name="introduced" id="introduced"   placeholder="Introduced date">
+                                <input type="date" class="form-control" name="introduced" id="introduced" value="${computer.introduced }"  placeholder="Introduced date">
                             </div>
                             <div class="form-group">
                                 <label for="discontinued">Discontinued date</label>
-                                <input type="date" class="form-control" name="discontinued" id="discontinued" placeholder="Discontinued date">
+                                <input type="date" class="form-control" name="discontinued" id="discontinued" value="${computer.discontinued }"  placeholder="Discontinued date">
                             </div>
                             <div class="form-group">
                                 <label for="companyId">Company</label>
@@ -55,7 +55,7 @@
                         <div class="actions pull-right">
                             <input type="submit" value="Edit" class="btn btn-primary">
                             or
-                            <a href="Index" class="btn btn-default">Cancel</a>
+                            <a href="index" class="btn btn-default">Cancel</a>
                         </div>
                     </form>
                 </div>

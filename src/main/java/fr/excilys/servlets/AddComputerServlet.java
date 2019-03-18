@@ -2,6 +2,7 @@ package fr.excilys.servlets;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -105,7 +106,7 @@ public class AddComputerServlet extends HttpServlet {
 	}
 
 	private List<Company> getCompanies() throws CompanyDAOException {
-		List<Company> companies = null;
+		List<Company> companies = new ArrayList<>();
 		companies = this.compaSer.getAll();
 		return companies;
 	}
