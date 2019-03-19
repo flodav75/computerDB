@@ -30,7 +30,6 @@ import fr.excilys.service.CompanyService;
 import fr.excilys.service.ComputerService;
 
 @Controller
-@WebServlet("/AddComputer")
 public class AddComputerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

@@ -3,8 +3,6 @@ package fr.excilys.controller;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -14,7 +12,6 @@ import fr.excilys.model.Computer;
 import fr.excilys.service.ComputerService;
 
 @Controller
-@RequestMapping("/delete")
 public class DeleteController {
 	
 	private ComputerService computerServ;
@@ -25,7 +22,6 @@ public class DeleteController {
 		this.computerServ = computerServ;
 	}
 	
-	@GetMapping
 	public ModelAndView getDelete(@RequestParam(name = "selection", required = true) String idComputers,ModelAndView model) {
 		
 		String[] computers = idComputers.split(",");

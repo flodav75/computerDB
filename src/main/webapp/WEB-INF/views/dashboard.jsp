@@ -34,10 +34,10 @@
             </h1>
             <div id="actions" class="form-horizontal">
                 <div class="pull-left">
-                    <form id="searchForm" action="index" method="GET" class="form-inline">
+                    <form id="searchForm" action="search" method="GET" class="form-inline">
             			<input type="hidden" name="limit" value="10">
 						<input type="hidden" name="currentPage" value="1">
-                        <input type="search" id="searchbox" name="search" class="form-control" value="${searchName }" placeholder="Search name" />
+                        <input type="search" id="searchbox" name="searchName" class="form-control" value="${searchName}" placeholder="Search name" />
                         <input type="submit" id="searchsubmit" value="Filter by name"
                         class="btn btn-primary" />
                     </form>
@@ -69,12 +69,20 @@
                             </span>
                         </th>
                         <th>
-                            Computer name <a href="index?groupBy=asc&limit=${limit}&pageNumber=${pageNumber}&search=${searchName}" id="deleteSelected" >
-                                        <i class="fas fa-sort-up"></i>
-                                    </a>
-                                    <a href="index?groupBy=desc&limit=${limit}&pageNumber=${pageNumber}&search=${searchName}" id="deleteSelected" >
-                                        <i class="fas fa-sort-down"></i>
-                                    </a>
+                            Computer name 
+                            <c:choose>
+		         <c:when test = "${searchName}">
+		                        <a href="search?groupBy=asc&limit=${limit}&pageNumber=${pageNumber}&searchName=${searchName}" id="deleteSelected" >
+                                   <i class="fas fa-sort-up"></i>
+                                </a>
+		         </c:when>
+		         <c:otherwise>
+		             			<a href="index?groupBy=asc&limit=${limit}&pageNumber=${pageNumber}" id="deleteSelected" >
+                                   <i class="fas fa-sort-up"></i>
+                                </a>
+		         </c:otherwise>
+	      		</c:choose>	
+                                    
                         </th>
                         <th>
                             Introduced date
@@ -115,57 +123,147 @@
     <footer class="navbar-fixed-bottom">
         <div class="container text-center">
             <ul class="pagination">
-                <li>
-                   <a href="index?limit=${limit}&pageNumber=1" aria-label="Previous">
-                      <span aria-hidden="true">&laquo;</span>
-                  </a>
-              </li>
+            <c:choose>
+	            <c:when test="${searchName != null }">
+		           			<li>
+				                <a href="search?limit=${limit}&pageNumber=1" aria-label="Previous">
+	                      			<span aria-hidden="true">&laquo;</span>
+	                  			</a>
+		            		</li>
+		           			
+		           		
+		         </c:when>	
+	           	 <c:otherwise>
+	           			<li>
+			                 <a href="index?limit=${limit}&pageNumber=1" aria-label="Previous">
+                      			<span aria-hidden="true">&laquo;</span>
+                  			</a>
+	            		</li>
+	           			
+	           	 </c:otherwise>
+	           </c:choose>
+                
+              <c:choose>
+              	<c:when test = "${searchName != null}">
+              
+		              	 <c:choose>
+				         <c:when test = "${ pageNumber<3 }">
+				         	<c:choose>	
+					          <c:when test = "${ max<6 }">
+								   <c:forEach var="page" begin ="1" end="${max }" step="1"> 
+					         		<li><a href="search?limit=${limit}&pageNumber=${page }&searchName=${searchName}&limit=${pageSizeValue}&pageNumber=${pageNumber}">${page}</a></li>
+					         </c:forEach>
+			 				   </c:when> 
+						       <c:otherwise> 
+							        <li><a href="search?limit=${limit}&pageNumber=1&searchName=${searchName}&groupBy=${groupBy}">1</a></li>
+					              	<li><a href="search?limit=${limit}&pageNumber=2&searchName=${searchName}&groupBy=${groupBy}">2</a></li>
+					              	<li><a href="search?limit=${limit}&pageNumber=3&searchName=${searchName}&groupBy=${groupBy}">3</a></li>
+					              	<li><a href="search?limit=${limit}&pageNumber=4&searchName=${searchName}&groupBy=${groupBy}">4</a></li>				
+					              	<li><a href="search?limit=${limit}&pageNumber=5&searchName=${searchName}&groupBy=${groupBy}">5</a></li>      
+			 			        </c:otherwise>
+				              </c:choose>
+					      </c:when>
+					      <c:when test = "${ pageNumber>max-3 }">
+							  <li><a href="search?limit=${limit}&pageNumber=${max-4}&groupBy=${groupBy}">${max-4}</a></li>
+				              <li><a href="search?limit=${limit}&pageNumber=${max-3}&groupBy=${groupBy}">${max-3}</a></li>
+				              <li><a href="search?limit=${limit}&pageNumber=${max-2}&groupBy=${groupBy}">${max-2}</a></li>
+				              <li><a href="search?limit=${limit}&pageNumber=${max-1}&groupBy=${groupBy}">${max-1}</a></li>
+				              <li><a href="search?limit=${limit}&pageNumber=${max}&groupBy=${groupBy} ">${max}</a></li>
+		 				   </c:when> 
+					       <c:otherwise> 
+						        <li><a href="search?limit=${limit}&pageNumber=${pageNumber-2}&groupBy=${groupBy}">${pageNumber-2}</a></li>
+				              	<li><a href="search?limit=${limit}&pageNumber=${pageNumber-1}&groupBy=${groupBy}">${pageNumber-1}</a></li>
+				              	<li><a href="search?limit=${limit}&pageNumber=${pageNumber}&groupBy=${groupBy}">${pageNumber}</a></li>
+				              	<li><a href="search?limit=${limit}&pageNumber=${pageNumber+1}&groupBy=${groupBy}">${pageNumber+1}</a></li>				
+				              	<li><a href="search?limit=${limit}&pageNumber=${pageNumber+2}&groupBy=${groupBy}">${pageNumber+2}</a></li>      
+		 			        </c:otherwise> 
+			      		</c:choose>
+              	 </c:when>
+              	 <c:otherwise>
+              	 	 <c:choose>
+				         <c:when test = "${ pageNumber<3 }">
+				         	<c:choose>	
+					          <c:when test = "${ max<6 }">
+								   <c:forEach var="page" begin ="1" end="${max }" step="1"> 
+					         		<li><a href="index?limit=${limit}&pageNumber=${page }&limit=${pageSizeValue}&pageNumber=${pageNumber}">${page}</a></li>
+					         </c:forEach>
+			 				   </c:when> 
+						       <c:otherwise> 
+						       					         
+						       
+							        <li><a href="index?limit=${limit}&pageNumber=1&groupBy=${groupBy}">1</a></li>
+					              	<li><a href="index?limit=${limit}&pageNumber=2&groupBy=${groupBy}">2</a></li>
+					              	<li><a href="index?limit=${limit}&pageNumber=3&groupBy=${groupBy}">3</a></li>
+					              	<li><a href="index?limit=${limit}&pageNumber=4&groupBy=${groupBy}">4</a></li>				
+					              	<li><a href="index?limit=${limit}&pageNumber=5&groupBy=${groupBy}">5</a></li>      
+			 			        </c:otherwise>
+				              </c:choose>
+					      </c:when>
+					      <c:when test = "${ pageNumber>max-3 }">
+					      					          
+					      
+							  <li><a href="index?limit=${limit}&pageNumber=${max-4}&groupBy=${groupBy}">${max-4}</a></li>
+				              <li><a href="index?limit=${limit}&pageNumber=${max-3}&groupBy=${groupBy}">${max-3}</a></li>
+				              <li><a href="index?limit=${limit}&pageNumber=${max-2}&groupBy=${groupBy}">${max-2}</a></li>
+				              <li><a href="index?limit=${limit}&pageNumber=${max-1}&groupBy=${groupBy}">${max-1}</a></li>
+				              <li><a href="index?limit=${limit}&pageNumber=${max}&groupBy=${groupBy} ">${max}</a></li>
+		 				   </c:when> 
+					       <c:otherwise> 
+					       					     
+					       
+						        <li><a href="index?limit=${limit}&pageNumber=${pageNumber-2}&groupBy=${groupBy}">${pageNumber-2}</a></li>
+				              	<li><a href="index?limit=${limit}&pageNumber=${pageNumber-1}&groupBy=${groupBy}">${pageNumber-1}</a></li>
+				              	<li><a href="index?limit=${limit}&pageNumber=${pageNumber}&groupBy=${groupBy}">${pageNumber}</a></li>
+				              	<li><a href="index?limit=${limit}&pageNumber=${pageNumber+1}&groupBy=${groupBy}">${pageNumber+1}</a></li>				
+				              	<li><a href="index?limit=${limit}&pageNumber=${pageNumber+2}&groupBy=${groupBy}">${pageNumber+2}</a></li>      
+		 			        </c:otherwise> 
+			      		</c:choose>
+              	 </c:otherwise>
+              
+              </c:choose>
                <c:choose>
-		         <c:when test = "${ pageNumber<3 }">
-		         	<c:choose>	
-			          <c:when test = "${ max<6 }">
-						   <c:forEach var="page" begin ="1" end="${max }" step="1"> 
-			         		<li><a href="index?limit=${limit}&pageNumber=${page }&search=${searchName}&limit=${pageSizeValue}&pageNumber=${pageNumber}">${page}</a></li>
-			         </c:forEach>
-	 				   </c:when> 
-				       <c:otherwise> 
-					        <li><a href="index?limit=${limit}&pageNumber=1&search=${searchName}&groupBy=${groupBy}">1</a></li>
-			              	<li><a href="index?limit=${limit}&pageNumber=2&search=${searchName}&groupBy=${groupBy}">2</a></li>
-			              	<li><a href="index?limit=${limit}&pageNumber=3&search=${searchName}&groupBy=${groupBy}">3</a></li>
-			              	<li><a href="index?limit=${limit}&pageNumber=4&search=${searchName}&groupBy=${groupBy}">4</a></li>				
-			              	<li><a href="index?limit=${limit}&pageNumber=5&search=${searchName}&groupBy=${groupBy}">5</a></li>      
-	 			        </c:otherwise>
-		              </c:choose>
-			      </c:when>
-			      <c:when test = "${ pageNumber>max-3 }">
-					  <li><a href="index?limit=${limit}&pageNumber=${max-4}&search=${searchName}&groupBy=${groupBy}">${max-4}</a></li>
-		              <li><a href="index?limit=${limit}&pageNumber=${max-3}&search=${searchName}&groupBy=${groupBy}">${max-3}</a></li>
-		              <li><a href="index?limit=${limit}&pageNumber=${max-2}&search=${searchName}&groupBy=${groupBy}">${max-2}</a></li>
-		              <li><a href="index?limit=${limit}&pageNumber=${max-1}&search=${searchName}&groupBy=${groupBy}">${max-1}</a></li>
-		              <li><a href="index?limit=${limit}&pageNumber=${max}&search=${searchName}&groupBy=${groupBy} ">${max}</a></li>
- 				   </c:when> 
-			       <c:otherwise> 
-				        <li><a href="index?limit=${limit}&pageNumber=${pageNumber-2}&search=${searchName}&groupBy=${groupBy}">${pageNumber-2}</a></li>
-		              	<li><a href="index?limit=${limit}&pageNumber=${pageNumber-1}&search=${searchName}&groupBy=${groupBy}">${pageNumber-1}</a></li>
-		              	<li><a href="index?limit=${limit}&pageNumber=${pageNumber}&search=${searchName}&groupBy=${groupBy}">${pageNumber}</a></li>
-		              	<li><a href="index?limit=${limit}&pageNumber=${pageNumber+1}&search=${searchName}&groupBy=${groupBy}">${pageNumber+1}</a></li>				
-		              	<li><a href="index?limit=${limit}&pageNumber=${pageNumber+2}&search=${searchName}&groupBy=${groupBy}">${pageNumber+2}</a></li>      
- 			        </c:otherwise> 
-
-	      		</c:choose>
-	              <li>
-	                <a href="index?limit=${limit}&pageNumber=${max}" aria-label="Next">
-	                    <span aria-hidden="true">&raquo;</span>
-	                </a>
-	            </li>
+              
+	           		<c:when test="${searchName != null }">
+	           			<li>
+			                <a href="search?limit=${limit}&pageNumber=${max}&groupBy=${groupBy}&searchName=${searchName}" aria-label="Next">
+			                    <span aria-hidden="true">&raquo;</span>
+			                </a>
+	            		</li>
+	           			
+	           		
+	           		</c:when>	
+	           		<c:otherwise>
+	           			<li>
+			                <a href="index?limit=${limit}&pageNumber=${max}&groupBy=${groupBy}" aria-label="Next">
+			                    <span aria-hidden="true">&raquo;</span>
+			                </a>
+	            		</li>
+	           			
+	           		</c:otherwise>
+	           </c:choose>
+              
+	              
         	</ul>
 	        <div class="btn-group btn-group-sm pull-right" role="group" >
 	           <c:set var="pageSizeValues">10,20,50,100</c:set>
-        		<c:forTokens items="${pageSizeValues}" var="pageSizeValue" delims=",">
-	           		 <a role="button" type="button" class="btn btn-default" href="http://localhost:8080/ComputerDatabase/index?limit=${pageSizeValue}&pageNumber=${pageNumber}&search=${searchName}&groupBy=${groupBy}">
-	            	${pageSizeValue}
-	            	</a>
-			</c:forTokens>
+	           <c:choose>
+	           		<c:when test="${searchName != null}">
+	           			<c:forTokens items="${pageSizeValues}" var="pageSizeValue" delims=",">
+			           		 <a role="button" type="button" class="btn btn-default" href="http://localhost:8080/ComputerDatabase/search?limit=${pageSizeValue}&pageNumber=1&searchName=${searchName}&groupBy=${groupBy}">
+			            	${pageSizeValue}
+			            	</a>
+						</c:forTokens>
+	           		
+	           		</c:when>	
+	           		<c:otherwise>
+	           			<c:forTokens items="${pageSizeValues}" var="pageSizeValue" delims=",">
+			           		 <a role="button" type="button" class="btn btn-default" href="http://localhost:8080/ComputerDatabase/index?limit=${pageSizeValue}&pageNumber=1&groupBy=${groupBy}">
+			            	${pageSizeValue}
+			            	</a>
+						</c:forTokens>
+	           		</c:otherwise>
+	           </c:choose>
+        		
 		
 	        </div>
         </div>

@@ -26,7 +26,6 @@ import fr.excilys.service.CompanyService;
 import fr.excilys.service.ComputerService;
 
 @Controller
-@WebServlet("/EditComputer")
 public class EditServlet extends HttpServlet {
 	/**
 	 * 

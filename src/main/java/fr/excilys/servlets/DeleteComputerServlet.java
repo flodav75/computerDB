@@ -23,7 +23,6 @@ import fr.excilys.service.ComputerService;
  * Servlet implementation class DeleteComputerServlet
  */
 @Controller
-@WebServlet("/DeleteComputer")
 public class DeleteComputerServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 

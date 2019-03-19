@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +22,6 @@ import fr.excilys.mappers.ComputerDtoMapper;
 import fr.excilys.model.Computer;
 import fr.excilys.service.ComputerService;
 
-@WebServlet("/Index")
 public class IndexServlet extends HttpServlet {
 
 	private final static Integer LIMIT_DEFAULT = 10;
@@ -64,7 +62,7 @@ public class IndexServlet extends HttpServlet {
 		String nameToSearch = request.getParameter("search");
 		Integer nbrRow = null;
 		Integer maxPage = null;
-		
+
 		try {
 			currentpage = getPagination(request.getParameter("pageNumber"), OFFSET_DEFAULT);
 			valideLimit(limit);
@@ -91,11 +89,7 @@ public class IndexServlet extends HttpServlet {
 			request.setAttribute("max", maxPage);
 			request.setAttribute("nbComputer", nbrRow);
 			request.getServletContext().getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request, response);
-//			} else {
-//				this.log.error("error");
-//				request.getServletContext().getRequestDispatcher("/ressources/static/views/404.html").forward(request,
-//						response);
-//			}
+
 		} catch (ComputerNameException e) {
 
 			this.log.error("error name");

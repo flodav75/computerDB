@@ -8,9 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -27,7 +24,6 @@ import fr.excilys.service.CompanyService;
 import fr.excilys.service.ComputerService;
 import fr.excilys.servlets.IndexServlet;;
 
-@RequestMapping("/edit")
 @Controller
 public class EditController {
 
@@ -44,7 +40,7 @@ public class EditController {
 		this.log = LoggerFactory.getLogger(IndexServlet.class);
 	}
 
-	@GetMapping
+	
 	public ModelAndView getEdit(@RequestParam(name = "idComputer", required = true) Long id,ModelAndView model) {
 		Computer computer = null;
 		try {
@@ -65,8 +61,6 @@ public class EditController {
 			model.setViewName("redirect:index");
 			return model; 
 		}
-		System.out.println(computer.toString()+" "+computer.getCompany().toString());
-
 		model.addObject("computer", computer);
 		model.addObject("companies", companies);
 		model.setViewName("editComputer");
@@ -74,7 +68,7 @@ public class EditController {
 
 	}
 
-	@PostMapping
+	
 	public ModelAndView postEdit(@RequestParam(name = "idComputer", required = true) String id,
 			@RequestParam(name = "name", required = true) String name,
 			@RequestParam(name = "introduced", required = false) String introduced,

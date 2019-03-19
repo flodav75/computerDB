@@ -27,7 +27,7 @@ import fr.excilys.service.CompanyService;
 import fr.excilys.service.ComputerService;
 import fr.excilys.servlets.IndexServlet;;
 
-@RequestMapping("/add")
+
 @Controller
 public class ControllerAdd {
 
@@ -44,7 +44,7 @@ public class ControllerAdd {
 		this.log = LoggerFactory.getLogger(IndexServlet.class);
 	}
 
-	@GetMapping
+	
 	public ModelAndView getAdding(ModelAndView model) {
 		List<Company> companies = new ArrayList<>();
 		try {
@@ -59,7 +59,6 @@ public class ControllerAdd {
 		return model;
 	}
 
-	@PostMapping
 	public ModelAndView postAdding(@RequestParam(name = "name", required = false) String name,
 			@RequestParam(name = "introduced", required = false) String introduced,
 			@RequestParam(name = "discontinued", required = false) String discontinued,
