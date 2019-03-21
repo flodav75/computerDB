@@ -1,78 +1,102 @@
-package fr.excilys.pagination;
-
-
-import java.util.List;
-
-
-public class Page<T> {
-  private List<T> content;
-  private int pageId;
-  private boolean previous;
-  private boolean next;
-
-  /**
-   * Constructs a Page object with the parameters.
-   * @param content  The page content (generally, a list of entities)
-   * @param pageId   (the current page id)
-   * @param previous true if the page is not the first in the page list, false if not
-   * @param next     true if the page is not the last in the page list, false if not
-   */
-  public Page(final List<T> content, final int pageId, final boolean previous, final boolean next) {
-    this.content = content;
-    this.pageId = pageId;
-    this.previous = previous;
-    this.next = next;
-  }
-
-  public List<T> getContent() {
-    return content;
-  }
-
-  public final void setContent(final List<T> content) {
-    this.content = content;
-  }
-
-  public final int getPageId() {
-    return pageId;
-  }
-
-  public final void setPageId(final int pageId) {
-    this.pageId = pageId;
-  }
-
-  public final boolean isPrevious() {
-    return previous;
-  }
-
-  public final void setPrevious(final boolean previous) {
-    this.previous = previous;
-  }
-
-  public final boolean isNext() {
-    return next;
-  }
-
-  public final void setNext(final boolean next) {
-    this.next = next;
-  }
-
-  @Override
-  public String toString() {
-    return "Page [content=" + content + ", pageId=" + pageId + ", previous=" + previous + ", next="
-        + next + "]";
-  }
-
-  /**
-   * Create the dto page from a entity page.
-   * @param mapper The entity mapper
-   * @return The page
-   */
-//  public Page<ComputerDTO> createDtoPage(ComputerMapper mapper) {
-//    List<ComputerDTO> data = new ArrayList<>();
-//    for (T entity : getContent()) {
-//      data.add(mapper.mapFromEntity(entity));
-//    }
+//package fr.excilys.pagination;
 //
-//    return new Page<IDto<T>>(data, pageId, previous, next);
+//
+//import java.util.List;
+//
+//import fr.excilys.exceptions.ComputerDAOException;
+//
+//
+//
+//public class Page {
+//
+//  
+//	private final static String LIMIT_DEFAULT = "10";
+//	private final static String OFFSET_DEFAULT = "1";
+//	private final static Integer[] LIMIT_VALID = { 10, 20, 50, 100 };
+//
+//  /**
+//   * Constructs a Page object with the parameters.
+//   * @param content  The page content (generally, a list of entities)
+//   * @param pageId   (the current page id)
+//   * @param previous true if the page is not the first in the page list, false if not
+//   * @param next     true if the page is not the last in the page list, false if not
+//   */
+//  public Page() {
+//
 //  }
-}
+//	public Long getMaxPage() throws ComputerDAOException {
+//		Long returnPageMax = null;
+//		returnPageMax = this.computerSer.getCountRow();
+//		return returnPageMax;
+//	}
+//
+//	public Integer getPagination(String value, int defaultValue) {
+//		Integer returnValue = null;
+//		if (isNotNullorEmpty(value) && valideInt(value)) {
+//			returnValue = Integer.parseInt(value);
+//		} else {
+//			returnValue = defaultValue;
+//		}
+//		return returnValue;
+//	}
+//
+//	public static boolean isNotNullorEmpty(String value) {
+//		boolean isNull = false;
+//		if (value != null && !value.isEmpty()) {
+//			isNull = true;
+//		}
+//		return isNull;
+//	}
+//
+//	private boolean valideInt(String value) {
+//		boolean isValide = false;
+//		try {
+//			Integer.parseInt(value);
+//			isValide = true;
+//			return isValide;
+//		} catch (NumberFormatException e) {
+//			return isValide;
+//		}
+//	}
+//
+//	private static Long getPageNumberMax(Long nbrRow, int limit) {
+//		return (long) Math.ceil((1.0 * nbrRow) / limit);
+//	}
+//
+//	// TODO mettre dans un validator
+//	private void valideLimit(int limit) throws NumberFormatException {
+//		boolean isValide = false;
+//		for (int i = 0; i < LIMIT_VALID.length; i++) {
+//			if (LIMIT_VALID[i].equals(limit)) {
+//				isValide = true;
+//			}
+//		}
+//		if (!isValide) {
+//			throw new NumberFormatException();
+//		}
+//	}
+//
+//	private void validePage(int page, Long maxPage) throws NumberFormatException {
+//		if (page > maxPage || page < 1) {
+//			throw new NumberFormatException();
+//		}
+//	}
+//
+// 
+//
+//
+//
+//  /**
+//   * Create the dto page from a entity page.
+//   * @param mapper The entity mapper
+//   * @return The page
+//   */
+////  public Page<ComputerDTO> createDtoPage(ComputerMapper mapper) {
+////    List<ComputerDTO> data = new ArrayList<>();
+////    for (T entity : getContent()) {
+////      data.add(mapper.mapFromEntity(entity));
+////    }
+////
+////    return new Page<IDto<T>>(data, pageId, previous, next);
+////  }
+//}

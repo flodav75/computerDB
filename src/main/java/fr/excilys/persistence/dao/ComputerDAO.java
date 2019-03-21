@@ -12,7 +12,7 @@ public interface ComputerDAO {
 
 	void update(Computer computer) throws ComputerDAOException;
 
-	void remove(Computer computer) throws ComputerDAOException;
+	void remove(long id) throws ComputerDAOException;
 
 	List<Computer> getAll(int limit, int pageNumber) throws CompanyDAOException, ComputerDAOException;
 

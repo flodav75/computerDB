@@ -1,11 +1,19 @@
 package fr.excilys.service;
 
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import fr.excilys.dtos.ComputerDTO;
 import fr.excilys.exceptions.CompanyDAOException;
 import fr.excilys.exceptions.ComputerDAOException;
+import fr.excilys.exceptions.ComputerDateException;
+import fr.excilys.exceptions.ComputerNameException;
+import fr.excilys.exceptions.DateFormatException;
+import fr.excilys.mappers.ComputerDtoMapper;
+import fr.excilys.mappers.ComputerMapper;
 import fr.excilys.model.Computer;
 import fr.excilys.persistence.dao.ComputerDAO;
 import fr.excilys.persistence.dao.ComputerDaoImpl;
@@ -14,41 +22,54 @@ import fr.excilys.persistence.dao.ComputerDaoImpl;
 public class ComputerServiceImpl implements ComputerService {
 
 	private ComputerDAO computerDao;
+	private ComputerMapper computerMapper;
 
-	private ComputerServiceImpl(ComputerDaoImpl computerDao) {
+	private ComputerServiceImpl(ComputerDaoImpl computerDao, ComputerMapper computerMapper) {
 		this.computerDao = computerDao;
+		this.computerMapper = computerMapper;
 	}
 
 	@Override
-	public void add(Computer computer) throws ComputerDAOException {
+	public void add(ComputerDTO computerDTO) throws ComputerDAOException, NumberFormatException, ParseException,
+			ComputerNameException, DateFormatException, CompanyDAOException, ComputerDateException {
+		Computer computer = this.computerMapper.getComputerFromDTO(computerDTO);
 		this.computerDao.add(computer);
 	}
 
 	@Override
-	public void update(Computer computer) throws ComputerDAOException {
+	public void update(ComputerDTO computerDTO) throws ComputerDAOException, NumberFormatException, ParseException,
+			ComputerNameException, DateFormatException, CompanyDAOException, ComputerDateException {
+		Computer computer = this.computerMapper.getComputerFromDTO(computerDTO);
 		this.computerDao.update(computer);
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void remove(Computer computer) throws ComputerDAOException {
-		this.computerDao.remove(computer);
+	public void remove(long id) throws ComputerDAOException  {
+		this.computerDao.remove(id);
 	}
 
 	@Override
-	public List<Computer> getAll(int limit, int pos) throws CompanyDAOException, ComputerDAOException {
-		return this.computerDao.getAll(limit, pos);
+	public List<ComputerDTO> getAll(int limit, int pos)
+			throws CompanyDAOException, ComputerDAOException, ComputerNameException {
+		List<ComputerDTO> computersDTO = new ArrayList<>();
+
+		for (Computer computer : this.computerDao.getAll(limit, pos)) {
+			computersDTO.add(ComputerDtoMapper.computerDtoFromComputer(computer));
+		}
+
+		this.computerDao.getAll(limit, pos);
+		return computersDTO;
 	}
 
 	@Override
-	public Computer getById(long id) throws CompanyDAOException, ComputerDAOException {
+	public ComputerDTO getById(long id) throws CompanyDAOException, ComputerDAOException, ComputerNameException {
+		return ComputerDtoMapper.computerDtoFromComputer(this.computerDao.getById(id));
 
-		return this.computerDao.getById(id);
 	}
 
 	@Override
-	public List<Computer> getByCompanyId(long id) {
+	public List<ComputerDTO> getByCompanyId(long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -59,10 +80,15 @@ public class ComputerServiceImpl implements ComputerService {
 	}
 
 	@Override
-	public List<Computer> getByName(String name, int limit, int pos) throws ComputerDAOException, CompanyDAOException {
-		// @Autowired
+	public List<ComputerDTO> getByName(String name, int limit, int pos)
+			throws ComputerDAOException, CompanyDAOException, ComputerNameException {
+		List<ComputerDTO> computersDTO = new ArrayList<>();
 
-		return this.computerDao.getByName(name, limit, pos);
+		for (Computer computer : this.computerDao.getByName(name, limit, pos)) {
+			computersDTO.add(ComputerDtoMapper.computerDtoFromComputer(computer));
+		}
+
+		return computersDTO;
 	}
 
 	@Override
@@ -71,14 +97,25 @@ public class ComputerServiceImpl implements ComputerService {
 	}
 
 	@Override
-	public List<Computer> getAllOrderByName(int limit, int pos) throws CompanyDAOException, ComputerDAOException {
-		return this.computerDao.getAllByName(limit, pos);
+	public List<ComputerDTO> getAllOrderByName(int limit, int pos) throws CompanyDAOException, ComputerDAOException, ComputerNameException {
+		List<ComputerDTO> computersDTO = new ArrayList<>();
+		
+		for (Computer computer : this.computerDao.getAllByName(limit, pos)) {
+			computersDTO.add(ComputerDtoMapper.computerDtoFromComputer(computer));
+		}
+		return computersDTO;
 	}
 
 	@Override
-	public List<Computer> getByNameOrderByName(String name, int limit, int pos)
-			throws ComputerDAOException, CompanyDAOException {
-		return this.computerDao.getByNameOrderBy(name, limit, pos);
+	public List<ComputerDTO> getByNameOrderByName(String name, int limit, int pos)
+			throws ComputerDAOException, CompanyDAOException, ComputerNameException {
+		List<ComputerDTO> computersDTO = new ArrayList<>();
+		
+		for (Computer computer : this.computerDao.getByNameOrderBy(name, limit, pos)) {
+			computersDTO.add(ComputerDtoMapper.computerDtoFromComputer(computer));
+		}
+		
+		return computersDTO;
 	}
 
 }

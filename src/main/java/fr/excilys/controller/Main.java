@@ -12,8 +12,8 @@ public class Main {
 		 @SuppressWarnings("resource")
 		ApplicationContext context = new AnnotationConfigApplicationContext(SpringConfiguration.class);
 
-		 Controller controller = context.getBean(Controller.class);
-		controller.start();
+//		 Controller controller = context.getBean(Controller.class);
+//		controller.start();
 	}
 
 }

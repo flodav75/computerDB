@@ -87,13 +87,14 @@ public class ComputerDaoImpl implements ComputerDAO {
 	}
 
 	@Override
-	public void remove(Computer computer) throws ComputerDAOException {
+	public void remove(long id) throws ComputerDAOException  {
 		int row = 0;
 
 		try (Session session = this.sessionFactory.openSession();) {
 			try {
 				session.getTransaction().begin();
-				session.createQuery(DELETE).setParameter("id", computer.getId()).executeUpdate();
+				Query query = session.createQuery(DELETE).setParameter("id", id);
+				row = query.executeUpdate();
 				session.getTransaction().commit();
 				this.log.info("remove computer passed");
 			} catch (HibernateException e) {

@@ -21,10 +21,9 @@ public class CompanyDaoImpl implements CompanyDAO {
 
 	private static final String DELETE_COMPANY = "Delete From Company company Where company.id = :id";
 	private static final String DELETE_COMPUTER = "Delete From Computer computer Where computer.company_id = :id";
-	private static final String GET_ALL = "Select company from Company company";
+	private static final String GET_ALL = "from Company ";
 
 	private Logger log;
-
 	private SessionFactory sessionFactory;
 
 	private CompanyDaoImpl(HibernateTransactionManager manage) {

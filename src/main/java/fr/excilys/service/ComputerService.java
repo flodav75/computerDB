@@ -1,33 +1,36 @@
 package fr.excilys.service;
 
+import java.text.ParseException;
 import java.util.List;
 
+import fr.excilys.dtos.ComputerDTO;
 import fr.excilys.exceptions.CompanyDAOException;
 import fr.excilys.exceptions.ComputerDAOException;
-import fr.excilys.model.Computer;
+import fr.excilys.exceptions.ComputerDateException;
+import fr.excilys.exceptions.ComputerNameException;
+import fr.excilys.exceptions.DateFormatException;
 
 
 public interface ComputerService {
-	void add(Computer computer) throws ComputerDAOException;
+	void add(ComputerDTO computer) throws ComputerDAOException, NumberFormatException, ParseException, ComputerNameException, DateFormatException, CompanyDAOException, ComputerDateException;
 
-	void update(Computer computer) throws ComputerDAOException;
+	void update(ComputerDTO computer) throws ComputerDAOException, NumberFormatException, ParseException, ComputerNameException, DateFormatException, CompanyDAOException, ComputerDateException;
 
-	void remove(Computer computer) throws ComputerDAOException;
+	void remove(long id) throws ComputerDAOException ;
+	List<ComputerDTO> getAll(int limit, int pos) throws CompanyDAOException, ComputerDAOException, ComputerNameException;
 
-	List<Computer> getAll(int limit, int pos) throws CompanyDAOException, ComputerDAOException;
+	List<ComputerDTO> getAllOrderByName(int limit, int pos) throws CompanyDAOException, ComputerDAOException, ComputerNameException;
 
-	List<Computer> getAllOrderByName(int limit, int pos) throws CompanyDAOException, ComputerDAOException;
+	ComputerDTO getById(long id) throws CompanyDAOException, ComputerDAOException, ComputerNameException;
 
-	Computer getById(long id) throws CompanyDAOException, ComputerDAOException;
-
-	List<Computer> getByCompanyId(long id);
+	List<ComputerDTO> getByCompanyId(long id);
 
 	Long getCountRow() throws ComputerDAOException;
 
-	List<Computer> getByName(String name, int limit, int pos) throws ComputerDAOException, CompanyDAOException;
+	List<ComputerDTO> getByName(String name, int limit, int pos) throws ComputerDAOException, CompanyDAOException, ComputerNameException;
 
-	List<Computer> getByNameOrderByName(String name, int limit, int pos)
-			throws ComputerDAOException, CompanyDAOException;
+	List<ComputerDTO> getByNameOrderByName(String name, int limit, int pos)
+			throws ComputerDAOException, CompanyDAOException, ComputerNameException;
 
 	public Long getRowCountSearch(String name) throws ComputerDAOException;
 }
