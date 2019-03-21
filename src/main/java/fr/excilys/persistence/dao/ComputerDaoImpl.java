@@ -28,9 +28,7 @@ public class ComputerDaoImpl implements ComputerDAO {
 	private static final String DELETE = "Delete  Computer computer where computer.id=:id ";
 	private static final String UPDATE = "Update Computer set name= :name, introduced = :introduced, discontinued = :discontinued, company_id=:company_id  where id=:id";
 	public final static String ATTRIBUTLIST[] = { "id", "name", "introduced", "discontinued", "company_id" };
-	// private final static String INSERT = "Insert into Computer(name, introduced,
-	// discontinued, company_id)
-	// values(:name,:introduced,:discontinued,:company_id)";
+
 	private static final String COUNT_QUERY = "SELECT COUNT(id) AS count FROM Computer ";
 	private static final String COUNT_QUERY_SEARCH = "SELECT COUNT(id) AS count FROM Computer  where name like :name";
 
@@ -40,39 +38,27 @@ public class ComputerDaoImpl implements ComputerDAO {
 	private ComputerDaoImpl(HibernateTransactionManager manager) {
 		log = LoggerFactory.getLogger(ComputerDAO.class);
 		this.sessionFactory = manager.getSessionFactory();
-		// this.session = this.sessionFactory.openSession();
 	}
-
-//	public void validateSession() {
-//		if (!this.session.isOpen()) {
-//			this.session = this.sessionFactory.openSession();
-//		}
-//	}
 
 	@Override
 	public void add(Computer computer) throws ComputerDAOException {
-		// validateSession();
+
 		try (Session session = this.sessionFactory.openSession();) {
-			try {
-				session.save(computer);
-			} catch (HibernateException e) {
-				throw new ComputerDAOException();
-			}
-
+			session.save(computer);
+		} catch (HibernateException e) {
+			throw new ComputerDAOException();
 		}
-
 	}
 
 	@SuppressWarnings("rawtypes")
 	@Override
 	public void update(Computer computer) throws ComputerDAOException {
 		Long idCompany = null;
-		// validateSession();
+		int row = 0;
 		if (computer.getCompany() != null) {
 			idCompany = computer.getCompany().getId();
 		}
-		int row = 0;
-		
+
 		try (Session session = this.sessionFactory.openSession();) {
 			try {
 				session.getTransaction().begin();
@@ -88,9 +74,9 @@ public class ComputerDaoImpl implements ComputerDAO {
 			} catch (HibernateException e) {
 				session.getTransaction().rollback();
 				this.log.info("update computer failed");
-
 				throw new ComputerDAOException();
 			}
+
 			if (row == 0) {
 				session.getTransaction().rollback();
 				this.log.info("update computer failed");
@@ -103,7 +89,7 @@ public class ComputerDaoImpl implements ComputerDAO {
 	@Override
 	public void remove(Computer computer) throws ComputerDAOException {
 		int row = 0;
-		
+
 		try (Session session = this.sessionFactory.openSession();) {
 			try {
 				session.getTransaction().begin();
@@ -126,20 +112,17 @@ public class ComputerDaoImpl implements ComputerDAO {
 	@Override
 	public List<Computer> getAll(int limit, int pageNumber) throws CompanyDAOException, ComputerDAOException {
 		List<Computer> computers = new ArrayList<Computer>();
-		
+
 		try (Session session = this.sessionFactory.openSession();) {
-				Query<Computer> query = session.createQuery(GET_ALL, Computer.class);
-				query.setFirstResult(pageNumber);
-				query.setMaxResults(limit);
-				computers = query.list();
-				this.log.info("getAll computer passed");
-
-			} catch (HibernateException e) {
-				this.log.info("getAll computer failed");
-				throw new ComputerDAOException();
-			}
-
-
+			Query<Computer> query = session.createQuery(GET_ALL, Computer.class);
+			query.setFirstResult(pageNumber);
+			query.setMaxResults(limit);
+			computers = query.list();
+			this.log.info("getAll computer passed");
+		} catch (HibernateException e) {
+			this.log.info("getAll computer failed");
+			throw new ComputerDAOException();
+		}
 
 		return computers;
 	}
@@ -147,10 +130,9 @@ public class ComputerDaoImpl implements ComputerDAO {
 	@Override
 	public Computer getById(long id) throws CompanyDAOException, ComputerDAOException {
 		Computer computer = null;
-		int row = 0;
 
 		try (Session session = this.sessionFactory.openSession();) {
-			
+
 			try {
 				Query<Computer> query = session.createQuery(GET_BY_ID, Computer.class);
 				query.setParameter("id", id);
@@ -161,14 +143,13 @@ public class ComputerDaoImpl implements ComputerDAO {
 				throw new ComputerDAOException();
 			}
 		}
-		
 		return computer;
 	}
 
 	public Long getRowCount() throws ComputerDAOException {
 		Long count = (long) -1;
-		try (Session session = this.sessionFactory.openSession();) {
 
+		try (Session session = this.sessionFactory.openSession();) {
 			Query<Long> query = session.createQuery(COUNT_QUERY, Long.class);
 			count = query.getSingleResult();
 			this.log.info("getRowCount computer passed");
@@ -183,6 +164,7 @@ public class ComputerDaoImpl implements ComputerDAO {
 	public Long getRowCountSearch(String name) throws ComputerDAOException {
 		Long count = (long) -1;
 		String value = "%" + name + "%";
+
 		try (Session session = this.sessionFactory.openSession();) {
 			Query<Long> query = session.createQuery(COUNT_QUERY_SEARCH, Long.class);
 			query.setParameter("name", value);
@@ -200,7 +182,7 @@ public class ComputerDaoImpl implements ComputerDAO {
 	public List<Computer> getByName(String name, int limit, int pos) throws CompanyDAOException, ComputerDAOException {
 		List<Computer> computers = new ArrayList<Computer>();
 		String value = "%" + name + "%";
-		
+
 		try (Session session = this.sessionFactory.openSession();) {
 			Query<Computer> query = session.createQuery(GET_BY_NAME, Computer.class);
 			query.setParameter("name", value);
@@ -221,7 +203,7 @@ public class ComputerDaoImpl implements ComputerDAO {
 			throws CompanyDAOException, ComputerDAOException {
 		List<Computer> computers = new ArrayList<Computer>();
 		String value = "%" + name + "%";
-		
+
 		try (Session session = this.sessionFactory.openSession();) {
 			Query<Computer> query = session.createQuery(GET_BY_NAME_ORDER_By_NAME, Computer.class);
 			query.setParameter("name", value);
@@ -240,7 +222,7 @@ public class ComputerDaoImpl implements ComputerDAO {
 	@Override
 	public List<Computer> getAllByName(int limit, int pageNumber) throws CompanyDAOException, ComputerDAOException {
 		List<Computer> computers = new ArrayList<Computer>();
-		
+
 		try (Session session = this.sessionFactory.openSession();) {
 			Query<Computer> query = session.createQuery(GET_ALL_ORDER_BY_NAME, Computer.class);
 			query.setFirstResult(pageNumber);

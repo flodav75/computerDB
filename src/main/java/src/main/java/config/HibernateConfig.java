@@ -17,7 +17,7 @@ import com.zaxxer.hikari.HikariDataSource;
 @Configuration
 @EnableTransactionManagement
 public class HibernateConfig {
-	
+
 	@Bean
 	public DataSource getDataSource() {
 		HikariConfig config = new HikariConfig(
@@ -25,17 +25,16 @@ public class HibernateConfig {
 		HikariDataSource dataSource = new HikariDataSource(config);
 		return dataSource;
 	}
-	
+
 	@Bean
-    public LocalSessionFactoryBean sessionFactory() {
-        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-        sessionFactory.setDataSource(getDataSource());
-      sessionFactory.setPackagesToScan("fr.excilys.model");
+	public LocalSessionFactoryBean sessionFactory() {
+		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+		sessionFactory.setDataSource(getDataSource());
+		sessionFactory.setPackagesToScan("fr.excilys.model");
 
-        sessionFactory.setHibernateProperties(hibernateProperties());
-        return sessionFactory;
-    }
-
+		sessionFactory.setHibernateProperties(hibernateProperties());
+		return sessionFactory;
+	}
 
 	private final Properties hibernateProperties() {
 		Properties hibernateProperties = new Properties();
@@ -43,12 +42,12 @@ public class HibernateConfig {
 		hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL57Dialect");
 		return hibernateProperties;
 	}
-	
-  @Bean
-  public PlatformTransactionManager hibernateTransactionManager() {
-      HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-      transactionManager.setSessionFactory(sessionFactory().getObject());
-      return transactionManager;
-  }
+
+	@Bean
+	public PlatformTransactionManager hibernateTransactionManager() {
+		HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+		transactionManager.setSessionFactory(sessionFactory().getObject());
+		return transactionManager;
+	}
 
 }

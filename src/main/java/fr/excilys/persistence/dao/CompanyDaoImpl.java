@@ -1,22 +1,16 @@
 package fr.excilys.persistence.dao;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
-import javax.sql.DataSource;
-
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import fr.excilys.exceptions.CompanyDAOException;
 import fr.excilys.exceptions.DeleteCompanyException;
@@ -25,85 +19,66 @@ import fr.excilys.model.Company;
 @Repository
 public class CompanyDaoImpl implements CompanyDAO {
 
-	private static final String DELETE_COMPANY = "Delete From company Where id = ?";
-	private static final String DELETE_COMPUTER = "Delete From computer Where company_id = ?";
-	private static final String SELECT_BY_ID = "Select id,name from company where id= :id";
-	private static final String GET_ALL = "Select id,name from company";
+	private static final String DELETE_COMPANY = "Delete From Company company Where company.id = :id";
+	private static final String DELETE_COMPUTER = "Delete From Computer computer Where computer.company_id = :id";
+	private static final String GET_ALL = "Select company from Company company";
 
 	private Logger log;
 
-	private NamedParameterJdbcTemplate jdbcTemplateNamedParam;
+	private SessionFactory sessionFactory;
 
-	private CompanyDaoImpl(DataSource dataSource) {
+	private CompanyDaoImpl(HibernateTransactionManager manage) {
+		this.sessionFactory = manage.getSessionFactory();
 		this.log = LoggerFactory.getLogger(CompanyDaoImpl.class);
-		setDataSource(dataSource);
 
-	}
-
-	public void setDataSource(DataSource dataSource) {
-		this.jdbcTemplateNamedParam = new NamedParameterJdbcTemplate(dataSource);
 	}
 
 	@Override
 	public List<Company> getAll() throws CompanyDAOException {
-		List<Company> companies = new ArrayList<Company>();
-		RowMapper<Company> rowMapper = new RowMapper<Company>() {
-			public Company mapRow(ResultSet pRS, int pRowNum) throws SQLException {
-				Company company = new Company(pRS.getInt("id"), pRS.getString("name"));
-				return company;
-			}
-		};
-		try {
-			companies = this.jdbcTemplateNamedParam.query(GET_ALL, rowMapper);
-			log.info("getAll companies passed");
+		List<Company> computers = new ArrayList<Company>();
 
-		} catch (DataAccessException e) {
-			this.log.error("getAll companies error");
-			this.log.debug(e.getMessage(), e);
+		try (Session session = this.sessionFactory.openSession();) {
+			Query<Company> query = session.createQuery(GET_ALL, Company.class);
+
+			computers = query.list();
+			this.log.info("getAll computer passed");
+		} catch (HibernateException e) {
+			this.log.info("getAll computer failed");
 			throw new CompanyDAOException();
 		}
-		return companies;
+
+		return computers;
 	}
 
-	public Company getById(long id) throws CompanyDAOException {
-		Company companyReturn = null;
-
-		RowMapper<Company> rowMapper = new RowMapper<Company>() {
-			public Company mapRow(ResultSet pRS, int pRowNum) throws SQLException {
-				Company company = new Company(pRS.getInt("id"), pRS.getString("name"));
-				return company;
-			}
-		};
-		HashMap<String, Long> params = new HashMap<String, Long>();
-		params.put("id", id);
-		try {
-			companyReturn = this.jdbcTemplateNamedParam.queryForObject(SELECT_BY_ID, params, rowMapper);
-
-		} catch (EmptyResultDataAccessException e) {
-			companyReturn = null;
-		}
-		return companyReturn;
-	}
-
-	public static Company mapResult(ResultSet res) throws SQLException {
-		Company comp = null;
-		long id = (long) res.getObject("id");
-		String nom = res.getString("name");
-		comp = new Company(id, nom);
-		return comp;
-	}
-
-	@Transactional
 	@Override
 	public void deleteCompany(long id) throws DeleteCompanyException {
+		int row = 0;
 
-		try {
-			this.jdbcTemplateNamedParam.getJdbcTemplate().update(DELETE_COMPUTER, id);
-			this.jdbcTemplateNamedParam.getJdbcTemplate().update(DELETE_COMPANY, id);
-		} catch (DataAccessException e) {
-			this.log.error("delete company failed");
-			this.log.debug(e.getMessage(), e);
-			throw new DeleteCompanyException();
+		try (Session session = this.sessionFactory.openSession();) {
+			try {
+				session.getTransaction().begin();
+				session.createQuery(DELETE_COMPUTER).setParameter("id", id).executeUpdate();
+				session.createQuery(DELETE_COMPANY).setParameter("id", id).executeUpdate();
+				session.getTransaction().commit();
+				this.log.info("remove computer passed");
+			} catch (HibernateException e) {
+				session.getTransaction().rollback();
+				this.log.info("remove company/computer failed");
+				throw new DeleteCompanyException();
+			}
+
+			if (row == 0) {
+				session.getTransaction().rollback();
+				this.log.info("remove company/computer failed");
+				throw new DeleteCompanyException();
+			}
 		}
 	}
+
+	@Override
+	public Company getById(long id) throws CompanyDAOException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
