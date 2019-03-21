@@ -2,22 +2,21 @@ package fr.excilys.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.excilys.exceptions.CompanyDAOException;
 import fr.excilys.exceptions.ComputerDAOException;
 import fr.excilys.model.Computer;
 import fr.excilys.persistence.dao.ComputerDAO;
+import fr.excilys.persistence.dao.ComputerDaoImpl;
 
 @Service
 public class ComputerServiceImpl implements ComputerService {
 
-	@Autowired
 	private ComputerDAO computerDao;
 
-	private ComputerServiceImpl() {
-
+	private ComputerServiceImpl(ComputerDaoImpl computerDao) {
+		this.computerDao = computerDao;
 	}
 
 	@Override
@@ -55,7 +54,7 @@ public class ComputerServiceImpl implements ComputerService {
 	}
 
 	@Override
-	public int getCountRow() throws ComputerDAOException {
+	public Long getCountRow() throws ComputerDAOException {
 		return this.computerDao.getRowCount();
 	}
 
@@ -67,7 +66,7 @@ public class ComputerServiceImpl implements ComputerService {
 	}
 
 	@Override
-	public int getRowCountSearch(String name) throws ComputerDAOException {
+	public Long getRowCountSearch(String name) throws ComputerDAOException {
 		return this.computerDao.getRowCountSearch(name);
 	}
 

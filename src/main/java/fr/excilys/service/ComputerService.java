@@ -2,13 +2,11 @@ package fr.excilys.service;
 
 import java.util.List;
 
-import org.springframework.stereotype.Service;
-
 import fr.excilys.exceptions.CompanyDAOException;
 import fr.excilys.exceptions.ComputerDAOException;
 import fr.excilys.model.Computer;
 
-@Service
+
 public interface ComputerService {
 	void add(Computer computer) throws ComputerDAOException;
 
@@ -24,12 +22,12 @@ public interface ComputerService {
 
 	List<Computer> getByCompanyId(long id);
 
-	int getCountRow() throws ComputerDAOException;
+	Long getCountRow() throws ComputerDAOException;
 
 	List<Computer> getByName(String name, int limit, int pos) throws ComputerDAOException, CompanyDAOException;
 
 	List<Computer> getByNameOrderByName(String name, int limit, int pos)
 			throws ComputerDAOException, CompanyDAOException;
 
-	public int getRowCountSearch(String name) throws ComputerDAOException;
+	public Long getRowCountSearch(String name) throws ComputerDAOException;
 }

@@ -63,7 +63,7 @@ public class ComputerMapper {
 			} else {
 				company = new Company(idCompany, name);
 			}
-		}
+		} 
 		return company;
 	}
 

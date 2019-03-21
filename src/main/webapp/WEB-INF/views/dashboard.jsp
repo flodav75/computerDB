@@ -1,4 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -49,7 +51,7 @@
             </div>
         </div>
 
-        <form id="deleteForm" action="DeleteComputer" method="POST">
+        <form id="deleteForm" action="delete" method="POST">
             <input type="hidden" name="selection" value="">
         </form>
 
@@ -164,18 +166,18 @@
 				              </c:choose>
 					      </c:when>
 					      <c:when test = "${ pageNumber>max-3 }">
-							  <li><a href="search?limit=${limit}&pageNumber=${max-4}&groupBy=${groupBy}">${max-4}</a></li>
-				              <li><a href="search?limit=${limit}&pageNumber=${max-3}&groupBy=${groupBy}">${max-3}</a></li>
-				              <li><a href="search?limit=${limit}&pageNumber=${max-2}&groupBy=${groupBy}">${max-2}</a></li>
-				              <li><a href="search?limit=${limit}&pageNumber=${max-1}&groupBy=${groupBy}">${max-1}</a></li>
-				              <li><a href="search?limit=${limit}&pageNumber=${max}&groupBy=${groupBy} ">${max}</a></li>
+							  <li><a href="search?limit=${limit}&pageNumber=${max-4}&searchName=${searchName}&groupBy=${groupBy}">${max-4}</a></li>
+				              <li><a href="search?limit=${limit}&pageNumber=${max-3}&searchName=${searchName}&groupBy=${groupBy}">${max-3}</a></li>
+				              <li><a href="search?limit=${limit}&pageNumber=${max-2}&searchName=${searchName}&groupBy=${groupBy}">${max-2}</a></li>
+				              <li><a href="search?limit=${limit}&pageNumber=${max-1}&searchName=${searchName}&groupBy=${groupBy}">${max-1}</a></li>
+				              <li><a href="search?limit=${limit}&pageNumber=${max}&searchName=${searchName}&groupBy=${groupBy} ">${max}</a></li>
 		 				   </c:when> 
 					       <c:otherwise> 
-						        <li><a href="search?limit=${limit}&pageNumber=${pageNumber-2}&groupBy=${groupBy}">${pageNumber-2}</a></li>
-				              	<li><a href="search?limit=${limit}&pageNumber=${pageNumber-1}&groupBy=${groupBy}">${pageNumber-1}</a></li>
-				              	<li><a href="search?limit=${limit}&pageNumber=${pageNumber}&groupBy=${groupBy}">${pageNumber}</a></li>
-				              	<li><a href="search?limit=${limit}&pageNumber=${pageNumber+1}&groupBy=${groupBy}">${pageNumber+1}</a></li>				
-				              	<li><a href="search?limit=${limit}&pageNumber=${pageNumber+2}&groupBy=${groupBy}">${pageNumber+2}</a></li>      
+						        <li><a href="search?limit=${limit}&pageNumber=${pageNumber-2}&searchName=${searchName}&groupBy=${groupBy}">${pageNumber-2}</a></li>
+				              	<li><a href="search?limit=${limit}&pageNumber=${pageNumber-1}&searchName=${searchName}&groupBy=${groupBy}">${pageNumber-1}</a></li>
+				              	<li><a href="search?limit=${limit}&pageNumber=${pageNumber}&searchName=${searchName}&groupBy=${groupBy}">${pageNumber}</a></li>
+				              	<li><a href="search?limit=${limit}&pageNumber=${pageNumber+1}&searchName=${searchName}&groupBy=${groupBy}">${pageNumber+1}</a></li>				
+				              	<li><a href="search?limit=${limit}&pageNumber=${pageNumber+2}&searchName=${searchName}&groupBy=${groupBy}">${pageNumber+2}</a></li>      
 		 			        </c:otherwise> 
 			      		</c:choose>
               	 </c:when>

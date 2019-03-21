@@ -34,7 +34,6 @@ public class CompanyDaoImpl implements CompanyDAO {
 
 	private NamedParameterJdbcTemplate jdbcTemplateNamedParam;
 
-	@Autowired
 	private CompanyDaoImpl(DataSource dataSource) {
 		this.log = LoggerFactory.getLogger(CompanyDaoImpl.class);
 		setDataSource(dataSource);

@@ -1,17 +1,30 @@
 package fr.excilys.model;
 
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
-@Component
-@Scope("prototype")
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "company")
 public class Company {
 
+	@Id
+	@GeneratedValue
+	@Column(name = "id")
 	private long id;
+
+	@Column(name = "name")
 	private String name;
 
 	public Company(long id, String name) {
 		this.id = id;
 		this.name = name;
+	}
+
+	public Company() {
+
 	}
 
 	public Company(long id) {
@@ -34,7 +47,9 @@ public class Company {
 		this.name = name;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
@@ -42,7 +57,9 @@ public class Company {
 		return "Company [id=" + id + ", name=" + name + "]";
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -54,7 +71,9 @@ public class Company {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -81,6 +100,5 @@ public class Company {
 		}
 		return true;
 	}
-	
 
 }

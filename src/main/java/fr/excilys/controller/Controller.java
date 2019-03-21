@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import fr.excilys.exceptions.CompanyDAOException;
@@ -19,23 +18,27 @@ import fr.excilys.model.Computer.ComputerBuilder;
 import fr.excilys.model.ECommandeLine;
 import fr.excilys.persistence.dao.ComputerDaoImpl;
 import fr.excilys.service.CompanyService;
+import fr.excilys.service.CompanyServiceImpl;
 import fr.excilys.service.ComputerService;
+import fr.excilys.service.ComputerServiceImpl;
 import fr.excilys.ui.Menu;
 
 @Component
 public class Controller {
-	@Autowired
+
 	private ComputerService computerSer;
-	@Autowired
+
 	private CompanyService companySer;
+	
 	private Boolean isRunning;
 	private static int DEFAULTID = 0;
 	public final static List<String> GOOD_COMMAND_LINE = Arrays.asList("ALLCOMPUTERS", "ALLCOMPANIES", "DETAILS", "ADD",
 			"UPDATE", "REMOVE", "DELETE", "EXIT");
 
-	private Controller() {
-		this.isRunning = true;
-
+	public Controller(ComputerServiceImpl computerSer,CompanyServiceImpl companySer) {
+		this.isRunning = true; 
+		this.computerSer = computerSer;
+		this.companySer = companySer;
 	}
 
 	public void start() {
@@ -47,7 +50,6 @@ public class Controller {
 	}
 
 	private void checkUserRequest(String userRequest) {
-
 		String userValueUpper = userRequest.toUpperCase();
 		if (GOOD_COMMAND_LINE.contains(userValueUpper)) {
 			switch (ECommandeLine.valueOf(userValueUpper)) {
@@ -64,14 +66,12 @@ public class Controller {
 
 				break;
 			case ALLCOMPANIES:
-
 				try {
 					Menu.displayListCompanies(getListCompanies());
 				} catch (CompanyDAOException e2) {
 					// TODO Auto-generated catch block
 					e2.printStackTrace();
 				}
-
 				break;
 			case DETAILS:
 				Menu.displayComputer(askAndGetComputer());
@@ -87,8 +87,8 @@ public class Controller {
 				}
 				break;
 			case REMOVE:
-
 				Computer comp = askAndGetComputer();
+				
 				try {
 					deleteComputer(comp);
 				} catch (ComputerDAOException e) {

@@ -19,58 +19,58 @@ public class ValidationComputerTest {
 
 	@Test(expected=NumberFormatException.class)
 	public void valideTest1() throws SQLException, NumberFormatException, ParseException, ComputerNameException, DateFormatException {
-		this.computerDTO = new ComputerDTO("fdd", "fgfg", "", "", "", "");
+		//this.computerDTO = new ComputerDTO("fdd", "fgfg", "", "", "", "");
 		ValidationComputerDTO.validate(this.computerDTO);	
 	}
 	
 	@Test(expected=ComputerNameException.class)
 	public void valideTest2() throws SQLException, NumberFormatException, ParseException, ComputerNameException, DateFormatException {
-		this.computerDTO = new ComputerDTO("1", "", "", "", "", "");
+		//this.computerDTO = new ComputerDTO("1", "", "", "", "", "");
 		ValidationComputerDTO.validate(this.computerDTO);	
 	}
 	
 	@Test(expected=ComputerNameException.class)
 	public void valideTest3() throws SQLException, NumberFormatException, ParseException, ComputerNameException, DateFormatException {
-		this.computerDTO = new ComputerDTO("1", "gdfgdf'", "", "", "", "");
+		//this.computerDTO = new ComputerDTO("1", "gdfgdf'", "", "", "", "");
 		ValidationComputerDTO.validate(this.computerDTO);	
 	}
 	
 	@Test(expected=ParseException.class)
 	public void valideTest4() throws  NumberFormatException, ParseException, ComputerNameException, DateFormatException {
-		this.computerDTO = new ComputerDTO("1", "gdfgdf", "fdgdfg", "", "", "");
+		//this.computerDTO = new ComputerDTO("1", "gdfgdf", "fdgdfg", "", "", "");
 		ValidationComputerDTO.validate(this.computerDTO);	
 	}
 	@Ignore
 	@Test(expected=DateFormatException.class)
 	public void valideTest5() throws  NumberFormatException, ParseException, ComputerNameException, DateFormatException {
-		this.computerDTO = new ComputerDTO("1", "gdfgdf", "9000-40-17", "", "1", "");
+		//this.computerDTO = new ComputerDTO("1", "gdfgdf", "9000-40-17", "", "1", "");
 		ValidationComputerDTO.validate(this.computerDTO);	
 	}
 	@Ignore
 	@Test(expected=DateFormatException.class)
 	public void valideTest6() throws  NumberFormatException, ParseException, ComputerNameException, DateFormatException {
-		this.computerDTO = new ComputerDTO("1", "gdfgdf", "2000-40-17", "", "", "");
+		//this.computerDTO = new ComputerDTO("1", "gdfgdf", "2000-40-17", "", "", "");
 		ValidationComputerDTO.validate(this.computerDTO);	
 	}
 	//@Test(expected=DateFormatException.class)
 	public void valideTest7() throws  NumberFormatException, ParseException, ComputerNameException, DateFormatException {
-		this.computerDTO = new ComputerDTO("1", "gdfgdf", "2000-01-40", "", "", "");
+		//this.computerDTO = new ComputerDTO("1", "gdfgdf", "2000-01-40", "", "", "");
 		ValidationComputerDTO.validate(this.computerDTO);	
 	}
 	@Test(expected=NumberFormatException.class)
 	public void valideTest8() throws NumberFormatException, ParseException, ComputerNameException, DateFormatException {
-		this.computerDTO = new ComputerDTO("1", "gdfgdf", "", "", "5525fgf", "");
+		//this.computerDTO = new ComputerDTO("1", "gdfgdf", "", "", "5525fgf", "");
 		ValidationComputerDTO.validate(this.computerDTO);	
 	}
 	@Ignore
 	@Test(expected=NumberFormatException.class)
 	public void valideTest() throws NumberFormatException, ParseException, ComputerNameException, DateFormatException {
-		this.computerDTO = new ComputerDTO("", "gdfgdf", "", "", "5525fgf", "");
+		//this.computerDTO = new ComputerDTO("", "gdfgdf", "", "", "5525fgf", "");
 		ValidationComputerDTO.validate(this.computerDTO);	
 	}
 	//@Test(expected=DateFormatException.class)
 	public void valideTest9() throws  NumberFormatException, ParseException, ComputerNameException, DateFormatException {
-		this.computerDTO = new ComputerDTO("1", "gdfgdf", "2001-11-01", "", "1", "");
+		//this.computerDTO = new ComputerDTO("1", "gdfgdf", "2001-11-01", "", "1", "");
 		ValidationComputerDTO.validate(this.computerDTO);	
 	}
 	

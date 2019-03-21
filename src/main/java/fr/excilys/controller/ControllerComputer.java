@@ -50,7 +50,7 @@ public class ControllerComputer {
 		this.computerMapper = computerMapper;
 		this.log = LoggerFactory.getLogger(IndexServlet.class);
 	}
-	
+	 
 	@GetMapping("index")
 	public ModelAndView index(
 			@RequestParam(name = "limit", required = false, defaultValue = LIMIT_DEFAULT) Integer limit,
@@ -59,8 +59,8 @@ public class ControllerComputer {
 			ModelAndView model)  {
 		System.out.println("index");
 		List<ComputerDTO> computersDTO = new ArrayList<>();
-		Integer nbrRow = null;
-		Integer maxPage = null;
+		Long nbrRow = null;
+		Long maxPage = null;
 		valideLimit(limit);
 		boolean isGroupBy = false;
 		if(groupBy !=null && !groupBy.isEmpty()) {
@@ -115,8 +115,8 @@ public class ControllerComputer {
 			ModelAndView model)  {
 		System.out.println("search");
 		List<ComputerDTO> computersDTO = new ArrayList<>();
-		Integer nbrRow = null;
-		Integer maxPage = null;
+		Long nbrRow = null;
+		Long maxPage = null;
 		valideLimit(limit);
 		boolean isGroupBy = false;
 		
@@ -127,7 +127,7 @@ public class ControllerComputer {
 		this.offset = (currentPage - 1) * limit;
 		
 		try {
-			nbrRow = this.computerSer.getRowCountSearch(searchName);
+			nbrRow = (long) this.computerSer.getRowCountSearch(searchName);
 		} catch (ComputerDAOException e) {
 			this.log.error("error getting page max");
 			this.log.debug(e.getMessage(),e);
@@ -241,7 +241,7 @@ public class ControllerComputer {
 		return model;
 	}
 	
-	@GetMapping("delete")
+	@PostMapping("delete")
 	public ModelAndView delete(@RequestParam(name = "selection", required = true) String idComputers,ModelAndView model) {
 		
 		String[] computers = idComputers.split(",");
@@ -364,8 +364,8 @@ public class ControllerComputer {
 		return comp;
 	}
 	
-	public Integer getMaxPage() throws ComputerDAOException {
-		Integer returnPageMax = null;
+	public Long getMaxPage() throws ComputerDAOException {
+		Long returnPageMax = null;
 		returnPageMax = this.computerSer.getCountRow();
 		return returnPageMax;
 	}
@@ -399,8 +399,8 @@ public class ControllerComputer {
 		}
 	}
 
-	private static int getPageNumberMax(int rows, int limit) {
-		return (int) Math.ceil((1.0 * rows) / limit);
+	private static Long getPageNumberMax(Long nbrRow, int limit) {
+		return (long) Math.ceil((1.0 * nbrRow) / limit);
 	}
 
 	// TODO mettre dans un validator
@@ -416,8 +416,8 @@ public class ControllerComputer {
 		}
 	}
 
-	private void validePage(int page, int pageMax) throws NumberFormatException {
-		if (page > pageMax || page < 1) {
+	private void validePage(int page, Long maxPage) throws NumberFormatException {
+		if (page > maxPage || page < 1) {
 			throw new NumberFormatException();
 		}
 	}
@@ -433,8 +433,9 @@ public class ControllerComputer {
 		if (computerToConvert != null && !computerToConvert.isEmpty()) {
 			mapperDTO = new ComputerDtoMapper();
 			for (Computer comp : computerToConvert) {
-				computersReturn.add(ComputerDtoMapper.ComputerDtoFromComputer(comp));
+				computersReturn.add(ComputerDtoMapper.computerDtoFromComputer(comp));
 			}
+			
 		}
 		return computersReturn;
 	}
@@ -451,7 +452,7 @@ public class ControllerComputer {
 		}
 		if (computerToConvert != null && !computerToConvert.isEmpty()) {
 			for (Computer comp : computerToConvert) {
-				computersReturn.add(ComputerDtoMapper.ComputerDtoFromComputer(comp));
+				computersReturn.add(ComputerDtoMapper.computerDtoFromComputer(comp));
 			}
 		}
 		return computersReturn;

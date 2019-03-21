@@ -16,16 +16,16 @@ public class ComputerDtoMapper {
 
 	}
 
-	public static ComputerDTO ComputerDtoFromComputer(Computer computer) throws ComputerNameException {
+	public static ComputerDTO computerDtoFromComputer(Computer computer) throws ComputerNameException {
 		ComputerDTO computerDtoReturn = null;
 		String computerId = null;
 		String name = null;
 		String introduced = null;
 		String discontinued = null;
 		String idCompany = null;
-		String companyName = null;
+		String companyName = null; 
 		name = computer.getName();
-		if ((name != null && !name.isEmpty())) {
+		if ((name != null && !name.isEmpty())) { 
 			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-dd-MM");
 			computerId = String.valueOf(computer.getId());
 			if (computer.getIntroduced() != null) {

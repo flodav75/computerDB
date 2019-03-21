@@ -22,11 +22,11 @@ public interface ComputerDAO {
 
 	List<Computer> getByCompanyId(long id);
 
-	int getRowCount() throws ComputerDAOException;
+	Long getRowCount() throws ComputerDAOException;
 
 	List<Computer> getByName(String name, int limit, int pos) throws CompanyDAOException, ComputerDAOException;
 
 	List<Computer> getByNameOrderBy(String name, int limit, int pos) throws CompanyDAOException, ComputerDAOException;
 
-	public int getRowCountSearch(String name) throws ComputerDAOException;
+	public Long getRowCountSearch(String name) throws ComputerDAOException;
 }

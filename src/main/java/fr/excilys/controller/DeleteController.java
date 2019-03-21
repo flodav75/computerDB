@@ -1,8 +1,6 @@
 package fr.excilys.controller;
 
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -11,13 +9,13 @@ import fr.excilys.exceptions.ComputerDAOException;
 import fr.excilys.model.Computer;
 import fr.excilys.service.ComputerService;
 
-@Controller
+
 public class DeleteController {
 	
 	private ComputerService computerServ;
 	private Logger log;
 	
-	@Autowired
+	
 	public DeleteController(ComputerService computerServ) {
 		this.computerServ = computerServ;
 	}

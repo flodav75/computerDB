@@ -46,7 +46,7 @@ public class IndexServlet extends HttpServlet {
 		super.init();
 		SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 		this.groupBy = "";
-		this.log = LoggerFactory.getLogger(IndexServlet.class);
+		this.log = LoggerFactory.getLogger(IndexServlet.class); 
 		this.log.debug(this.groupBy);
 	}
 
@@ -60,8 +60,8 @@ public class IndexServlet extends HttpServlet {
 		}
 		Integer currentpage = null;
 		String nameToSearch = request.getParameter("search");
-		Integer nbrRow = null;
-		Integer maxPage = null;
+		Long nbrRow = null;
+		Long maxPage = null;
 
 		try {
 			currentpage = getPagination(request.getParameter("pageNumber"), OFFSET_DEFAULT);
@@ -133,7 +133,7 @@ public class IndexServlet extends HttpServlet {
 		if (computerToConvert != null && !computerToConvert.isEmpty()) {
 			mapperDTO = new ComputerDtoMapper();
 			for (Computer comp : computerToConvert) {
-				computersReturn.add(ComputerDtoMapper.ComputerDtoFromComputer(comp));
+				computersReturn.add(ComputerDtoMapper.computerDtoFromComputer(comp));
 			}
 		}
 		return computersReturn;
@@ -151,15 +151,15 @@ public class IndexServlet extends HttpServlet {
 		}
 		if (computerToConvert != null && !computerToConvert.isEmpty()) {
 			for (Computer comp : computerToConvert) {
-				computersReturn.add(ComputerDtoMapper.ComputerDtoFromComputer(comp));
+				computersReturn.add(ComputerDtoMapper.computerDtoFromComputer(comp));
 			}
 		}
 		return computersReturn;
 	}
 
-	public Integer getMaxPage() throws ComputerDAOException {
-		Integer returnPageMax = null;
-		returnPageMax = this.computerSer.getCountRow();
+	public Long getMaxPage() throws ComputerDAOException {
+		Long returnPageMax = null;
+		//returnPageMax = this.computerSer.getCountRow();
 		return returnPageMax;
 	}
 
@@ -192,8 +192,8 @@ public class IndexServlet extends HttpServlet {
 		}
 	}
 
-	private static int getPageNumberMax(int rows, int limit) {
-		return (int) Math.ceil((1.0 * rows) / limit);
+	private static Long getPageNumberMax(Long nbrRow, int limit) {
+		return (long) Math.ceil((1.0 * nbrRow) / limit);
 	}
 
 	// TODO mettre dans un validator
@@ -209,8 +209,8 @@ public class IndexServlet extends HttpServlet {
 		}
 	}
 
-	private void validePage(int page, int pageMax) throws NumberFormatException {
-		if (page > pageMax || page < 1) {
+	private void validePage(int page, Long maxPage) throws NumberFormatException {
+		if (page > maxPage || page < 1) {
 			throw new NumberFormatException();
 		}
 	}

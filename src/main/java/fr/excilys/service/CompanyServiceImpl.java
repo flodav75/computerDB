@@ -10,13 +10,15 @@ import fr.excilys.exceptions.ComputerDAOException;
 import fr.excilys.exceptions.DeleteCompanyException;
 import fr.excilys.model.Company;
 import fr.excilys.persistence.dao.CompanyDAO;
+import fr.excilys.persistence.dao.CompanyDaoImpl;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
 	@Autowired
 	private CompanyDAO companyDao;
 
-	private CompanyServiceImpl() {
+	private CompanyServiceImpl(CompanyDaoImpl companyDao) {
+		this.companyDao = companyDao;
 	}
 
 	@Override

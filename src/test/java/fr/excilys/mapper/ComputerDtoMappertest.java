@@ -1,34 +1,39 @@
 package fr.excilys.mapper;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import fr.excilys.dtos.ComputerDTO;
+import fr.excilys.dtos.ComputerDTO.ComputerDTOBuilder;
 import fr.excilys.exceptions.ComputerNameException;
 import fr.excilys.mappers.ComputerDtoMapper;
 import fr.excilys.model.Company;
 import fr.excilys.model.Computer;
+import fr.excilys.model.Computer.ComputerBuilder;
 
 public class ComputerDtoMappertest {
 
 	private Computer computer;
-	private Date introduced;
-	private Date discontinued;
+	private LocalDate introduced;
+	private LocalDate discontinued;
 	private Company company;
-	private SimpleDateFormat dateFormat;
+	private DateTimeFormatter formatter;
 	private ComputerDtoMapper mapper;
 
 	@Before
 	public void init() throws ParseException {
-		dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		this.introduced = dateFormat.parse("1995-11-01");
-		this.discontinued = dateFormat.parse("1995-11-02");
+		formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		this.introduced = LocalDate.parse("1995-11-01", formatter);
+		this.discontinued = LocalDate.parse("1995-11-02", formatter);
 		this.company = new Company(4, "pineapple");
 	}
 
@@ -36,41 +41,61 @@ public class ComputerDtoMappertest {
 	public void mapperDTO1() throws ComputerNameException {
 		long id = 1;
 		String name = "blabal";
-		// this.computer = new
-		// Computer(id,name,this.introduced,this.discontinued,this.company);
-		ComputerDTO compDtoGood = new ComputerDTO("1", name, "1995-11-01", "1995-11-02", "4", "pineapple");
-		this.mapper = new ComputerDtoMapper();
-		ComputerDTO compTested = this.mapper.ComputerDtoFromComputer(this.computer);
-		System.out.println(compTested.getComputerName());
+		ComputerDTOBuilder computerDTOBuilder = new ComputerDTOBuilder();
+		computerDTOBuilder.setId("1");
+		computerDTOBuilder.setName(name);
+		computerDTOBuilder.setIntroduced("1995-11-01");
+		computerDTOBuilder.setDiscontinued("1995-11-02");
+		computerDTOBuilder.setCompanyId("4");
+		computerDTOBuilder.setCompanyName("pineapple"); 
+		ComputerDTO compDtoGood = computerDTOBuilder.build();
+		ComputerBuilder computerBuilder = new ComputerBuilder();
+		computerBuilder.setId(id);
+		computerBuilder.setName(name);
+		computerBuilder.setIntroduced(introduced);
+		computerBuilder.setDiscontinued(discontinued);
+		computerBuilder.setCompany(new Company(4, "pineapple"));		
+		ComputerDTO compTested = ComputerDtoMapper.computerDtoFromComputer(computerBuilder.build());
 
-		assertTrue(compDtoGood.equals(compTested));
+		assertEquals(compDtoGood, compTested);
 	}
 
 	@Test
 	public void mapperDTO2() throws ComputerNameException {
 		long id = 1;
 		String name = "blabal";
-		// this.computer = new Computer(id,name,null,null,null);
-		ComputerDTO compDtoGood = new ComputerDTO("1", name, null, null, null, null);
-		this.mapper = new ComputerDtoMapper();
-		ComputerDTO compTested = this.mapper.ComputerDtoFromComputer(this.computer);
+		ComputerDTOBuilder computerDTOBuilder = new ComputerDTOBuilder();
+		computerDTOBuilder.setId("1");
+		computerDTOBuilder.setName(name);
+		
+		ComputerDTO compDtoGood = computerDTOBuilder.build();
+		ComputerBuilder computerBuilder = new ComputerBuilder();
+		computerBuilder.setId(id);
+		computerBuilder.setName(name);
+		computerBuilder.setIntroduced(introduced);
+		computerBuilder.setDiscontinued(discontinued);
+		computerBuilder.setCompany(new Company(4, "pineapple"));
+		
+		ComputerDTO compTested = ComputerDtoMapper.computerDtoFromComputer(this.computer);
 		assertTrue(compDtoGood.equals(compTested));
 	}
 
 	@Test(expected = ComputerNameException.class)
 	public void mapperDTO3() throws ComputerNameException {
 		long id = 1;
-		// this.computer = new Computer(id,"",null,null,null);
-		this.mapper = new ComputerDtoMapper();
-		this.mapper.ComputerDtoFromComputer(this.computer);
+		ComputerDTOBuilder computerDTOBuilder = new ComputerDTOBuilder();
+		computerDTOBuilder.setId("1");
+		computerDTOBuilder.setName("");
+
+		ComputerDTO compDtoGood = computerDTOBuilder.build();
+		ComputerDtoMapper.computerDtoFromComputer(this.computer);
 	}
 
 	@Test(expected = ComputerNameException.class)
 	public void mapperDTO4() throws ComputerNameException {
 		long id = 1;
 		/// this.computer = new Computer(id,null,null,null,null);
-		this.mapper = new ComputerDtoMapper();
-		this.mapper.ComputerDtoFromComputer(this.computer);
+		ComputerDtoMapper.computerDtoFromComputer(this.computer);
 	}
 
 }
