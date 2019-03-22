@@ -63,7 +63,9 @@ public class ComputerMapper {
 			} else {
 				company = new Company(idCompany, name);
 			}
-		} 
+		}else {
+			throw new CompanyDAOException();
+		}
 		return company;
 	}
 

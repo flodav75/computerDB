@@ -32,15 +32,15 @@
                         <input type="hidden" value="${computer.id}"name="idComputer" id="idComputer"/> <!-- TODO: Change this value with the computer id -->
                         <fieldset>
                             <div class="form-group">
-                                <label for="computerName">Computer name</label>
+                                <label for="computerName">Computer name ${computer.computerName }</label>
                                 <input type="text" class="form-control" name="name" id="name" value="${computer.computerName }" placeholder="Computer name" required>
                             </div>
                             <div class="form-group">
-                                <label for="introduced">Introduced date</label>
+                                <label for="introduced">Introduced date ${computer.introduced }</label>
                                 <input type="date" class="form-control" name="introduced" id="introduced" value="${computer.introduced }"  placeholder="Introduced date">
                             </div>
                             <div class="form-group">
-                                <label for="discontinued">Discontinued date</label>
+                                <label for="discontinued">Discontinued date ${computer.discontinued }</label>
                                 <input type="date" class="form-control" name="discontinued" id="discontinued" value="${computer.discontinued }"  placeholder="Discontinued date">
                             </div>
                             <div class="form-group">

@@ -21,6 +21,7 @@ public class CompanyDaoImpl implements CompanyDAO {
 
 	private static final String DELETE_COMPANY = "Delete From Company company Where company.id = :id";
 	private static final String DELETE_COMPUTER = "Delete From Computer computer Where computer.company_id = :id";
+	private static final String GET_BY_ID = "Select company from Company company where company.id=:id";
 	private static final String GET_ALL = "from Company ";
 
 	private Logger log;
@@ -76,8 +77,21 @@ public class CompanyDaoImpl implements CompanyDAO {
 
 	@Override
 	public Company getById(long id) throws CompanyDAOException {
-		// TODO Auto-generated method stub
-		return null;
+		Company company = null;
+
+		try (Session session = this.sessionFactory.openSession();) {
+
+			try {
+				Query<Company> query = session.createQuery(GET_BY_ID, Company.class);
+				query.setParameter("id", id);
+				company = query.getSingleResult();
+				this.log.info("getById company passed");
+			} catch (HibernateException e) {
+				this.log.error("getById company failed");
+				throw new CompanyDAOException();
+			}
+		}
+		return company;
 	}
 
 }

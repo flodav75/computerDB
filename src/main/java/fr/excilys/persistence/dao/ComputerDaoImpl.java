@@ -73,13 +73,13 @@ public class ComputerDaoImpl implements ComputerDAO {
 				this.log.info("update computer passed");
 			} catch (HibernateException e) {
 				session.getTransaction().rollback();
-				this.log.info("update computer failed");
+				this.log.error("update computer failed");
 				throw new ComputerDAOException();
 			}
 
 			if (row == 0) {
 				session.getTransaction().rollback();
-				this.log.info("update computer failed");
+				this.log.error("update computer failed");
 				throw new ComputerDAOException();
 			}
 		}
@@ -140,7 +140,7 @@ public class ComputerDaoImpl implements ComputerDAO {
 				computer = query.getSingleResult();
 				this.log.info("getById computer passed");
 			} catch (HibernateException e) {
-				this.log.info("getById computer failed");
+				this.log.error("getById computer failed");
 				throw new ComputerDAOException();
 			}
 		}

@@ -19,14 +19,14 @@
 		</encoder>
 	</appender>
 
-	<logger name="LogController" level="TRACE" />
-	<logger name="com.zaxxer.hikari" level="WARN" />
-	<logger name="org.springframework.beans.factory" level="WARN" />
+	<logger name="LogController" level="INFO" />
+	<logger name="com.zaxxer.hikari" level="INFO" />
+	<logger name="org.springframework.beans.factory" level="INFO" />
 	<logger name="org.springframework.context.annotation"
-		level="WARN" />
-	<logger name="org.springframework.jndi" level="WARN" />
-	<logger name="org.springframework.web" level="WARN" />
-	<logger name="org.springframework.test" level="WARN" />
+		level="INFO" />
+	<logger name="org.springframework.jndi" level="INFO" />
+	<logger name="org.springframework.web" level="INFO" />
+	<logger name="org.springframework.test" level="INFO" />
 
 	<root level="TRACE">
 		<appender-ref ref="STDOUT" />

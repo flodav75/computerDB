@@ -20,7 +20,6 @@ import fr.excilys.exceptions.ComputerDAOException;
 import fr.excilys.exceptions.ComputerDateException;
 import fr.excilys.exceptions.ComputerNameException;
 import fr.excilys.exceptions.DateFormatException;
-import fr.excilys.exceptions.DeleteCompanyException;
 import fr.excilys.mappers.ComputerDtoMapper;
 import fr.excilys.mappers.ComputerMapper;
 import fr.excilys.model.Company;
@@ -151,8 +150,9 @@ public class ControllerComputer {
 			this.log.debug(e.getMessage(), e);
 			model.setViewName("/ressources/static/views/404.html");
 		} catch (ComputerNameException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.log.error("error name computer");
+			this.log.debug(e.getMessage(), e);
+			model.setViewName("/ressources/static/views/404.html");
 		}
 		// model.addObject("groupBy", null);
 		model.addObject("computers", computersDTO);
@@ -176,7 +176,7 @@ public class ControllerComputer {
 		} catch (CompanyDAOException e) {
 			this.log.error("error  computer name add");
 			this.log.debug(e.getMessage(), e);
-			// return "redirect: index";
+			model.setViewName("redirect:index");
 		}
 		model.addObject("companies", companies);
 		model.setViewName("addComputer");
@@ -201,23 +201,35 @@ public class ControllerComputer {
 			this.log.error("error  computer add, sql error ");
 			this.log.debug(e.getMessage(), e);
 		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.log.error("error  computer add");
+			this.log.debug(e.getMessage(), e);
+			model.setViewName("redirect:computer/index");
+			return model;
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.log.error("error  computer date add");
+			this.log.debug(e.getMessage(), e);
+			model.setViewName("redirect:index");
+			return model;
 		} catch (ComputerNameException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.log.error("error  computer name add");
+			this.log.debug(e.getMessage(), e);
+			model.setViewName("redirect:index");
+			return model;
 		} catch (DateFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.log.error("error  computer date add");
+			this.log.debug(e.getMessage(), e);
+			model.setViewName("redirect:index");
+			return model;
 		} catch (CompanyDAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.log.error("error  company add  ");
+			this.log.debug(e.getMessage(), e);
+			model.setViewName("redirect:index");
+			return model;
 		} catch (ComputerDateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.log.error("error  computer date add ");
+			this.log.debug(e.getMessage(), e);
+			model.setViewName("redirect:index");
+			return model;
 		}
 
 		model.setViewName("redirect:index");
@@ -234,11 +246,11 @@ public class ControllerComputer {
 			try {
 				this.computerSer.remove(Long.parseLong(computers[i]));
 			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ComputerDAOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				this.log.error("error typing name");
+				model.setViewName("redirect:index");
+			}catch (ComputerDAOException e) {
+				this.log.error("error computer request");
+				model.setViewName("redirect:index");
 			}
 
 		}
@@ -252,14 +264,19 @@ public class ControllerComputer {
 		try {
 			computerDTO = this.computerSer.getById(id);
 		} catch (CompanyDAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.log.error("error  company edit  ");
+			this.log.debug(e.getMessage(), e);
+			model.setViewName("redirect:index");
+			return model;
 		} catch (ComputerDAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.log.error("error  computer edit  ");
+			this.log.debug(e.getMessage(), e);
+			model.setViewName("redirect:index");
+			return model;
 		} catch (ComputerNameException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.log.error("error  company edit  ");
+			this.log.debug(e.getMessage(), e);
+			model.setViewName("redirect:index");
 		}
 		List<Company> companies = new ArrayList<>();
 		try {
@@ -282,37 +299,51 @@ public class ControllerComputer {
 			@RequestParam(name = "name", required = true) String name,
 			@RequestParam(name = "introduced", required = false) String introduced,
 			@RequestParam(name = "discontinued", required = false) String discontinued,
-			@RequestParam(name = "companyId", required = false) String idCompany, ModelAndView model) {
-
+			@RequestParam(name = "companyId", required = false) String companyId, ModelAndView model) {
 		ComputerDTOBuilder compDtoBuilder = new ComputerDTOBuilder();
 		compDtoBuilder.setId(id);
 		compDtoBuilder.setName(name);
 		compDtoBuilder.setIntroduced(introduced);
 		compDtoBuilder.setDiscontinued(discontinued);
-		compDtoBuilder.setCompanyId(idCompany);
+		compDtoBuilder.setCompanyId(companyId);
+		
 		try {
 			this.computerSer.update(compDtoBuilder.build());
 		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.log.error("error  computer add");
+			this.log.debug(e.getMessage(), e);
+			model.setViewName("redirect:index");
+			return model;
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.log.error("error  computer date add");
+			this.log.debug(e.getMessage(), e);
+			model.setViewName("redirect:index");
+			return model;
 		} catch (ComputerNameException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.log.error("error  computer name add");
+			this.log.debug(e.getMessage(), e);
+			model.setViewName("redirect:index");
+			return model;
 		} catch (DateFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.log.error("error  computer date add");
+			this.log.debug(e.getMessage(), e);
+			model.setViewName("redirect:index");
+			return model;
 		} catch (CompanyDAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.log.error("error  company add  ");
+			this.log.debug(e.getMessage(), e);
+			model.setViewName("redirect:index");
+			return model;
 		} catch (ComputerDateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.log.error("error  computer date add ");
+			this.log.debug(e.getMessage(), e);
+			model.setViewName("redirect:index");
+			return model;
 		} catch (ComputerDAOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			this.log.error("error  computer  add ");
+			this.log.debug(e.getMessage(), e);
+			model.setViewName("redirect:index");
+			return model;
 		}
 
 		model.setViewName("redirect:index");
