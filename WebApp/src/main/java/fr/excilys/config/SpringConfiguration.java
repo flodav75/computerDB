@@ -18,11 +18,14 @@ import org.springframework.web.servlet.view.JstlView;
 
 @Configuration
 @ComponentScan(basePackages = { "fr.excilys.controller", "fr.excilys.persistence", "fr.excilys.service",
-		"fr.excilys.mappers" })
+		"fr.excilys.mappers"})
 @EnableWebMvc
+
 public class SpringConfiguration implements WebMvcConfigurer {
 
 
+	
+	
 	@Bean
 	public ViewResolver viewResolver() {
 		InternalResourceViewResolver bean = new InternalResourceViewResolver();

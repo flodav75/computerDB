@@ -16,7 +16,10 @@ import com.zaxxer.hikari.HikariDataSource;
 
 @Configuration
 @EnableTransactionManagement
+
 public class HibernateConfig {
+	
+
 
 	@Bean
 	public DataSource getDataSource() {

@@ -19,16 +19,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <module.version>0.0.1-SNAPSHOT</module.version>
-    <mysql.version>8.0.15</mysql.version>
-   	<hikaricp.version>2.6.1</hikaricp.version>
-    <jslt.version>1.2</jslt.version>
-    <javax-annotation-api.version>1.2</javax-annotation-api.version>
-    <javax.inject.version>1</javax.inject.version>	
-    <servlet.version>4.0.1</servlet.version>
-    
+
     
   </properties>
 
@@ -86,6 +77,20 @@
 	    <version>${servlet.version}</version>
 	    <scope>provided</scope>
 	</dependency>
+	
+	<dependency>
+	    <groupId>org.springframework.security</groupId>
+	    <artifactId>spring-security-web</artifactId>
+	    <version>${spring.security.version}</version>
+	</dependency>
+<!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-config -->
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-config</artifactId>
+    <version>${spring.security.version}</version>
+</dependency>
+
+	
 	
   </dependencies>
 </project>

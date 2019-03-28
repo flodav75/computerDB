@@ -9,7 +9,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.stereotype.Repository;
 
 import fr.excilys.core.Company;
@@ -27,8 +26,8 @@ public class CompanyDaoImpl implements CompanyDAO {
 	private Logger log;
 	private SessionFactory sessionFactory;
 
-	private CompanyDaoImpl(HibernateTransactionManager manage) {
-		this.sessionFactory = manage.getSessionFactory();
+	private CompanyDaoImpl(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
 		this.log = LoggerFactory.getLogger(CompanyDaoImpl.class);
 	}
 

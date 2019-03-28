@@ -16,6 +16,19 @@
         <maven.compiler.source>1.8</maven.compiler.source>
     	<maven.compiler.target>1.8</maven.compiler.target>
         <module.version>0.0.1-SNAPSHOT</module.version>
+            <module.version>0.0.1-SNAPSHOT</module.version>
+    <mysql.version>8.0.15</mysql.version>
+   	<hikaricp.version>2.6.1</hikaricp.version>
+    <jslt.version>1.2</jslt.version>
+    <javax-annotation-api.version>1.2</javax-annotation-api.version>
+    <javax.inject.version>1</javax.inject.version>	
+    <servlet.version>4.0.1</servlet.version>
+          <module.version>0.0.1-SNAPSHOT</module.version>
+       <logback.version>1.2.3</logback.version>
+       <slf4j.version>1.7.25</slf4j.version>
+       <spring.version>5.1.5.RELEASE</spring.version>
+       <hibernate.version>5.2.12.Final</hibernate.version>
+       <spring.security.version>5.1.4.RELEASE</spring.security.version>
     	
   </properties>
   

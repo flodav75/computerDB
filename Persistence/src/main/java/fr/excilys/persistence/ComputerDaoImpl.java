@@ -9,7 +9,6 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.stereotype.Repository;
 
 import fr.excilys.core.Computer;
@@ -35,9 +34,9 @@ public class ComputerDaoImpl implements ComputerDAO {
 	private SessionFactory sessionFactory;
 	private Logger log;
 
-	private ComputerDaoImpl(HibernateTransactionManager manager) {
+	private ComputerDaoImpl(SessionFactory sessionFactory) {
 		log = LoggerFactory.getLogger(ComputerDAO.class);
-		this.sessionFactory = manager.getSessionFactory();
+		this.sessionFactory = sessionFactory;
 	}
 
 	@Override
@@ -143,6 +142,7 @@ public class ComputerDaoImpl implements ComputerDAO {
 				this.log.error("getById computer failed");
 				throw new ComputerDAOException();
 			}
+			
 		}
 		return computer;
 	}
