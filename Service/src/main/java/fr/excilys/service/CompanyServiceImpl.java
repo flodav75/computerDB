@@ -2,7 +2,6 @@ package fr.excilys.service;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import fr.excilys.core.Company;
@@ -14,7 +13,7 @@ import fr.excilys.persistence.CompanyDaoImpl;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
-	@Autowired
+	
 	private CompanyDAO companyDao;
 
 	private CompanyServiceImpl(CompanyDaoImpl companyDao) {

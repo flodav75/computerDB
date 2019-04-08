@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
 		.antMatchers("/add").authenticated()
 		.anyRequest().permitAll()
-		.and()
+		.and().csrf().disable()
 		.formLogin()
 		.defaultSuccessUrl("/index",true)
 		.failureUrl("/")

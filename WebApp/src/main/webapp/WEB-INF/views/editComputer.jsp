@@ -28,7 +28,7 @@
                     </div>
                     <h1>Edit Computer ${computer.id}</h1>
 
-                    <form action="edit" method="POST">
+                    <form action="/WebApp/edit" method="POST">
                         <input type="hidden" value="${computer.id}"name="idComputer" id="idComputer"/> <!-- TODO: Change this value with the computer id -->
                         <fieldset>
                             <div class="form-group">

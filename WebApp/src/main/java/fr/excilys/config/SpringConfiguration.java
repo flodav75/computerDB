@@ -17,8 +17,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 @Configuration
-@ComponentScan(basePackages = { "fr.excilys.controller", "fr.excilys.persistence", "fr.excilys.service",
-		"fr.excilys.mappers"})
+@ComponentScan(basePackages = { "fr.excilys.controller"})
 @EnableWebMvc
 
 public class SpringConfiguration implements WebMvcConfigurer {

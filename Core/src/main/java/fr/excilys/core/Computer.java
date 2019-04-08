@@ -25,7 +25,7 @@ public class Computer {
 	private LocalDate introduced;
 	@Column(name="discontinued",nullable = true)
 	private LocalDate discontinued;
-	@OneToOne
+	@OneToOne 
 	@JoinColumn(name = "company_id", nullable = true)
 	private Company company;
 

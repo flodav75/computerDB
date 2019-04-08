@@ -9,7 +9,7 @@ import fr.excilys.dto.ComputerDTO;
 import fr.excilys.exception.ComputerNameException;
 
 public class ValidationComputerDTO {
-	private static final String[] BAD_NAME_VALUES = { "'", ";", ".", "*" };
+	private static final String[] BAD_NAME_VALUES = { "'", ";", "*" };
 
 	public static void validate(ComputerDTO comptDTO)
 			throws ComputerNameException, ParseException, NumberFormatException, DateTimeParseException {

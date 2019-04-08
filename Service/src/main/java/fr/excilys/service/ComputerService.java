@@ -12,6 +12,8 @@ import fr.excilys.exception.ComputerNameException;
 import fr.excilys.exception.DateFormatException;
 
 public interface ComputerService {
+	
+	public  int a =1;
 	void add(ComputerDTO computer) throws ComputerDAOException, NumberFormatException, ParseException,
 			ComputerNameException, DateFormatException, CompanyDAOException, ComputerDateException, ComputerException;
 

@@ -305,6 +305,7 @@ public class ControllerComputer {
 			@RequestParam(name = "introduced", required = false) String introduced,
 			@RequestParam(name = "discontinued", required = false) String discontinued,
 			@RequestParam(name = "companyId", required = false) String companyId, ModelAndView model) {
+		System.out.println("aaaaaaaAAAAAAaAAAAAAAAAAAAAAAAAAAAAAAAA");
 		ComputerDTOBuilder compDtoBuilder = new ComputerDTOBuilder();
 		compDtoBuilder.setId(id);
 		compDtoBuilder.setName(name);
@@ -366,11 +367,8 @@ public class ControllerComputer {
 	}
 
 	public static boolean isNotNullorEmpty(String value) {
-		boolean isNull = false;
-		if (value != null && !value.isEmpty()) {
-			isNull = true;
-		}
-		return isNull;
+		
+		return value != null && !value.isEmpty();
 	}
 
 	private static Long getPageNumberMax(Long nbrRow, int limit) {
