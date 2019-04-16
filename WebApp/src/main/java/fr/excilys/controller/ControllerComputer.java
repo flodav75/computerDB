@@ -96,6 +96,7 @@ public class ControllerComputer {
 			this.log.debug(e.getMessage(), e);
 			model.setViewName("/ressources/static/views/404.html");
 		}
+		
 		model.addObject("computers", computersDTO);
 		model.addObject("count", computersDTO.size());
 		model.addObject("limit", limit);
@@ -253,7 +254,7 @@ public class ControllerComputer {
 			} catch (NumberFormatException e) {
 				this.log.error("error typing name");
 				model.setViewName("redirect:index");
-			}catch (ComputerDAOException e) {
+			} catch (ComputerDAOException e) {
 				this.log.error("error computer request");
 				model.setViewName("redirect:index");
 			}
@@ -312,7 +313,7 @@ public class ControllerComputer {
 		compDtoBuilder.setIntroduced(introduced);
 		compDtoBuilder.setDiscontinued(discontinued);
 		compDtoBuilder.setCompanyId(companyId);
-		
+
 		try {
 			this.computerSer.update(compDtoBuilder.build());
 		} catch (NumberFormatException e) {
@@ -367,7 +368,7 @@ public class ControllerComputer {
 	}
 
 	public static boolean isNotNullorEmpty(String value) {
-		
+
 		return value != null && !value.isEmpty();
 	}
 

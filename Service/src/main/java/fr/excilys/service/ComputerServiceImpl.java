@@ -105,6 +105,7 @@ public class ComputerServiceImpl implements ComputerService {
 		for (Computer computer : this.computerDao.getAllByName(limit, pos)) {
 			computersDTO.add(ComputerDtoMapper.computerDtoFromComputer(computer));
 		}
+		
 		return computersDTO;
 	}
 

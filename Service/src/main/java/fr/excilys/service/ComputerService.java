@@ -21,10 +21,10 @@ public interface ComputerService {
 			ComputerNameException, DateFormatException, CompanyDAOException, ComputerDateException, ComputerException;
 
 	void remove(long id) throws ComputerDAOException;
-
+//
 	List<ComputerDTO> getAll(int limit, int pos)
 			throws CompanyDAOException, ComputerDAOException, ComputerNameException;
-
+//
 	List<ComputerDTO> getAllOrderByName(int limit, int pos)
 			throws CompanyDAOException, ComputerDAOException, ComputerNameException;
 
@@ -33,10 +33,10 @@ public interface ComputerService {
 	List<ComputerDTO> getByCompanyId(long id);
 
 	Long getCountRow() throws ComputerDAOException;
-
+//
 	List<ComputerDTO> getByName(String name, int limit, int pos)
 			throws ComputerDAOException, CompanyDAOException, ComputerNameException;
-
+//
 	List<ComputerDTO> getByNameOrderByName(String name, int limit, int pos)
 			throws ComputerDAOException, CompanyDAOException, ComputerNameException;
 
